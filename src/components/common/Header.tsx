@@ -1,0 +1,178 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { Menu, Search, ShoppingBag, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
+import TopBar from "./TopBar";
+import { useState, useEffect } from "react";
+import { servicesData } from "@/data/servicesData";
+import { ChevronRight } from "lucide-react";
+
+export default function Header() {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeCategory, setActiveCategory] = useState(servicesData[0]?.slug || "");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Threshold: TopBar (46px) + Header (approx 80px) + some buffer
+      if (window.scrollY > 200) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navItems = [
+    { name: "Home", href: "/" },
+    { name: "About Us", href: "/about" },
+    { name: "Services", href: "/services" },
+    { name: "Contact", href: "/contact" },
+  ];
+
+  return (
+    <>
+      {/* TopBar - Scrolls away */}
+      <div className="hidden md:block bg-secondary">
+           <TopBar />
+      </div>
+
+      {/* Placeholder to prevent layout shift when header becomes fixed */}
+      <div className={`${isScrolled ? 'h-[88px]' : 'h-0'} w-full`}></div>
+
+      {/* Main Navigation - Fixed with Slide Down Animation */}
+      <header 
+        className={`w-full bg-background z-50 transition-all duration-300 ease-in-out py-5 border-b ${
+          isScrolled 
+            ? "fixed top-0 shadow-lg animate-in slide-in-from-top duration-700" 
+            : "relative"
+        }`}
+      >
+        <div className="container mx-auto px-4 flex items-center justify-between gap-4">
+
+
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 group">
+            <Image 
+              src="/images/logo/logo.png" 
+              alt="Kajlagbe Logo" 
+              width={160} 
+              height={50} 
+              className="h-10 w-auto object-contain"
+              priority
+            />
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-8 h-full">
+            {navItems.map((item) => {
+              if (item.name === "Services") {
+                return (
+                  <div key={item.name} className="relative group h-full flex items-center">
+                    <Link
+                      href={item.href}
+                      className="text-[14px] font-bold text-secondary hover:text-primary uppercase tracking-wide transition-colors relative flex items-center gap-1 py-4"
+                    >
+                      {item.name}
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </Link>
+                    
+                    {/* Mega Menu Dropdown */}
+                    <div className="absolute top-full left-0 w-full max-w-screen-xl mx-auto bg-white shadow-2xl rounded-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 z-50 overflow-hidden flex flex-col">
+                      
+                    </div>
+                  </div>
+                );
+              }
+              
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="text-[14px] font-bold text-secondary hover:text-primary uppercase tracking-wide transition-colors relative group py-4"
+                >
+                  {item.name}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Actions */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            
+    
+            
+            {/* Get A Quote Button */}
+             <Button className="hidden lg:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-6 h-10 text-base">
+                GET A QUOTE
+             </Button>
+
+            {/* Mobile Search Toggle */}
+            <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsSearchOpen(!isSearchOpen)}>
+              <Search className="h-5 w-5" />
+            </Button>
+
+            {/* Mobile Menu */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <SheetHeader>
+                  <SheetTitle className="text-left font-bold text-xl">Menu</SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-6 mt-8">
+                    {/* Mobile Search inside menu */}
+                   <div className="relative">
+                      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input type="search" placeholder="Search..." className="pl-9" />
+                   </div>
+                  <nav className="flex flex-col gap-4">
+                    {navItems.map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className="text-lg font-medium hover:text-[#43BAFF] transition-colors border-b pb-2"
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+                    
+                  </nav>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+        
+        {/* Mobile Search Bar Expandable */}
+        {isSearchOpen && (
+            <div className="lg:hidden container mx-auto px-4 pb-4 animate-in slide-in-from-top-2 pt-2">
+              <div className="relative">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input type="search" placeholder="Search..." className="pl-9 w-full" autoFocus />
+              </div>
+            </div>
+        )}
+      </header>
+    </>
+  );
+}
