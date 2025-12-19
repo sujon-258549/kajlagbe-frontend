@@ -3,7 +3,7 @@ import { CheckCircle2 } from "lucide-react";
 export default function WhyChooseUs() {
   return (
     <section className="py-20">
-       <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
+       <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div className="relative">
               <div className="rounded-xl overflow-hidden shadow-2xl">
                   <img 
@@ -17,7 +17,7 @@ export default function WhyChooseUs() {
                   <p className="text-sm font-medium uppercase tracking-wider">Years Experience</p>
               </div>
           </div>
-          <div className="space-y-8">
+          <div className="space-y-6 md:space-y-8">
                <div className="space-y-4">
                   <span className="text-primary font-bold text-sm uppercase tracking-widest">Why Choose Us</span>
                   <h2 className="text-3xl lg:text-4xl font-bold text-secondary leading-tight">We Are Here to Grow Your Business Exponentially</h2>

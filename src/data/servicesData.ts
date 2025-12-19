@@ -417,5 +417,19 @@ export const servicesData: ServiceCategory[] = [
         { name: "Laundry collection", slug: "laundry-collection" },
         { name: "Grocery collection", slug: "grocery-collection" },
       ]
-  }
+   },
+   {
+      title: "Gardening & Landscaping",
+      slug: "gardening-landscaping",
+      subServices: [
+        { name: "Garden maintenance", slug: "garden-maintenance" },
+        { name: "Lawn mowing", slug: "lawn-mowing" },
+        { name: "Planting service", slug: "planting-service" },
+        { name: "Indoor plant care", slug: "indoor-plant-care" },
+        { name: "Roof garden setup", slug: "roof-garden-setup" },
+        { name: "Tree pruning", slug: "tree-pruning" },
+        { name: "Pest control for plants", slug: "pest-control-plants" },
+        { name: "Landscaping design", slug: "landscaping-design" },
+      ]
+   }
 ];

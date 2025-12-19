@@ -92,8 +92,42 @@ export default function Header() {
                     </Link>
                     
                     {/* Mega Menu Dropdown */}
-                    <div className="absolute top-full left-0 w-full max-w-screen-xl mx-auto bg-white shadow-2xl rounded-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 z-50 overflow-hidden flex flex-col">
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-screen-lg bg-white shadow-2xl rounded-2xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 z-50 overflow-hidden flex h-[500px]">
                       
+                      {/* Left Sidebar - Categories */}
+                      <div className="w-1/3 bg-slate-50 border-r border-slate-100 overflow-y-auto">
+                        {servicesData.map((category) => (
+                          <div
+                            key={category.slug}
+                            onMouseEnter={() => setActiveCategory(category.slug)}
+                            className={`px-4 py-3 flex items-center justify-between cursor-pointer transition-all border-l-4 ${
+                              activeCategory === category.slug 
+                                ? "bg-white border-secondary text-secondary shadow-sm" 
+                                : "border-transparent text-secondary hover:bg-slate-100"
+                            }`}
+                          >
+                            <span className="font-bold text-xs tracking-wide uppercase">{category.title}</span>
+                            <ChevronRight className={`w-3.5 h-3.5 transition-transform ${activeCategory === category.slug ? "translate-x-1" : "opacity-0"}`} />
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Right Content - Sub-services */}
+                      <div className="w-2/3 bg-white p-6 overflow-y-auto">
+                        <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                          {servicesData.find(c => c.slug === activeCategory)?.subServices.map((sub) => (
+                            <Link
+                              key={sub.slug}
+                              href={`/services/${activeCategory}/${sub.slug}`}
+                              className="group/sub flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-black transition-colors"
+                            >
+                              <div className="w-1.5 h-1.5 rounded-full bg-secondary opacity-0 group-hover/sub:opacity-100 transition-opacity"></div>
+                              {sub.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+
                     </div>
                   </div>
                 );
@@ -150,7 +184,7 @@ export default function Header() {
                       <Link
                         key={item.name}
                         href={item.href}
-                        className="text-lg font-medium hover:text-[#43BAFF] transition-colors border-b pb-2"
+                        className="text-lg font-medium hover:text-secondary transition-colors border-b pb-2"
                       >
                         {item.name}
                       </Link>

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function TopBar() {
   return (
-    <div className="w-full bg-secondary text-primary-foreground/70 text-[13px] font-medium leading-[46px]">
+    <div className="w-full bg-[#0a101f] text-white/70 text-[13px] font-medium leading-[46px]">
       <div className="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center h-auto sm:h-[46px]">
         {/* Contact Info */}
         <div className="flex items-center gap-6">
