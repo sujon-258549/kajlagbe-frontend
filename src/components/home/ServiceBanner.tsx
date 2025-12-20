@@ -2,130 +2,204 @@
 
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useRef } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Autoplay } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 
-const services = [
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+
+export const services = [
   {
-    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80",
-    title: "Sofa Steam Cleaning",
-    price: "29",
+    title: "Home Repair & Maintenance",
+    slug: "home-repair-maintenance",
+    image:
+      "https://img.freepik.com/free-photo/electrician-working-house_23-2149338512.jpg",
   },
   {
-    image: "https://images.unsplash.com/photo-1581578731548-c64695ce6958?auto=format&fit=crop&q=80",
-    title: "Home Deep Cleaning",
-    price: "49",
+    title: "Cleaning & Hygiene",
+    slug: "cleaning-hygiene",
+    image:
+      "https://img.freepik.com/free-photo/cleaning-service-concept_23-2148531813.jpg",
   },
   {
-    image: "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&q=80",
-    title: "Commercial Office Cleaning",
-    price: "39",
+    title: "Construction & Renovation",
+    slug: "construction-renovation",
+    image:
+      "https://img.freepik.com/free-photo/construction-site-worker_23-2148742496.jpg",
   },
   {
-    image: "https://images.unsplash.com/photo-1581094288338-2314dddb7ecc?auto=format&fit=crop&q=80",
-    title: "AC Servicing & Repair",
-    price: "25",
+    title: "Carpentry, Glass & Metal",
+    slug: "carpentry-glass-metal",
+    image:
+      "https://img.freepik.com/free-photo/carpenter-working-workshop_23-2148212922.jpg",
   },
   {
-    image: "https://images.unsplash.com/photo-1562654508-a187af463c78?auto=format&fit=crop&q=80",
-    title: "Kitchen Chimney Cleaning",
-    price: "19",
+    title: "Vehicle Services",
+    slug: "vehicle-services",
+    image:
+      "https://img.freepik.com/free-photo/car-wash-detailing_23-2149218247.jpg",
   },
   {
-    image: "https://images.unsplash.com/photo-1621905252507-b354bcadc4cf?auto=format&fit=crop&q=80",
-    title: "Interior Painting",
-    price: "99",
-  }
+    title: "Driver & Transport",
+    slug: "driver-transport",
+    image:
+      "https://img.freepik.com/free-photo/professional-driver-car_23-2148982260.jpg",
+  },
+  {
+    title: "Shifting & Labour",
+    slug: "shifting-labour",
+    image:
+      "https://img.freepik.com/free-photo/movers-carrying-boxes_23-2148521476.jpg",
+  },
+  {
+    title: "Electronics, IT & CCTV",
+    slug: "electronics-it-cctv",
+    image:
+      "https://img.freepik.com/free-photo/technician-installing-cctv-camera_23-2149323743.jpg",
+  },
+  {
+    title: "Tutor & Education",
+    slug: "tutor-education",
+    image:
+      "https://img.freepik.com/free-photo/home-tutor-teaching-student_23-2148825202.jpg",
+  },
+  {
+    title: "Health & Care",
+    slug: "health-care",
+    image:
+      "https://img.freepik.com/free-photo/home-nurse-taking-care-patient_23-2148895354.jpg",
+  },
+  {
+    title: "Beauty & Personal Care",
+    slug: "beauty-personal-care",
+    image:
+      "https://img.freepik.com/free-photo/beauty-salon-home-service_23-2149055342.jpg",
+  },
+  {
+    title: "Food & Cooking",
+    slug: "food-cooking",
+    image:
+      "https://img.freepik.com/free-photo/home-cook-preparing-food_23-2148583897.jpg",
+  },
+  {
+    title: "Event & Media",
+    slug: "event-media",
+    image:
+      "https://img.freepik.com/free-photo/event-management-stage-setup_23-2148810255.jpg",
+  },
+  {
+    title: "Digital & Office Support",
+    slug: "digital-office-support",
+    image:
+      "https://img.freepik.com/free-photo/office-assistant-working-laptop_23-2148872254.jpg",
+  },
+  {
+    title: "Security & Safety",
+    slug: "security-safety",
+    image:
+      "https://img.freepik.com/free-photo/security-guard-uniform_23-2148971315.jpg",
+  },
+  {
+    title: "Legal, Paper & Documentation",
+    slug: "legal-documentation",
+    image:
+      "https://img.freepik.com/free-photo/legal-documents-desk_23-2148893441.jpg",
+  },
+  {
+    title: "Daily Life & On-Demand",
+    slug: "daily-life-on-demand",
+    image:
+      "https://img.freepik.com/free-photo/personal-assistant-helping-errand_23-2149101256.jpg",
+  },
 ];
 
+
 export default function ServiceBanner() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const totalItems = services.length;
-  const itemsPerView = {
-    mobile: 1,
-    tablet: 2,
-    desktop: 3
-  };
-
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % totalItems);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + totalItems) % totalItems);
-  };
+  const swiperRef = useRef<SwiperType>(null);
 
   return (
     <section className="py-12 bg-[#F9F8F3] overflow-hidden">
       <div className="container mx-auto px-6">
-        <div className="relative flex items-center justify-center gap-4 lg:gap-8">
+        <div className="relative flex items-center justify-center gap-2 lg:gap-2">
           
           {/* Controls - Left */}
           <button 
-            onClick={prevSlide}
+            onClick={() => swiperRef.current?.slidePrev()}
             className="hidden md:flex w-12 h-12 rounded-full border border-secondary/20 items-center justify-center text-secondary hover:bg-primary hover:text-white hover:border-primary transition-all flex-shrink-0 z-10 bg-white/50 backdrop-blur-sm"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
 
           {/* Main Slider Container */}
-          <div className="bg-white rounded-[40px] p-6 md:p-10 shadow-sm border border-slate-100 flex-1 max-w-6xl overflow-hidden relative">
-            <div 
-              className="flex transition-transform duration-700 ease-in-out gap-8 lg:gap-12"
-              style={{ transform: `translateX(calc(-${currentIndex * (100 / itemsPerView.desktop)}%))` }}
+          <div className="bg-white rounded-2xl p-3 md:p-6 shadow-sm border border-slate-100 flex-1 max-w-6xl overflow-hidden relative">
+            <Swiper
+              modules={[Navigation, Autoplay]}
+              onBeforeInit={(swiper) => {
+                swiperRef.current = swiper;
+              }}
+              spaceBetween={32}
+              slidesPerView={1}
+              loop={true}
+              autoplay={{
+                delay: 3000,
+                disableOnInteraction: false,
+              }}
+              breakpoints={{
+                320: {
+                  slidesPerView: 1,
+                  spaceBetween: 16,
+                },
+                640: {
+                  slidesPerView: 2,
+                  spaceBetween: 32,
+                },
+                1024: {
+                  slidesPerView: 4,
+                  spaceBetween: 24,
+                },
+              }}
+              className="w-full"
             >
               {services.map((service, i) => (
-                <div 
-                  key={i} 
-                  className="flex items-center gap-6 group min-w-[calc(100%/1)] md:min-w-[calc(100%/3-2rem)] lg:min-w-[calc(100%/3-3rem)]"
-                >
-                  {/* Square Image */}
-                  <div className="w-24 h-24 md:w-32 md:h-32 rounded-3xl overflow-hidden flex-shrink-0 shadow-lg group-hover:shadow-primary/20 transition-all duration-500">
-                    <img 
-                      src={service.image} 
-                      alt={service.title} 
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  </div>
+                <SwiperSlide key={i}>
+                  <div className="flex items-center gap-4 group">
+                    {/* Square Image */}
+                    <div className="w-24 h-24 md:w-24 md:h-24 rounded-xl overflow-hidden flex-shrink-0 shadow-lg group-hover:shadow-primary/20 transition-all duration-500">
+                      <img 
+                        src={service.image} 
+                        alt={service.title} 
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
 
-                  {/* Content */}
-                  <div className="flex flex-col gap-3">
-                    <h3 className="text-lg md:text-xl font-bold text-secondary leading-tight min-h-[3rem]">
-                      {service.title}
-                    </h3>
-                    <Button 
-                      variant="outline" 
-                      className="rounded-full border-primary/20 text-primary hover:bg-primary hover:text-white hover:border-primary px-6 font-bold w-fit text-sm"
-                    >
-                      From ${service.price}
-                    </Button>
-                  </div>
+                    {/* Content */}
+                    <div className="flex flex-col gap-1">
+                      <h3 className="text-lg md:text-xl font-bold text-secondary leading-tight line-clamp-2">
+                        {service.title}
+                      </h3>
+                      <span className="text-primary text-sm font-medium hover:underline cursor-pointer">
+                        Book Now →
+                      </span>
+                    </div>
 
-                  {/* Vertical Divider (Desktop only, if not the very last item in absolute list) */}
-                  {i < services.length - 1 && (
-                    <div className="hidden lg:block h-20 w-[1px] bg-slate-100 ml-4"></div>
-                  )}
-                </div>
+                    {/* Vertical Divider (Desktop only, hidden for Swiper) */}
+                    {/* In Swiper, dividers are tricky between slides. We can handle it with border-right on the slide container if needed, but spaceBetween usually suffices. */}
+                  </div>
+                </SwiperSlide>
               ))}
-            </div>
+            </Swiper>
           </div>
 
           {/* Controls - Right */}
           <button 
-            onClick={nextSlide}
+            onClick={() => swiperRef.current?.slideNext()}
             className="hidden md:flex w-12 h-12 rounded-full border border-secondary/20 items-center justify-center text-secondary hover:bg-primary hover:text-white hover:border-primary transition-all flex-shrink-0 z-10 bg-white/50 backdrop-blur-sm"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
-
-          {/* Mobile Dots */}
-          <div className="absolute -bottom-6 flex gap-2 md:hidden">
-            {services.map((_, i) => (
-              <div 
-                key={i} 
-                className={`w-2 h-2 rounded-full transition-all ${currentIndex === i ? "bg-primary w-4" : "bg-slate-300"}`}
-              ></div>
-            ))}
-          </div>
 
         </div>
       </div>

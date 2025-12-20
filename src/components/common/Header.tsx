@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, Search, ShoppingBag, User } from "lucide-react";
+import { LogInIcon, Menu, Search, ShoppingBag, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -52,11 +52,11 @@ export default function Header() {
       </div>
 
       {/* Placeholder to prevent layout shift when header becomes fixed */}
-      <div className={`${isScrolled ? 'h-[88px]' : 'h-0'} w-full`}></div>
+      <div className={`${isScrolled ? 'h-[78px]' : 'h-0'} w-full`}></div>
 
       {/* Main Navigation - Fixed with Slide Down Animation */}
       <header 
-        className={`w-full bg-background z-50 transition-all duration-300 ease-in-out py-5 border-b ${
+        className={`w-full bg-background z-50 transition-all duration-300 ease-in-out py-3 border-b ${
           isScrolled 
             ? "fixed top-0 shadow-lg animate-in slide-in-from-top duration-700" 
             : "relative"
@@ -152,9 +152,7 @@ export default function Header() {
     
             
             {/* Get A Quote Button */}
-             <Button className="hidden lg:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-6 h-10 text-base">
-                GET A QUOTE
-             </Button>
+          <Button >  Login <LogInIcon /> </Button>
 
             {/* Mobile Search Toggle */}
             <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsSearchOpen(!isSearchOpen)}>

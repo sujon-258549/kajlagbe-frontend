@@ -1,79 +1,104 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Star } from "lucide-react";
 
 const featured = [
   {
-    title: "AC Repair & Service",
-    price: "Starts at $15",
-    rating: "4.8 (2.5k)",
-    image: "https://images.unsplash.com/photo-1581094288338-2314dddb7ecc?auto=format&fit=crop&q=80",
-    discount: "20% OFF"
+    title: "Custom T-Shirt Printing",
+    image: "https://img.freepik.com/free-photo/colorful-t-shirts-arrangement_23-2149074824.jpg",
   },
   {
-    title: "Full Home Deep Cleaning",
-    price: "Starts at $45",
-    rating: "4.9 (1.8k)",
-    image: "https://images.unsplash.com/photo-1581578731548-c64695ce6958?auto=format&fit=crop&q=80",
-    discount: "HOT"
+    title: "Business Card Design",
+    image: "https://img.freepik.com/free-photo/business-card-mockup_53876-94088.jpg",
   },
   {
-    title: "Expert Home Tutor",
-    price: "Starts at $20/hr",
-    rating: "4.7 (950)",
-    image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80",
-    discount: "NEW"
+    title: "Personalized Mugs",
+    image: "https://img.freepik.com/free-photo/mockup-mugs-arrangement_23-2149139285.jpg",
   },
   {
-    title: "Patient & Elder Care",
-    price: "Starts at $30",
-    rating: "4.9 (1.2k)",
-    image: "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80",
-    discount: "POPULAR"
-  }
+    title: "Premium Water Bottles",
+    image: "https://img.freepik.com/free-photo/water-bottles-mockup_53876-95315.jpg",
+  },
+  {
+    title: "Apparel & Hoodies",
+    image: "https://img.freepik.com/free-photo/hoodies-arranged_23-2149140501.jpg",
+  },
+  {
+    title: "Customized Notebooks",
+    image: "https://img.freepik.com/free-photo/notebook-mockup-arrangement_53876-94051.jpg",
+  },
 ];
 
 export default function FeaturedServices() {
   return (
     <section className="py-24 bg-white">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-16">
-          <div className="max-w-xl space-y-4">
-            <span className="text-secondary font-bold tracking-[0.2em] uppercase text-sm">// High Demand Services</span>
-            <h2 className="text-4xl md:text-5xl font-black text-black leading-tight">Trending <span className="text-primary">Services</span> Right Now</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+          
+          {/* Slot 1 */}
+          <div className="relative group h-full rounded-xl overflow-hidden shadow-lg border-2 border-[#ff4d1c]">
+            <img 
+              src={featured[0].image} 
+              alt={featured[0].title} 
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4
+                            bg-black/20 backdrop-blur-sm opacity-0 group-hover:opacity-100
+                            transition-all duration-300">
+              <h3 className="text-white font-bold text-lg">{featured[0].title}</h3>
+              <p className="text-gray-200 text-sm mt-2">High-quality custom printing services.</p>
+            </div>
           </div>
-          <Button className="bg-primary hover:bg-primary/90 text-white font-black tracking-widest uppercase h-14 px-10 rounded-full">
-            View All Services
-          </Button>
-        </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featured.map((service, index) => (
-            <div key={index} className="group bg-white rounded-3xl overflow-hidden shadow-xl shadow-black/5 hover:-translate-y-2 transition-all duration-500">
-              <div className="relative h-44">
-                <img src={service.image} alt={service.title} className="w-full h-full object-cover" />
-                <div className="absolute top-4 right-4 bg-red-500 text-white text-[10px] font-black px-3 py-1 rounded-full animate-pulse uppercase tracking-widest">
-                  {service.discount}
-                </div>
-              </div>
-              <div className="p-6 md:p-8 space-y-4">
-                <div className="flex items-center gap-2">
-                  <div className="flex text-yellow-400">
-                    <Star className="w-3 h-3 fill-current" />
-                  </div>
-                  <span className="text-xs font-black text-slate-400 uppercase tracking-widest">{service.rating}</span>
-                </div>
-                <h3 className="text-xl font-black text-secondary leading-tight min-h-[3rem]">{service.title}</h3>
-                <div className="flex items-center justify-between pt-4 border-t border-slate-50">
-                  <span className="text-primary font-black">{service.price}</span>
-                  <Button size="icon" variant="ghost" className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-secondary hover:bg-primary hover:text-white transition-all">
-                    <ArrowRight className="w-5 h-5" />
-                  </Button>
-                </div>
+          {/* Slot 2 */}
+          <div className="relative group h-full rounded-xl overflow-hidden shadow-lg border-2 border-primary">
+            <img 
+              src={featured[1].image} 
+              alt={featured[1].title} 
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4
+                            bg-black/20 backdrop-blur-sm opacity-0 group-hover:opacity-100
+                            transition-all duration-300">
+              <h3 className="text-white font-bold text-lg">{featured[1].title}</h3>
+              <p className="text-gray-200 text-sm mt-2">Creative business card designs.</p>
+            </div>
+          </div>
+
+          {/* Slot 3-4 Header Block */}
+          <div className="md:col-span-2 bg-[#fdfdfd] p-8 lg:p-12 flex flex-col justify-center space-y-6 shadow-inner border-2 border-dashed border-[#ff4d1c]">
+            <span className="text-[#ff4d1c] font-serif italic text-2xl">Features</span>
+            <h2 className="text-4xl lg:text-5xl font-black text-black leading-[1.1]">
+              Premier One-Stop <br />
+              Custom Print Solutions
+            </h2>
+            <p className="text-gray-500 text-sm leading-relaxed max-w-md">
+              We provide top-quality personalized products with creative designs to make your brand stand out.
+            </p>
+            <div>
+              <Button size="xl" className="bg-[#ff4d1c] hover:bg-[#e64016] text-white rounded-md px-8 h-14 font-bold uppercase tracking-wide">
+                View All Services
+              </Button>
+            </div>
+          </div>
+
+          {/* Remaining slots */}
+          {featured.slice(2).map((service, index) => (
+            <div key={index} className="relative group h-full rounded-xl overflow-hidden shadow-lg border-2 border-[#ff4d1c]">
+              <img 
+                src={service.image} 
+                alt={service.title} 
+                className="w-full h-[350px] object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4
+                              bg-black/20 backdrop-blur-sm opacity-0 group-hover:opacity-100
+                              transition-all duration-300">
+                <h3 className="text-white font-bold text-lg">{service.title}</h3>
+                <p className="text-gray-200 text-sm mt-2">Quality, personalized products for your needs.</p>
               </div>
             </div>
           ))}
+
         </div>
       </div>
     </section>

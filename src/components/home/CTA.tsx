@@ -8,14 +8,16 @@ export default function CTA() {
                <h2 className="text-3xl font-bold text-black mb-2">Ready to get started?</h2>
                <p className="text-slate-600">Contact us today to discuss your project or service needs.</p>
            </div>
-           <div className="flex gap-4">
-               <Button size="lg" className="bg-primary hover:bg-primary/90 text-white border-none h-12 px-8 rounded-full font-bold">
-                  Contact Us
-               </Button>
-                <Button size="lg" variant="outline" className="bg-white border-slate-200 text-black hover:bg-slate-50 h-12 px-8 rounded-full font-bold">
-                  View Services
-               </Button>
-           </div>
+            <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex flex-wrap gap-4 items-center">
+                <Button size="xl" className="border-none">
+                   Contact Us
+                </Button>
+                 <Button size="xl" variant="outline" className="bg-white border-slate-200 text-black hover:bg-slate-50 shadow-sm hover:shadow-none">
+                   View Services
+                </Button>
+            </div>
+            </div>
         </div>
     </section>
   );

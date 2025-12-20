@@ -97,12 +97,9 @@ export default function PricingSection() {
 
               <div className="pt-10">
                 <Button 
-                  className={`w-full h-14 font-black tracking-widest uppercase rounded-full transition-all ${
-                    plan.button === "default" 
-                      ? "bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20" 
-                      : "border-2 border-primary text-primary hover:bg-primary hover:text-white"
-                  }`}
+                  size="xl"
                   variant={plan.button as any}
+                  className={`w-full ${plan.button === 'outline' ? 'border-2 border-primary text-primary hover:bg-primary hover:text-white hover:shadow-none' : ''}`}
                 >
                   Get Started Now
                 </Button>
