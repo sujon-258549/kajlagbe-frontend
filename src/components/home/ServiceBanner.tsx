@@ -1,6 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import CustomImage from "../common/CustomImage";
+import Heading5 from "../common/Headings/Heading5";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -116,25 +117,23 @@ export const services = [
   },
 ];
 
-
 export default function ServiceBanner() {
   const swiperRef = useRef<SwiperType>(null);
 
   return (
     <section className="py-12 bg-[#F9F8F3] overflow-hidden">
-      <div className="container mx-auto px-6">
+      <div className="main-container mx-auto px-6">
         <div className="relative flex items-center justify-center gap-2 lg:gap-2">
-          
           {/* Controls - Left */}
-          <button 
+          <button
             onClick={() => swiperRef.current?.slidePrev()}
             className="hidden md:flex w-12 h-12 rounded-full border border-secondary/20 items-center justify-center text-secondary hover:bg-primary hover:text-white hover:border-primary transition-all flex-shrink-0 z-10 bg-white/50 backdrop-blur-sm"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
 
-          {/* Main Slider Container */}
-          <div className="bg-white rounded-2xl p-3 md:p-6 shadow-sm border border-slate-100 flex-1 max-w-6xl overflow-hidden relative">
+          {/* Main Slider main-container */}
+          <div className="bg-white rounded-2xl p-3 md:p-6 border border-slate-200 flex-1 max-w-6xl overflow-hidden relative">
             <Swiper
               modules={[Navigation, Autoplay]}
               onBeforeInit={(swiper) => {
@@ -167,26 +166,27 @@ export default function ServiceBanner() {
                 <SwiperSlide key={i}>
                   <div className="flex items-center gap-4 group">
                     {/* Square Image */}
-                    <div className="w-24 h-24 md:w-24 md:h-24 rounded-xl overflow-hidden flex-shrink-0 shadow-lg group-hover:shadow-primary/20 transition-all duration-500">
-                      <img 
-                        src={service.image} 
-                        alt={service.title} 
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    <div className="w-24 h-24 md:w-24 md:h-24 rounded-xl overflow-hidden flex-shrink-0 border border-slate-100">
+                      <CustomImage
+                        src={service.image}
+                        alt={service.title}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     </div>
 
                     {/* Content */}
                     <div className="flex flex-col gap-1">
-                      <h3 className="text-lg md:text-xl font-bold text-secondary leading-tight line-clamp-2">
+                      <Heading5 className="text-lg md:text-xl font-bold text-secondary leading-tight line-clamp-2">
                         {service.title}
-                      </h3>
+                      </Heading5>
                       <span className="text-primary text-sm font-medium hover:underline cursor-pointer">
                         Book Now →
                       </span>
                     </div>
 
                     {/* Vertical Divider (Desktop only, hidden for Swiper) */}
-                    {/* In Swiper, dividers are tricky between slides. We can handle it with border-right on the slide container if needed, but spaceBetween usually suffices. */}
+                    {/* In Swiper, dividers are tricky between slides. We can handle it with border-right on the slide main-container if needed, but spaceBetween usually suffices. */}
                   </div>
                 </SwiperSlide>
               ))}
@@ -194,13 +194,12 @@ export default function ServiceBanner() {
           </div>
 
           {/* Controls - Right */}
-          <button 
+          <button
             onClick={() => swiperRef.current?.slideNext()}
             className="hidden md:flex w-12 h-12 rounded-full border border-secondary/20 items-center justify-center text-secondary hover:bg-primary hover:text-white hover:border-primary transition-all flex-shrink-0 z-10 bg-white/50 backdrop-blur-sm"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
-
         </div>
       </div>
     </section>

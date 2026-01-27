@@ -1,63 +1,118 @@
 "use client";
 
+import { motion } from "motion/react";
+import {
+  MessageSquare,
+  Target,
+  Cpu,
+  CheckCircle2,
+  ArrowRight,
+} from "lucide-react";
+import Heading2 from "../common/Headings/Heading2";
+import Heading5 from "../common/Headings/Heading5";
+
 const steps = [
   {
     number: "01",
-    title: "Project Consultation",
-    description: "We start by understanding your specific needs and goals through a deep dive consultation.",
-    color: "border-secondary"
+    title: "Book Your Service",
+    icon: <MessageSquare className="w-6 h-6" />,
+    description:
+      "Select your needed service and schedule a time that works best for you through our simple booking form.",
+    color: "from-secondary to-green-600",
   },
   {
     number: "02",
-    title: "Strategic Planning",
-    description: "Our experts develop a detailed roadmap and strategy tailored to your project requirements.",
-    color: "border-primary"
+    title: "Expert Assignment",
+    icon: <Target className="w-6 h-6" />,
+    description:
+      "Our system instantly matches you with a background-verified and highly-rated professional in your area.",
+    color: "from-primary to-orange-600",
   },
   {
     number: "03",
-    title: "Expert Execution",
-    description: "Our certified professionals bring your project to life with precision and high-quality craftsmanship.",
-    color: "border-secondary"
+    title: "Quality Delivery",
+    icon: <Cpu className="w-6 h-6" />,
+    description:
+      "Our expert arrives at your doorstep and provides top-tier service using specialized tools and professional care.",
+    color: "from-secondary to-green-600",
   },
   {
     number: "04",
-    title: "Quality Assurance",
-    description: "We perform rigorous testing and quality checks to ensure everything meets our premium standards.",
-    color: "border-primary"
-  }
+    title: "Check & Warranty",
+    icon: <CheckCircle2 className="w-6 h-6" />,
+    description:
+      "Review the completed work, make a secure payment, and enjoy our 7-day post-service quality guarantee.",
+    color: "from-primary to-orange-600",
+  },
 ];
 
 export default function ProcessSection() {
   return (
-    <section className="py-24 bg-slate-50 relative overflow-hidden">
-      <div className="container mx-auto px-6">
+    <section className="py-24 bg-white relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50/50 -skew-x-12 z-0"></div>
+
+      <div className="main-container mx-auto px-6 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
-          <span className="text-primary font-bold tracking-[0.2em] uppercase text-sm">// How We Work</span>
-          <h2 className="text-4xl md:text-5xl font-black text-black">Our Working <span className="text-primary">Process</span></h2>
-          <p className="text-lg text-slate-500">
-            We follow a streamlined and transparent process to ensure every project is delivered with excellence and on time.
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-secondary font-bold tracking-[0.3em] uppercase text-xs block"
+          >
+            Our Workflow
+          </motion.span>
+          <Heading2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
+            Our Simplified <span className="text-primary italic">Service</span>{" "}
+            Workflow
+          </Heading2>
+          <p className="text-lg text-slate-500 font-medium pt-2">
+            A transparent and proven methodology designed for success.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 relative">
+          {/* Connecting line for desktop */}
+          <div className="hidden lg:block absolute top-18 left-[15%] right-[15%] h-[2px] z-0">
+            <div className="w-full h-full border-t-2 border-dashed border-slate-200"></div>
+          </div>
+
           {steps.map((step, index) => (
-            <div key={index} className="relative group">
-              <div className="bg-slate-50 p-8 rounded-2xl border-l-4 border-primary">
-                <div className="text-6xl font-black text-slate-50 absolute top-4 right-6 group-hover:text-primary/5 transition-colors">
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.15, duration: 0.6 }}
+              className="relative group flex flex-col items-center text-center lg:items-start lg:text-left"
+            >
+              {/* Number and Icon Circle */}
+              <div className="relative mb-8 z-10">
+                <div
+                  className={`w-20 h-20 rounded-full bg-white border-2 border-slate-100 flex items-center justify-center text-slate-900 shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:border-transparent group-hover:bg-linear-to-br ${step.color} group-hover:text-white`}
+                >
+                  {step.icon}
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-white shadow-md border border-slate-50 flex items-center justify-center text-xs font-bold text-slate-400 group-hover:text-primary transition-colors">
                   {step.number}
                 </div>
-                <div className="relative z-10 space-y-4 pt-4">
-                  <h3 className="text-xl font-black text-black group-hover:text-primary transition-colors">{step.title}</h3>
-                  <p className="text-slate-500 leading-relaxed text-sm">
-                    {step.description}
-                  </p>
-                </div>
               </div>
-              {/* Connector for desktop */}
-              {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-px bg-slate-200 z-0"></div>
-              )}
-            </div>
+
+              {/* Card Content */}
+              <div className="space-y-4 group-hover:-translate-y-1 transition-transform duration-500">
+                <Heading5 className="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors">
+                  {step.title}
+                </Heading5>
+                <p className="text-slate-500 leading-relaxed text-[15px] font-medium">
+                  {step.description}
+                </p>
+              </div>
+
+              {/* Mobile Indicator */}
+              <div className="lg:hidden mt-6 text-slate-200 group-last:hidden">
+                <ArrowRight className="w-6 h-6 rotate-90" />
+              </div>
+            </motion.div>
           ))}
         </div>
       </div>

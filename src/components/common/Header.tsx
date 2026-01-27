@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { LogInIcon, Menu, Search, ShoppingBag, User } from "lucide-react";
+import { LogInIcon, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -21,9 +21,16 @@ import { ChevronRight } from "lucide-react";
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeCategory, setActiveCategory] = useState(servicesData[0]?.slug || "");
+  const [mounted, setMounted] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("");
 
   useEffect(() => {
+    setMounted(true);
+    // Initialize active category after mount to avoid match error
+    if (servicesData.length > 0) {
+      setActiveCategory(servicesData[0].slug);
+    }
+
     const handleScroll = () => {
       // Threshold: TopBar (46px) + Header (approx 80px) + some buffer
       if (window.scrollY > 200) {
@@ -41,6 +48,8 @@ export default function Header() {
     { name: "Home", href: "/" },
     { name: "About Us", href: "/about" },
     { name: "Services", href: "/services" },
+    { name: "Blog", href: "/blog" },
+    { name: "Jobs", href: "/jobs" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -48,32 +57,31 @@ export default function Header() {
     <>
       {/* TopBar - Scrolls away */}
       <div className="hidden md:block bg-secondary">
-           <TopBar />
+        <TopBar />
       </div>
 
       {/* Placeholder to prevent layout shift when header becomes fixed */}
-      <div className={`${isScrolled ? 'h-[78px]' : 'h-0'} w-full`}></div>
+      <div className={`${isScrolled ? "h-[78px]" : "h-0"} w-full`}></div>
 
       {/* Main Navigation - Fixed with Slide Down Animation */}
-      <header 
+      <header
         className={`w-full bg-background z-50 transition-all duration-300 ease-in-out py-3 border-b ${
-          isScrolled 
-            ? "fixed top-0 shadow-lg animate-in slide-in-from-top duration-700" 
+          mounted && isScrolled
+            ? "fixed top-0 shadow-lg animate-in slide-in-from-top duration-700"
             : "relative"
         }`}
       >
-        <div className="container mx-auto px-4 flex items-center justify-between gap-4">
-
-
+        <div className="main-container mx-auto px-4 flex items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <Image 
-              src="/images/logo/logo.png" 
-              alt="Kajlagbe Logo" 
-              width={160} 
-              height={50} 
-              className="h-10 w-auto object-contain"
+            <Image
+              src="/images/logo/logo.png"
+              alt="Kajlagbe Logo"
+              width={160}
+              height={50}
+              className="h-12 w-auto object-contain -ml-3"
               priority
+              unoptimized
             />
           </Link>
 
@@ -82,7 +90,10 @@ export default function Header() {
             {navItems.map((item) => {
               if (item.name === "Services") {
                 return (
-                  <div key={item.name} className="relative group h-full flex items-center">
+                  <div
+                    key={item.name}
+                    className="relative group h-full flex items-center"
+                  >
                     <Link
                       href={item.href}
                       className="text-[14px] font-bold text-secondary hover:text-primary uppercase tracking-wide transition-colors relative flex items-center gap-1 py-4"
@@ -90,24 +101,29 @@ export default function Header() {
                       {item.name}
                       <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                     </Link>
-                    
+
                     {/* Mega Menu Dropdown */}
                     <div className="absolute top-full left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-screen-lg bg-white shadow-2xl rounded-2xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 z-50 overflow-hidden flex h-[500px]">
-                      
                       {/* Left Sidebar - Categories */}
                       <div className="w-1/3 bg-slate-50 border-r border-slate-100 overflow-y-auto">
                         {servicesData.map((category) => (
                           <div
                             key={category.slug}
-                            onMouseEnter={() => setActiveCategory(category.slug)}
+                            onMouseEnter={() =>
+                              setActiveCategory(category.slug)
+                            }
                             className={`px-4 py-3 flex items-center justify-between cursor-pointer transition-all border-l-4 ${
-                              activeCategory === category.slug 
-                                ? "bg-white border-secondary text-secondary shadow-sm" 
+                              activeCategory === category.slug
+                                ? "bg-white border-secondary text-secondary shadow-sm"
                                 : "border-transparent text-secondary hover:bg-slate-100"
                             }`}
                           >
-                            <span className="font-bold text-xs tracking-wide uppercase">{category.title}</span>
-                            <ChevronRight className={`w-3.5 h-3.5 transition-transform ${activeCategory === category.slug ? "translate-x-1" : "opacity-0"}`} />
+                            <span className="font-bold text-xs tracking-wide uppercase">
+                              {category.title}
+                            </span>
+                            <ChevronRight
+                              className={`w-3.5 h-3.5 transition-transform ${activeCategory === category.slug ? "translate-x-1" : "opacity-0"}`}
+                            />
                           </div>
                         ))}
                       </div>
@@ -115,24 +131,25 @@ export default function Header() {
                       {/* Right Content - Sub-services */}
                       <div className="w-2/3 bg-white p-6 overflow-y-auto">
                         <div className="grid grid-cols-2 gap-x-6 gap-y-3">
-                          {servicesData.find(c => c.slug === activeCategory)?.subServices.map((sub) => (
-                            <Link
-                              key={sub.slug}
-                              href={`/services/${activeCategory}/${sub.slug}`}
-                              className="group/sub flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-black transition-colors"
-                            >
-                              <div className="w-1.5 h-1.5 rounded-full bg-secondary opacity-0 group-hover/sub:opacity-100 transition-opacity"></div>
-                              {sub.name}
-                            </Link>
-                          ))}
+                          {servicesData
+                            .find((c) => c.slug === activeCategory)
+                            ?.subServices.map((sub) => (
+                              <Link
+                                key={sub.slug}
+                                href={`/services/${activeCategory}/${sub.slug}`}
+                                className="group/sub flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-black transition-colors"
+                              >
+                                <div className="w-1.5 h-1.5 rounded-full bg-secondary opacity-0 group-hover/sub:opacity-100 transition-opacity"></div>
+                                {sub.name}
+                              </Link>
+                            ))}
                         </div>
                       </div>
-
                     </div>
                   </div>
                 );
               }
-              
+
               return (
                 <Link
                   key={item.name}
@@ -148,61 +165,81 @@ export default function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2 sm:gap-4">
-            
-    
-            
             {/* Get A Quote Button */}
-          <Button >  Login <LogInIcon /> </Button>
+            <Link href="/login">
+              <Button>
+                Login <LogInIcon />
+              </Button>
+            </Link>
 
             {/* Mobile Search Toggle */}
-            <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsSearchOpen(!isSearchOpen)}>
-              <Search className="h-5 w-5" />
-            </Button>
+            {mounted && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden"
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+              >
+                <Search className="h-5 w-5" />
+              </Button>
+            )}
 
             {/* Mobile Menu */}
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu className="h-6 w-6" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <SheetHeader>
-                  <SheetTitle className="text-left font-bold text-xl">Menu</SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-6 mt-8">
+            {mounted && (
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="md:hidden">
+                    <Menu className="h-6 w-6" />
+                    <span className="sr-only">Toggle menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                  <SheetHeader>
+                    <SheetTitle className="text-left font-bold text-xl">
+                      Menu
+                    </SheetTitle>
+                  </SheetHeader>
+                  <div className="flex flex-col gap-6 mt-8">
                     {/* Mobile Search inside menu */}
-                   <div className="relative">
+                    <div className="relative">
                       <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input type="search" placeholder="Search..." className="pl-9" />
-                   </div>
-                  <nav className="flex flex-col gap-4">
-                    {navItems.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className="text-lg font-medium hover:text-secondary transition-colors border-b pb-2"
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                    
-                  </nav>
-                </div>
-              </SheetContent>
-            </Sheet>
+                      <Input
+                        type="search"
+                        placeholder="Search..."
+                        className="pl-9"
+                      />
+                    </div>
+                    <nav className="flex flex-col gap-4">
+                      {navItems.map((item) => (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          className="text-lg font-medium hover:text-secondary transition-colors border-b pb-2"
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+                    </nav>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            )}
           </div>
         </div>
-        
+
         {/* Mobile Search Bar Expandable */}
-        {isSearchOpen && (
-            <div className="lg:hidden container mx-auto px-4 pb-4 animate-in slide-in-from-top-2 pt-2">
-              <div className="relative">
-                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input type="search" placeholder="Search..." className="pl-9 w-full" autoFocus />
-              </div>
+        {mounted && isSearchOpen && (
+          <div className="lg:hidden main-container mx-auto px-4 pb-4 animate-in slide-in-from-top-2 pt-2">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search..."
+                className="pl-9 w-full"
+                autoFocus
+              />
             </div>
+          </div>
         )}
       </header>
     </>

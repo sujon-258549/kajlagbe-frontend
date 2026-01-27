@@ -1,189 +1,220 @@
-'use client';
+"use client";
 
-import { ArrowRight, Wrench, Sparkles, Hammer, Axe, Droplets, Zap, Palette, Leaf, Bug, Settings, Thermometer, Home, Square, Shield, Cpu, Truck, Trash2, Eye, Waves } from "lucide-react";
-import { LucideIcon } from "lucide-react";
+import {
+  ArrowRight,
+  Wrench,
+  Sparkles,
+  Hammer,
+  Axe,
+  Droplets,
+  Zap,
+  Palette,
+  Leaf,
+  Bug,
+  Settings,
+  Thermometer,
+  Home,
+  Square,
+  Shield,
+  Cpu,
+  Truck,
+  Trash2,
+  Eye,
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Heading1 from "@/components/common/Headings/Heading1";
+import Heading4 from "@/components/common/Headings/Heading4";
+import Heading5 from "../common/Headings/Heading5";
 
 export default function Services() {
-  const getIcon = (slug: string): LucideIcon => {
-    const iconMap: { [key: string]: LucideIcon } = {
-      "home-repair-maintenance": Wrench,
-      "cleaning-hygiene": Sparkles,
-      "construction-renovation": Hammer,
-      "carpentry-glass-metal": Axe,
-      "plumbing-services": Droplets,
-      "electrical-services": Zap,
-      "painting-decorating": Palette,
-      "gardening-landscaping": Leaf,
-      "pest-control": Bug,
-      "appliance-repair": Settings,
-      "hvac-services": Thermometer,
-      "roofing-gutters": Home,
-      "flooring-installation": Square,
-      "home-security": Shield,
-      "smart-home-installation": Cpu,
-      "moving-services": Truck,
-      "junk-removal": Trash2,
-      "window-cleaning": Eye,
-      "carpet-cleaning": Square,
-      "pool-maintenance": Waves
-    };
-    return iconMap[slug] || Wrench;
-  };
-
   const servicesData = [
     {
       title: "Home Repair & Maintenance",
       slug: "home-repair-maintenance",
-      image: "https://img.freepik.com/free-photo/repairman-fixing-electric-panel_53876-123456.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Wrench,
+      image:
+        "https://img.freepik.com/free-photo/repairman-fixing-electric-panel_53876-123456.jpg",
     },
     {
       title: "Cleaning & Hygiene",
       slug: "cleaning-hygiene",
-      image: "https://img.freepik.com/free-photo/cleaning-service-woman-scrubbing-floor_53876-123457.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Sparkles,
+      image:
+        "https://img.freepik.com/free-photo/cleaning-service-woman-scrubbing-floor_53876-123457.jpg",
     },
     {
       title: "Construction & Renovation",
       slug: "construction-renovation",
-      image: "https://img.freepik.com/free-photo/construction-workers-on-building-site_53876-123458.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Hammer,
+      image:
+        "https://img.freepik.com/free-photo/construction-workers-on-building-site_53876-123458.jpg",
     },
     {
       title: "Carpentry, Glass & Metal",
       slug: "carpentry-glass-metal",
-      image: "https://img.freepik.com/free-photo/carpenter-working-wood_53876-123459.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Axe,
+      image:
+        "https://img.freepik.com/free-photo/carpenter-working-wood_53876-123459.jpg",
     },
     {
       title: "Plumbing Services",
       slug: "plumbing-services",
-      image: "https://img.freepik.com/free-photo/plumber-fixing-pipes_53876-123460.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Droplets,
+      image:
+        "https://img.freepik.com/free-photo/plumber-fixing-pipes_53876-123460.jpg",
     },
     {
       title: "Electrical Services",
       slug: "electrical-services",
-      image: "https://img.freepik.com/free-photo/electrician-working_53876-123461.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Zap,
+      image:
+        "https://img.freepik.com/free-photo/electrician-working_53876-123461.jpg",
     },
     {
       title: "Painting & Decorating",
       slug: "painting-decorating",
-      image: "https://img.freepik.com/free-photo/painter-applying-paint_53876-123462.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Palette,
+      image:
+        "https://img.freepik.com/free-photo/painter-applying-paint_53876-123462.jpg",
     },
     {
       title: "Gardening & Landscaping",
       slug: "gardening-landscaping",
-      image: "https://img.freepik.com/free-photo/gardener-planting_53876-123463.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Leaf,
+      image:
+        "https://img.freepik.com/free-photo/gardener-planting_53876-123463.jpg",
     },
     {
       title: "Pest Control",
       slug: "pest-control",
-      image: "https://img.freepik.com/free-photo/pest-control-technician_53876-123464.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Bug,
+      image:
+        "https://img.freepik.com/free-photo/pest-control-technician_53876-123464.jpg",
     },
     {
       title: "Appliance Repair",
       slug: "appliance-repair",
-      image: "https://img.freepik.com/free-photo/appliance-repairman_53876-123465.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Settings,
+      image:
+        "https://img.freepik.com/free-photo/appliance-repairman_53876-123465.jpg",
     },
     {
       title: "HVAC Services",
       slug: "hvac-services",
-      image: "https://img.freepik.com/free-photo/hvac-technician_53876-123466.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Thermometer,
+      image:
+        "https://img.freepik.com/free-photo/hvac-technician_53876-123466.jpg",
     },
     {
       title: "Roofing & Gutters",
       slug: "roofing-gutters",
-      image: "https://img.freepik.com/free-photo/roofing-contractor_53876-123467.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Home,
+      image:
+        "https://img.freepik.com/free-photo/roofing-contractor_53876-123467.jpg",
     },
     {
       title: "Flooring Installation",
       slug: "flooring-installation",
-      image: "https://img.freepik.com/free-photo/flooring-installer_53876-123468.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Square,
+      image:
+        "https://img.freepik.com/free-photo/flooring-installer_53876-123468.jpg",
     },
     {
       title: "Home Security",
       slug: "home-security",
-      image: "https://img.freepik.com/free-photo/security-installer_53876-123469.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Shield,
+      image:
+        "https://img.freepik.com/free-photo/security-installer_53876-123469.jpg",
     },
     {
       title: "Smart Home Installation",
       slug: "smart-home-installation",
-      image: "https://img.freepik.com/free-photo/smart-home-installer_53876-123470.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Cpu,
+      image:
+        "https://img.freepik.com/free-photo/smart-home-installer_53876-123470.jpg",
     },
     {
       title: "Moving Services",
       slug: "moving-services",
-      image: "https://img.freepik.com/free-photo/moving-company_53876-123471.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Truck,
+      image:
+        "https://img.freepik.com/free-photo/moving-company_53876-123471.jpg",
     },
     {
       title: "Junk Removal",
       slug: "junk-removal",
-      image: "https://img.freepik.com/free-photo/junk-removal-service_53876-123472.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Trash2,
+      image:
+        "https://img.freepik.com/free-photo/junk-removal-service_53876-123472.jpg",
     },
     {
       title: "Window Cleaning",
       slug: "window-cleaning",
-      image: "https://img.freepik.com/free-photo/window-cleaner_53876-123473.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
+      icon: Eye,
+      image:
+        "https://img.freepik.com/free-photo/window-cleaner_53876-123473.jpg",
     },
-    {
-      title: "Carpet Cleaning",
-      slug: "carpet-cleaning",
-      image: "https://img.freepik.com/free-photo/carpet-cleaner_53876-123474.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
-    },
-    {
-      title: "Pool Maintenance",
-      slug: "pool-maintenance",
-      image: "https://img.freepik.com/free-photo/pool-maintenance_53876-123475.jpg?w=740&t=st=1708520000~exp=1708520600~hmac=example"
-    }
-    // Add more categories here
   ];
 
   return (
-    <section className=" bg-white relative">
-      <div className="container mx-auto px-6">
+    <section className="bg-green-50/30 relative py-20 overflow-hidden">
+      {/* Background Pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage:
+            "radial-gradient(var(--primary) 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
+
+      <div className="main-container mx-auto px-6 relative z-10">
         {/* Header */}
         <div className="text-center max-w-5xl mx-auto mb-16 space-y-4">
-          <h1 className="text-4xl md:text-6xl font-black text-black leading-tight">
+          <Heading1 className="text-4xl md:text-6xl font-bold text-slate-900 leading-tight">
             Our Services
-          </h1>
+          </Heading1>
           <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-normal">
-            Explore verified professionals across all essential categories — simple, fast, and reliable.
+            Explore verified professionals across all essential categories —
+            simple, fast, and reliable.
           </p>
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
           {servicesData.map((service) => (
             <Link
               key={service.slug}
               href={`/services/${service.slug}`}
-              className="group relative rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden aspect-square flex items-end"
+              className="group relative h-[180px] w-full overflow-hidden rounded-xl bg-secondary border border-white/10 transition-colors"
             >
-              {/* Background Image with Opacity */}
-              <img
-                src={service.image}
-                alt={service.title}
-                className="absolute inset-0 w-full h-full object-cover opacity-80 blur-xs group-hover:blur-none group-hover:opacity-90 transition-all duration-500"
-              />
+              {/* Background Image with Gradient Overlay */}
+              <div className="absolute inset-0">
+                {/* Image removed by user request, keeping main-container for potential future use or color background */}
+                <div className="absolute inset-0 z-0 bg-secondary" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10" />
+              </div>
 
-              {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-
-              {/* Content Overlay */}
-              <div className="relative z-10 p-5 text-center w-full">
-                <div className="mb-3 flex justify-center">
-                  <div className="h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 transition-all duration-300">
-                    {(() => {
-                      const IconComponent = getIcon(service.slug);
-                      return <IconComponent className="h-6 w-6 text-white" />;
-                    })()}
-                  </div>
+              {/* Top Bar: Icon Left */}
+              <div className="absolute top-3 left-3 z-20">
+                <div className="h-8 w-8 rounded-xl bg-white/90 backdrop-blur-sm flex items-center justify-center text-primary">
+                  <service.icon className="h-5 w-5" />
                 </div>
-                <h3 className="text-lg font-semibold text-white leading-tight mb-3">
+              </div>
+
+              {/* Bottom Content: Title & CTA */}
+              <div className="absolute inset-x-0 bottom-0 z-20 p-3 flex flex-col gap-2">
+                <Heading5 className="text-white text-base font-bold leading-tight line-clamp-2">
                   {service.title}
-                </h3>
-                <div className="flex justify-center">
-                  <div className="inline-flex items-center text-white font-medium text-sm group-hover:text-gray-200 transition-colors">
-                    <span>Details</span>
-                    <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" />
+                </Heading5>
+
+                <div className="w-full h-px bg-white/20" />
+
+                <div className="flex items-center justify-between text-xs font-medium text-white/90">
+                  <span>Explore</span>
+                  <div className="h-6 w-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary transition-colors">
+                    <ArrowRight className="h-3 w-3" />
                   </div>
                 </div>
               </div>
@@ -193,12 +224,7 @@ export default function Services() {
 
         {/* CTA Button */}
         <div className="mt-16 text-center">
-          <Button
-            size="lg"
-            asChild
-            variant="outline"
-            className="rounded-full px-10 py-4 text-lg font-medium border-2 hover:bg-black hover:text-white transition-all"
-          >
+          <Button size="lg" asChild variant="default" className="">
             <Link href="/services">
               View All Categories
               <ArrowRight className="ml-2 h-5 w-5" />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export default function Section20() {
   const items = Array.from({ length: 20 }, (_, i) => ({
@@ -9,12 +9,13 @@ export default function Section20() {
 
   return (
     <section className="relative py-20 bg-gradient-to-r from-primary/10 via-secondary/5 to-primary/10 overflow-hidden">
-      <div className="container mx-auto px-4 text-center">
+      <div className="main-container mx-auto px-4 text-center">
         <h2 className="text-4xl md:text-5xl font-extrabold text-primary mb-6 tracking-tight">
           Our Premium Offerings
         </h2>
         <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-12">
-          Explore a curated list of 20 top‑tier services designed to empower your business and personal projects.
+          Explore a curated list of 20 top‑tier services designed to empower
+          your business and personal projects.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {items.map((item) => (
@@ -22,7 +23,9 @@ export default function Section20() {
               key={item.id}
               className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow"
             >
-              <h3 className="text-xl font-semibold text-secondary mb-2">{item.title}</h3>
+              <h3 className="text-xl font-semibold text-secondary mb-2">
+                {item.title}
+              </h3>
               <p className="text-sm text-slate-600">{item.description}</p>
             </div>
           ))}
