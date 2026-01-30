@@ -1,38 +1,57 @@
-"use client";
-
+import React, { useState } from "react";
 import Image from "next/image";
+import { Edit } from "lucide-react";
+import AdminOnly from "@/components/common/auth/AdminOnly";
+import SubscriptionTestimonialsModal from "@/components/modal/subscription/SubscriptionTestimonialsModal";
+import { SubscriptionTestimonialsFormData } from "@/schemas/subscription/testimonials.schema";
 
 export default function SubscriptionTestimonials() {
-  const testimonials = [
-    {
-      name: "Sarah Johnson",
-      role: "Small Business Owner",
-      image:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=250&auto=format&fit=crop",
-      quote:
-        "Switching to the Pro plan was the best decision for my business. The advanced analytics have helped us grow by 30% in just three months.",
-    },
-    {
-      name: "James Wilson",
-      role: "Freelance Designer",
-      image:
-        "https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=250&auto=format&fit=crop",
-      quote:
-        "The workflow tools in the Basic plan are incredibly intuitive. It saves me hours every week, allowing me to focus on creative work.",
-    },
-    {
-      name: "Emily Chen",
-      role: "Marketing Director",
-      image:
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=250&auto=format&fit=crop",
-      quote:
-        "Enterprise support is top-notch. Whenever we have a question, the team responds almost instantly. Highly recommended!",
-    },
-  ];
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [data, setData] = useState<SubscriptionTestimonialsFormData>({
+    title: "Trusted by Thousands",
+    subtitle: "See what our subscribers are saying about their experience.",
+    testimonials: [
+      {
+        name: "Sarah Johnson",
+        role: "Small Business Owner",
+        image:
+          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=250&auto=format&fit=crop",
+        quote:
+          "Switching to the Pro plan was the best decision for my business. The advanced analytics have helped us grow by 30% in just three months.",
+      },
+      {
+        name: "James Wilson",
+        role: "Freelance Designer",
+        image:
+          "https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=250&auto=format&fit=crop",
+        quote:
+          "The workflow tools in the Basic plan are incredibly intuitive. It saves me hours every week, allowing me to focus on creative work.",
+      },
+      {
+        name: "Emily Chen",
+        role: "Marketing Director",
+        image:
+          "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=250&auto=format&fit=crop",
+        quote:
+          "Enterprise support is top-notch. Whenever we have a question, the team responds almost instantly. Highly recommended!",
+      },
+    ],
+  });
 
   return (
-    <section className="py-10 md:py-16 lg:py-24 bg-gray-50 relative overflow-hidden">
-      {/* Decorative Background Blobs for Glassmorphism */}
+    <section className="py-10 md:py-16 lg:py-24 bg-gray-50 relative overflow-hidden group/section">
+      {/* Edit Button */}
+      <AdminOnly>
+        <button
+          onClick={() => setIsEditModalOpen(true)}
+          className="absolute top-6 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-secondary hover:text-white"
+          title="Edit Testimonials"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+      </AdminOnly>
+
+      {/* Decorative Background Blobs */}
       <div className="absolute top-1/4 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px]" />
       <div className="absolute bottom-1/4 right-10 w-80 h-80 bg-blue-400/20 rounded-full blur-[100px]" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg h-full max-h-[500px] bg-purple-300/20 rounded-full blur-[120px]" />
@@ -40,18 +59,20 @@ export default function SubscriptionTestimonials() {
       <div className="main-container relative z-10">
         <div className="text-center mb-10 md:mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-secondary mb-4">
-            Trusted by Thousands
+            {data.title}
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">
-            See what our subscribers are saying about their experience.
-          </p>
+          {data.subtitle && (
+            <p className="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">
+              {data.subtitle}
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((item, index) => (
+          {data.testimonials.map((item, index) => (
             <div
               key={index}
-              className="bg-white/60 backdrop-blur-md p-8 rounded-xl border border-white/50 shadow-xl flex flex-col items-center text-center transition-all duration-300"
+              className="bg-white/60 backdrop-blur-md p-8 rounded-xl border border-white/50 shadow-xl flex flex-col items-center text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
             >
               <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md mb-6 duration-300">
                 <Image
@@ -76,6 +97,17 @@ export default function SubscriptionTestimonials() {
           ))}
         </div>
       </div>
+
+      <AdminOnly>
+        <SubscriptionTestimonialsModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          initialData={data}
+          onUpdate={(newData: SubscriptionTestimonialsFormData) =>
+            setData(newData)
+          }
+        />
+      </AdminOnly>
     </section>
   );
 }
