@@ -190,9 +190,8 @@ export default function Services() {
             >
               {/* Background Image with Gradient Overlay */}
               <div className="absolute inset-0">
-                {/* Image removed by user request, keeping main-container for potential future use or color background */}
                 <div className="absolute inset-0 z-0 bg-secondary" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent z-10" />
               </div>
 
               {/* Top Bar: Icon Left */}

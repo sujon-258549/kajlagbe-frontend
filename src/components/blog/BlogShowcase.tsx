@@ -187,7 +187,7 @@ export default function BlogShowcase() {
   };
 
   return (
-    <section id="blog-showcase" className="pb-20 bg-white">
+    <section id="blog-showcase" className="py-10 md:py-16 lg:py-24 bg-white">
       <div className="main-container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {currentItems.map((item) => (

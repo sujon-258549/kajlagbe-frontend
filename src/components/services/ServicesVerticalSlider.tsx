@@ -41,7 +41,7 @@ const projects = [
 
 export default function ServicesVerticalSlider() {
   return (
-    <section className="bg-white py-12 md:py-20 lg:py-28">
+    <section className="bg-white py-10 md:py-16 lg:py-24">
       <div className="main-container px-4 md:px-6">
         {/* Sticky Container */}
         <div className="flex flex-col gap-10">
