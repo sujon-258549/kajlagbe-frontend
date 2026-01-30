@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import Heading3 from "@/components/common/Headings/Heading3";
 import { ShieldCheck, TrendingUp, Users, Clock, Edit } from "lucide-react";
