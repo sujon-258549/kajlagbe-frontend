@@ -72,11 +72,11 @@ export default function HomeBenefits() {
                 key={idx}
                 className="flex gap-5 lg:text-right items-start lg:flex-row-reverse group"
               >
-                <div className="shrink-0 w-14 h-14 bg-[#86b86b] rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <div className="shrink-0 w-14 h-14 bg-secondary rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
                   <benefit.icon className="w-7 h-7" />
                 </div>
                 <div className="space-y-2">
-                  <h4 className="text-xl font-bold text-[#154d2e]">
+                  <h4 className="text-xl font-bold text-secondary">
                     {benefit.title}
                   </h4>
                   <p className="text-slate-500 text-sm leading-relaxed max-w-[280px] lg:ml-auto">
@@ -104,11 +104,11 @@ export default function HomeBenefits() {
           <div className="w-full lg:w-1/3 space-y-12 order-3">
             {rightBenefits.map((benefit, idx) => (
               <div key={idx} className="flex gap-5 items-start group">
-                <div className="shrink-0 w-14 h-14 bg-[#86b86b] rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <div className="shrink-0 w-14 h-14 bg-secondary rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
                   <benefit.icon className="w-7 h-7" />
                 </div>
                 <div className="space-y-2">
-                  <h4 className="text-xl font-bold text-[#154d2e]">
+                  <h4 className="text-xl font-bold text-secondary">
                     {benefit.title}
                   </h4>
                   <p className="text-slate-500 text-sm leading-relaxed max-w-[280px]">

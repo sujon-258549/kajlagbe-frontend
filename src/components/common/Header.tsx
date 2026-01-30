@@ -65,7 +65,7 @@ export default function Header() {
 
       {/* Main Navigation - Fixed with Slide Down Animation */}
       <header
-        className={`w-full bg-background z-50 transition-all duration-300 ease-in-out py-3 border-b ${
+        className={`w-full bg-background z-[999] transition-all duration-300 ease-in-out py-3 border-b ${
           mounted && isScrolled
             ? "fixed top-0 shadow-lg animate-in slide-in-from-top duration-700"
             : "relative"

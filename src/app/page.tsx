@@ -12,6 +12,7 @@ import WhyChooseUs from "@/components/home/WhyChooseUs";
 import FAQSection from "@/components/home/FAQSection";
 import NewBlogSection from "@/components/home/NewBlogSection";
 import TestimonialSection from "@/components/home/TestimonialSection";
+import ServicesVerticalSlider from "@/components/services/ServicesVerticalSlider";
 
 export default function Home() {
   return (
@@ -29,6 +30,7 @@ export default function Home() {
       <HomeVideoSection />
       <TestimonialSection />
       <NewBlogSection />
+      <ServicesVerticalSlider />
       {/* <PortfolioSection /> */}
       <WhyChooseUs />
 

@@ -68,7 +68,7 @@ export default function AboutSection() {
               <Button
                 size="lg"
                 variant="default"
-                className="rounded-md shadow-lg shadow-primary/20"
+                className="rounded-md shadow-lg"
               >
                 How It Works
               </Button>

@@ -24,7 +24,6 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Heading1 from "@/components/common/Headings/Heading1";
-import Heading4 from "@/components/common/Headings/Heading4";
 import Heading5 from "../common/Headings/Heading5";
 
 export default function Services() {
@@ -232,6 +231,7 @@ export default function Services() {
           </Button>
         </div>
       </div>
+   
     </section>
   );
 }

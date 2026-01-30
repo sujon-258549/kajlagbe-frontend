@@ -23,7 +23,7 @@ export default function ContactPage() {
       {/* 1. Header Section */}
       <CommonHero
         title="Contact Us"
-        subtitle="Get in Touch"
+        breadcrumb="Contact"
         image="https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg"
       />
 

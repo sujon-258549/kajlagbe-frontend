@@ -11,6 +11,7 @@ import {
   Settings,
   LogOut,
   Search,
+  PenTool,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Heading6 from "../common/Headings/Heading6";
@@ -20,7 +21,8 @@ const menuItems = [
   { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
   { name: "My Profile", href: "/dashboard/profile", icon: User },
   { name: "Get Work", href: "/dashboard/discovery", icon: Search },
-  { name: "Create Work", href: "/dashboard/create-work", icon: PlusCircle },
+  { name: "Add Post", href: "/dashboard/add-post", icon: PlusCircle },
+  { name: "Add Blog", href: "/dashboard/add-blog", icon: PenTool },
   { name: "My Posted Works", href: "/dashboard/my-works", icon: Briefcase },
   { name: "My Bids", href: "/dashboard/my-bids", icon: Gavel },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
@@ -41,7 +43,7 @@ export default function DashboardSidebar({
       )}
     >
       <div className="p-8 border-b border-white/5">
-        <Heading5 className="text-white font-semibold" >User Dashboard</Heading5>
+        <Heading5 className="text-white font-semibold">User Dashboard</Heading5>
         <p className="text-[10px] text-white/50 font-bold uppercase tracking-[0.2em] mt-1.5">
           Welcome Back, Sujon
         </p>

@@ -11,9 +11,9 @@ export default function BlogPage() {
   return (
     <main className="min-h-screen bg-white">
       <CommonHero
-        title="Our Blogs"
-        subtitle="Latest Updates"
-        image="https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg"
+        title="Blog Grid"
+        breadcrumb="Blog Grid"
+        image="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2664&auto=format&fit=crop"
       />
 
       <section className="py-20 lg:py-32">

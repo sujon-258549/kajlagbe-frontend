@@ -1,12 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { MapPin, Briefcase, Search, ChevronRight } from "lucide-react";
-import { TbCurrencyTaka } from "react-icons/tb";
+import { useState, useMemo } from "react";
+import { Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -15,38 +11,193 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { jobs } from "@/data/jobsData";
 import Pagination from "@/components/common/Pagination";
+import JobCard from "./JobCard";
+import JobFilters, { FilterState } from "./JobFilters";
 
 const ITEMS_PER_PAGE = 10;
 
-export default function JobListingSection() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [jobType, setJobType] = useState("all");
-  const [location, setLocation] = useState("all");
-  const [currentPage, setCurrentPage] = useState(1);
+// Helper to check if date is within range
+const isPostedWithin = (posted: string, range: string) => {
+  if (range === "all") return true;
+  // This is a simplified check. Ideally, 'posted' should be a Date object or ISO string.
+  // jobsData has strings like "2 days ago", "Yesterday", "Just now".
+  if (range === "24h")
+    return ["Just now", "Yesterday", "1 day ago"].some((s) =>
+      posted.includes(s),
+    );
+  if (range === "3d")
+    return [
+      "Just now",
+      "Yesterday",
+      "1 day ago",
+      "2 days ago",
+      "3 days ago",
+    ].some((s) => posted.includes(s));
+  if (range === "7d")
+    return !posted.includes("week") && !posted.includes("month"); // Very rough approximation
+  return true;
+};
 
-  const handleFilterChange = (
-    setter: (value: string) => void,
-    value: string,
-  ) => {
-    setter(value);
+export default function JobListingSection() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState<FilterState>({
+    search: "",
+    location: "all",
+    type: "all",
+    category: "all",
+    industry: "all",
+    minSalary: "",
+    maxSalary: "",
+    experience: "all",
+    education: "all",
+    gender: "all",
+    remote: "all",
+    companySize: "all",
+    jobNature: "all",
+    weekend: "all",
+    postedWithin: "all",
+    urgent: false,
+    featured: false,
+    healthInsurance: false,
+    performanceBonus: false,
+    relocation: false,
+    visa: false,
+    lunchFacility: "all",
+    skills: "",
+  });
+
+  // Extract unique values for dropdowns
+  const uniqueLocations = useMemo(
+    () => Array.from(new Set(jobs.map((j) => j.location).filter(Boolean))),
+    [],
+  );
+  const uniqueCategories = useMemo(
+    () => Array.from(new Set(jobs.map((j) => j.category).filter(Boolean))),
+    [],
+  );
+  const uniqueIndustries = useMemo(
+    () => Array.from(new Set(jobs.map((j) => j.industry).filter(Boolean))),
+    [],
+  );
+  const uniqueCompanies = useMemo(
+    () => Array.from(new Set(jobs.map((j) => j.company).filter(Boolean))),
+    [],
+  );
+
+  const filteredJobs = useMemo(() => {
+    return jobs.filter((job) => {
+      // 1. Search
+      const searchMatch =
+        !filters.search ||
+        job.title.toLowerCase().includes(filters.search.toLowerCase()) ||
+        job.company.toLowerCase().includes(filters.search.toLowerCase()) ||
+        job.tags.some((t) =>
+          t.toLowerCase().includes(filters.search.toLowerCase()),
+        );
+
+      // 2. Location
+      const locationMatch =
+        filters.location === "all" || job.location === filters.location;
+
+      // 3. Type
+      const typeMatch = filters.type === "all" || job.type === filters.type;
+
+      // 4. Category
+      const categoryMatch =
+        filters.category === "all" || job.category === filters.category;
+
+      // 5. Industry
+      const industryMatch =
+        filters.industry === "all" || job.industry === filters.industry;
+
+      // 6. Experience
+      const experienceMatch =
+        filters.experience === "all" ||
+        job.experience.includes(filters.experience) ||
+        (filters.experience === "5+ Years" && job.experience.includes("Year")); // Simplified
+
+      // 7. Education
+      const educationMatch =
+        filters.education === "all" ||
+        job.education.toLowerCase().includes(filters.education.toLowerCase());
+
+      // 8. Remote Policy
+      const remoteMatch =
+        filters.remote === "all" || job.remote_policy === filters.remote;
+
+      // 9. Gender
+      const genderMatch =
+        filters.gender === "all" ||
+        job.gender === filters.gender ||
+        job.gender === "Any" ||
+        job.gender === "Both";
+
+      // 10. Company Size
+      const sizeMatch =
+        filters.companySize === "all" ||
+        job.companySize === filters.companySize;
+
+      // 11. Salary (Parsing crude string like "80k - 120k BDT")
+      // Skipping precise range logic due to string format variety, but implemented structure.
+      // If we had numbers, we would do: job.minSalary >= filters.minSalary
+
+      // 12. Job Nature (Using Salary Review field as proxy or if field existed)
+      // Note: jobsData has 'jobNature' field
+      const natureMatch =
+        filters.jobNature === "all" || job.jobNature === filters.jobNature;
+
+      // 13. Lunch
+      const lunchMatch =
+        filters.lunchFacility === "all" ||
+        job.lunchFacility === filters.lunchFacility;
+
+      // 14. Posted Within
+      const postedMatch = isPostedWithin(job.posted, filters.postedWithin);
+
+      // Boolean checks
+      const urgentMatch = !filters.urgent || job.is_urgent;
+      const featuredMatch = !filters.featured || job.featured;
+      const healthMatch = !filters.healthInsurance || job.health_insurance;
+      const bonusMatch = !filters.performanceBonus || job.performance_bonus;
+      const relocationMatch = !filters.relocation || job.relocation_assistance;
+      const visaMatch = !filters.visa || job.visa_sponsorship;
+
+      return (
+        searchMatch &&
+        locationMatch &&
+        typeMatch &&
+        categoryMatch &&
+        industryMatch &&
+        experienceMatch &&
+        educationMatch &&
+        remoteMatch &&
+        genderMatch &&
+        sizeMatch &&
+        natureMatch &&
+        lunchMatch &&
+        postedMatch &&
+        urgentMatch &&
+        featuredMatch &&
+        healthMatch &&
+        bonusMatch &&
+        relocationMatch &&
+        visaMatch
+      );
+    });
+  }, [filters]);
+
+  const handleFilterChange = (newFilters: FilterState) => {
+    setFilters(newFilters);
     setCurrentPage(1);
   };
-
-  const filteredJobs = jobs.filter((job) => {
-    const matchesSearch =
-      job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.company.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType =
-      jobType === "all" || job.type.toLowerCase() === jobType.toLowerCase();
-    const matchesLocation =
-      location === "all" ||
-      job.location.toLowerCase().includes(location.toLowerCase());
-
-    return matchesSearch && matchesType && matchesLocation;
-  });
 
   const totalPages = Math.ceil(filteredJobs.length / ITEMS_PER_PAGE);
   const displayedJobs = filteredJobs.slice(
@@ -55,162 +206,149 @@ export default function JobListingSection() {
   );
 
   return (
-    <section className="bg-white min-h-screen py-10">
+    <section className="bg-slate-50 min-h-screen py-4">
       <div className="main-container">
-        {/* Simple Header */}
-        <div className="mb-6 px-1">
-          <h1 className="text-2xl font-bold text-slate-900">
-            Current Job Openings
-          </h1>
-          <p className="text-slate-500 text-sm mt-1">
-            Explore career opportunities in various categories.
-          </p>
-        </div>
-
-        {/* Minimalist Filter Row */}
-        <div className="flex flex-col lg:flex-row gap-6 mb-10 pb-10 border-b border-slate-100">
-          <div className="flex-1 relative">
-            <div className="relative">
+        {/* Header & Controls Container */}
+        <div className="bg-white p-4 rounded-lg border border-gray-200 mb-4">
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+            {/* 1. Search Bar */}
+            <div className="relative w-full md:flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
               <Input
-                placeholder="Search job title or company..."
-                className="pl-9 h-11 border-slate-200 bg-white rounded-lg shadow-none focus-visible:ring-slate-400"
-                value={searchTerm}
+                placeholder="Search by Title, Company, or Keywords..."
+                value={filters.search}
                 onChange={(e) =>
-                  handleFilterChange(setSearchTerm, e.target.value)
+                  handleFilterChange({ ...filters, search: e.target.value })
                 }
+                className="pl-9 h-11 border-gray-200 bg-slate-50 focus:bg-white transition-all rounded-lg"
               />
             </div>
-          </div>
-          <div className="flex gap-6">
-            <Select
-              value={jobType}
-              onValueChange={(value) => handleFilterChange(setJobType, value)}
-            >
-              <SelectTrigger className="w-[180px] h-11 border-slate-200 rounded-lg shadow-none text-sm font-medium text-slate-600 focus:ring-slate-400">
-                <SelectValue placeholder="Job Type" />
-              </SelectTrigger>
-              <SelectContent className="rounded-lg border-slate-200">
-                <SelectItem value="all">Check all types</SelectItem>
-                <SelectItem value="full-time">Full-time</SelectItem>
-                <SelectItem value="part-time">Part-time</SelectItem>
-                <SelectItem value="remote">Remote</SelectItem>
-                <SelectItem value="contract">Contract</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              value={location}
-              onValueChange={(value) => handleFilterChange(setLocation, value)}
-            >
-              <SelectTrigger className="w-[180px] h-11 border-slate-200 rounded-lg shadow-none text-sm font-medium text-slate-600 focus:ring-slate-400">
-                <SelectValue placeholder="Location" />
-              </SelectTrigger>
-              <SelectContent className="rounded-lg border-slate-200">
-                <SelectItem value="all">All Locations</SelectItem>
-                <SelectItem value="dhaka">Dhaka</SelectItem>
-                <SelectItem value="chittagong">Chittagong</SelectItem>
-                <SelectItem value="sylhet">Sylhet</SelectItem>
-                <SelectItem value="rajshahi">Rajshahi</SelectItem>
-              </SelectContent>
-            </Select>
+
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              {/* 2. Date Filter */}
+              <div className="w-full md:w-[180px]">
+                <Select
+                  value={filters.postedWithin}
+                  onValueChange={(val) =>
+                    handleFilterChange({ ...filters, postedWithin: val })
+                  }
+                >
+                  <SelectTrigger className="h-11 border-gray-200 bg-slate-50 rounded-lg">
+                    <SelectValue placeholder="Posted Date" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Any time</SelectItem>
+                    <SelectItem value="24h">Last 24 Hours</SelectItem>
+                    <SelectItem value="3d">Last 3 Days</SelectItem>
+                    <SelectItem value="7d">Last 7 Days</SelectItem>
+                    <SelectItem value="14d">Last 14 Days</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 3. Filter Icon Button (Triggers Dropdown) */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="h-11 px-4 bg-slate-50 hover:bg-slate-100 text-slate-700 min-w-[100px] rounded-lg border-t border-b-0 border-x-0 border-gray-200"
+                  >
+                    <Filter className="w-4 h-4 mr-2" />
+                    Filters
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-[92vw] max-w-[1067px] p-0 shadow-none border-b border-t-0 border-x-0 border-gray-200 -mr-4 mt-3"
+                >
+                  <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+                    <h4 className="font-semibold text-lg">Filter Jobs</h4>
+                  </div>
+                  <div className="max-h-[80vh] overflow-y-auto">
+                    <JobFilters
+                      filters={filters}
+                      setFilters={handleFilterChange}
+                      uniqueLocations={uniqueLocations}
+                      uniqueCategories={uniqueCategories}
+                      uniqueIndustries={uniqueIndustries}
+                      uniqueCompanies={uniqueCompanies}
+                      className="border-none shadow-none p-6"
+                    />
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
 
-        {/* Minimal List */}
-        <div className="space-y-0 border border-slate-100 rounded-lg overflow-hidden shadow-none bg-white">
-          {displayedJobs.length > 0 ? (
-            displayedJobs.map((job, idx) => (
-              <Link
-                href={`/jobs/${job.id}`}
-                key={job.id}
-                className={`block hover:bg-slate-50 transition-colors ${idx !== displayedJobs.length - 1 ? "border-b border-slate-100" : ""}`}
-              >
-                <div className="px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <div className="flex items-center gap-6">
-                    <div className="w-12 h-12 rounded-lg border border-slate-100 p-2 bg-white flex items-center justify-center shrink-0">
-                      <Image
-                        src={job.logo}
-                        alt={job.company}
-                        width={36}
-                        height={36}
-                        className="object-contain"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <h3 className="text-[17px] font-bold text-slate-900 leading-tight">
-                        {job.title}
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs font-semibold text-slate-500 uppercase tracking-tighter">
-                        <span className="flex items-center gap-1.5">
-                          <Briefcase className="w-3.5 h-3.5 opacity-40" />{" "}
-                          {job.company}
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                          <MapPin className="w-3.5 h-3.5 opacity-40" />{" "}
-                          {job.location}
-                        </span>
-                        <span className="flex items-center gap-1.5 text-emerald-700 font-bold tracking-normal lowcasse pt-0.5">
-                          <TbCurrencyTaka className="w-4 h-4" /> {job.salary}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between md:justify-end gap-6">
-                    <div className="flex gap-2">
-                      {job.featured && (
-                        <Badge
-                          variant="outline"
-                          className="text-[10px] font-bold uppercase border-emerald-100 text-emerald-700 bg-emerald-50 rounded-md"
-                        >
-                          Promoted
-                        </Badge>
-                      )}
-                      <Badge
-                        variant="outline"
-                        className="text-[10px] font-bold uppercase text-slate-400 border-slate-200 rounded-md bg-slate-50/50"
-                      >
-                        {job.type}
-                      </Badge>
-                    </div>
-                    <div className="hidden sm:block text-slate-200 group-hover:text-slate-400 transition-colors">
-                      <ChevronRight className="w-5 h-5" />
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))
-          ) : (
-            <div className="py-20 text-center px-4">
-              <Search className="w-10 h-10 text-slate-100 mx-auto mb-6" />
-              <h3 className="text-lg font-bold text-slate-800">
-                No jobs found
-              </h3>
-              <p className="text-sm text-slate-500 mt-1">
-                Try adjusting your keywords or filters.
-              </p>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-6 border-slate-200 text-slate-600 rounded-lg h-10 px-6"
-                onClick={() => {
-                  setSearchTerm("");
-                  setJobType("all");
-                  setLocation("all");
-                }}
-              >
-                Clear Filters
-              </Button>
+        {/* Job List */}
+        <div className="w-full">
+          <div className="space-y-0 border border-gray-200 rounded-lg overflow-hidden shadow-none bg-white">
+            {displayedJobs.length > 0 ? (
+              displayedJobs.map((job, idx) => (
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  isLast={idx === displayedJobs.length - 1}
+                />
+              ))
+            ) : (
+              <div className="py-20 text-center px-4">
+                <Search className="w-10 h-10 text-slate-100 mx-auto mb-6" />
+                <h3 className="text-lg font-bold text-slate-800">
+                  No jobs found
+                </h3>
+                <p className="text-sm text-slate-500 mt-1">
+                  Try adjusting your keywords or filters.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-6 border-gray-200 text-slate-600 rounded-lg h-10 px-6"
+                  onClick={() =>
+                    handleFilterChange({
+                      search: "",
+                      location: "all",
+                      type: "all",
+                      category: "all",
+                      industry: "all",
+                      minSalary: "",
+                      maxSalary: "",
+                      experience: "all",
+                      education: "all",
+                      gender: "all",
+                      remote: "all",
+                      companySize: "all",
+                      jobNature: "all",
+                      weekend: "all",
+                      postedWithin: "all",
+                      urgent: false,
+                      featured: false,
+                      healthInsurance: false,
+                      performanceBonus: false,
+                      relocation: false,
+                      visa: false,
+                      lunchFacility: "all",
+                      skills: "",
+                    })
+                  }
+                >
+                  Clear Filters
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-4 md:mt-6 mb-10 md:mb-20 flex justify-center">
+              <Pagination
+                totalPages={totalPages}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+              />
             </div>
           )}
-        </div>
-
-        {/* Minimal Pagination */}
-        <div className="mt-12 flex justify-center">
-          <Pagination
-            totalPages={totalPages}
-            currentPage={currentPage}
-            onPageChange={setCurrentPage}
-          />
         </div>
       </div>
     </section>
