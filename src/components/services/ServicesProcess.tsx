@@ -1,8 +1,13 @@
+import { useState } from "react";
 import Heading2 from "@/components/common/Headings/Heading2";
 import Heading4 from "@/components/common/Headings/Heading4";
-import { Sprout, Clipboard, PenTool, Trees } from "lucide-react";
+import { Sprout, Clipboard, PenTool, Trees, Edit } from "lucide-react";
+import AdminOnly from "../common/auth/AdminOnly";
+import ServicesProcessModal, {
+  ProcessFormData,
+} from "../modal/services/ServicesProcessModal";
 
-const steps = [
+const initialSteps = [
   {
     icon: Clipboard,
     number: "01",
@@ -29,11 +34,42 @@ const steps = [
   },
 ];
 
+const ICONS = {
+  Consultation: Clipboard,
+  Planning: PenTool,
+  Planting: Sprout,
+  Maintenance: Trees,
+};
+
 export default function ServicesProcess() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [processData, setProcessData] = useState<ProcessFormData>({
+    steps: initialSteps.map((s) => ({
+      id: s.title,
+      number: s.number,
+      title: s.title,
+      description: s.description,
+    })),
+  });
+
+  const handleUpdate = (data: ProcessFormData) => {
+    setProcessData(data);
+  };
+
   return (
-    <section className="pb-10 pt-0 md:py-16 lg:py-24 bg-white">
+    <section className="pb-10 pt-0 md:py-16 lg:py-24 bg-white relative group/section">
       <div className="main-container">
-        <div className="text-center max-w-2xl mx-auto mb-10 md:mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-10 md:mb-16 relative">
+          <AdminOnly>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="absolute top-0 right-0 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-white opacity-0 group-hover/section:opacity-100 transition-all hover:scale-110"
+              title="Edit Process"
+            >
+              <Edit className="w-5 h-5" />
+            </button>
+          </AdminOnly>
+
           <span className="text-secondary font-bold text-sm tracking-uppercase mb-2 block">
             HOW WE WORK
           </span>
@@ -46,27 +82,38 @@ export default function ServicesProcess() {
           {/* Connector Line (Desktop) */}
           <div className="hidden lg:block absolute top-12 left-0 right-0 h-1 bg-secondary/5 -z-10 translate-y-4 w-[75%] mx-auto rounded-full" />
 
-          {steps.map((step, idx) => (
-            <div
-              key={idx}
-              className="relative group text-center bg-white p-5 md:p-6 rounded-2xl transition-all duration-300 border border-white/10"
-            >
-              <div className="w-20 h-20 md:w-24 md:h-24 mx-auto bg-white rounded-full border border-gray-100 flex items-center justify-center mb-6 group-hover:border-primary group-hover:shadow-[0_0_0_4px_rgba(134,184,107,0.2)] transition-all duration-300 relative z-10">
-                <div className="w-16 h-16 md:w-20 md:h-20 bg-[#f5fbf0] rounded-full flex items-center justify-center group-hover:scale-95 transition-transform duration-300">
-                  <step.icon className="w-6 h-6 md:w-8 md:h-8 text-secondary group-hover:scale-110 transition-transform duration-300" />
+          {processData.steps.map((step, idx) => {
+            const Icon = Object.values(ICONS)[idx % 4];
+            return (
+              <div
+                key={idx}
+                className="relative group text-center bg-white p-5 md:p-6 rounded-2xl transition-all duration-300 border border-white/10"
+              >
+                <div className="w-20 h-20 md:w-24 md:h-24 mx-auto bg-white rounded-full border border-gray-100 flex items-center justify-center mb-6 group-hover:border-primary group-hover:shadow-[0_0_0_4px_rgba(134,184,107,0.2)] transition-all duration-300 relative z-10">
+                  <div className="w-16 h-16 md:w-20 md:h-20 bg-[#f5fbf0] rounded-full flex items-center justify-center group-hover:scale-95 transition-transform duration-300">
+                    <Icon className="w-6 h-6 md:w-8 md:h-8 text-secondary group-hover:scale-110 transition-transform duration-300" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm ring-4 ring-white">
+                    {step.number}
+                  </div>
                 </div>
-                <div className="absolute -top-1 -right-1 w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm ring-4 ring-white">
-                  {step.number}
-                </div>
+                <Heading4 className="text-secondary mb-3">
+                  {step.title}
+                </Heading4>
+                <p className="text-slate-500 text-sm leading-relaxed px-2">
+                  {step.description}
+                </p>
               </div>
-              <Heading4 className="text-secondary mb-3">{step.title}</Heading4>
-              <p className="text-slate-500 text-sm leading-relaxed px-2">
-                {step.description}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
+      <ServicesProcessModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialData={processData}
+        onUpdate={handleUpdate}
+      />
     </section>
   );
 }
