@@ -5,13 +5,7 @@ import Link from "next/link";
 import { LogInIcon, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Accordion,
   AccordionContent,
@@ -27,6 +21,7 @@ import { ChevronRight } from "lucide-react";
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [activeCategory, setActiveCategory] = useState(
     servicesData.length > 0 ? servicesData[0].slug : "",
@@ -187,20 +182,15 @@ export default function Header() {
             </Button>
 
             {/* Mobile Menu */}
-            <Sheet>
+            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="lg:hidden">
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <SheetHeader>
-                  <SheetTitle className="text-left font-bold text-xl">
-                    Menu
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-6 mt-8">
+              <SheetContent side="right" className="w-[300px] sm:w-[400px] p-6">
+                <div className="flex flex-col gap-6 mt-14">
                   {/* Mobile Search inside menu */}
                   <div className="relative">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -245,6 +235,9 @@ export default function Header() {
                                               key={sub.slug}
                                               href={`/services/${category.slug}/${sub.slug}`}
                                               className="text-sm text-slate-500 hover:text-secondary py-1"
+                                              onClick={() =>
+                                                setIsMenuOpen(false)
+                                              }
                                             >
                                               {sub.name}
                                             </Link>
@@ -252,6 +245,7 @@ export default function Header() {
                                         <Link
                                           href={`/services#${category.slug}`}
                                           className="text-xs font-bold text-primary hover:underline py-1"
+                                          onClick={() => setIsMenuOpen(false)}
                                         >
                                           View all {category.title}
                                         </Link>
@@ -270,6 +264,7 @@ export default function Header() {
                           key={item.name}
                           href={item.href}
                           className="text-lg font-medium hover:text-secondary transition-colors border-b border-gray-100 py-3 block"
+                          onClick={() => setIsMenuOpen(false)}
                         >
                           {item.name}
                         </Link>
