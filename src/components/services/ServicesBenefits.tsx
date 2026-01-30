@@ -26,10 +26,10 @@ const benefits = [
 
 export default function ServicesBenefits() {
   return (
-    <section className="py-20 lg:py-28 bg-white">
-      <div className="main-container mx-auto px-4">
+    <section className="py-10 md:py-16 lg:py-24 bg-white">
+      <div className="main-container">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-4 mb-8 text-center sm:text-left">
+          <div className="lg:col-span-4 mb-8 text-center md:text-left">
             <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block">
               WHY CHOOSE US
             </span>

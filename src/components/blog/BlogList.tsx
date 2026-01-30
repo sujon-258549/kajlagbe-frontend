@@ -31,7 +31,7 @@ export default function BlogList() {
   };
 
   return (
-    <div className="space-y-8 min-h-[600px]">
+    <div className="space-y-4 md:space-y-8 min-h-[600px]">
       {isLoading ? (
         <BlogGridSkeleton />
       ) : (
@@ -42,13 +42,13 @@ export default function BlogList() {
         </div>
       )}
 
-    <div className="flex justify-center">
+      <div className="flex justify-center md:-my-0 -my-3">
         <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-      /> 
-    </div>
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      </div>
     </div>
   );
 }

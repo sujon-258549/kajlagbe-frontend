@@ -53,7 +53,7 @@ const partners = [
 
 export default function ServicesTestimonial() {
   return (
-    <section className="relative py-20 overflow-hidden">
+    <section className="relative py-10 md:py-16 lg:py-24 overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -69,7 +69,7 @@ export default function ServicesTestimonial() {
 
       <div className="main-container relative z-10">
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-8 md:mb-12 gap-6 text-center md:text-left">
           <div className="text-white">
             <span className="uppercase tracking-widest text-xs font-semibold mb-2 block text-white/80">
               Testimonials
@@ -87,7 +87,7 @@ export default function ServicesTestimonial() {
         </div>
 
         {/* Testimonial Cards Slider */}
-        <div className="mb-20">
+        <div className="mb-10 md:mb-20">
           <Swiper
             modules={[Autoplay, Pagination]}
             spaceBetween={30}

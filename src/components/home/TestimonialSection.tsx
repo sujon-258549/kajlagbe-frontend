@@ -50,8 +50,8 @@ export default function TestimonialSection() {
       <div className="main-container">
         <div className="bg-secondary rounded-2xl md:rounded-2xl overflow-hidden flex flex-col lg:flex-row relative min-h-[600px] lg:h-[700px] shadow-2xl">
           {/* Glossy Spheres (Reference Image Matched) */}
-          <div className="absolute top-[8%] left-[40%] w-24 h-24 rounded-full z-0 opacity-40 bg-radial-[at_30%_30%,_rgba(255,255,255,0.4)_0%,_rgba(255,255,255,0)_70%] border border-white/10 backdrop-blur-sm animate-pulse"></div>
-          <div className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full z-0 opacity-30 bg-radial-[at_30%_30%,_rgba(255,255,255,0.3)_0%,_rgba(255,255,255,0)_70%] border border-white/5 backdrop-blur-md"></div>
+          <div className="absolute top-[8%] left-[40%] w-24 h-24 rounded-full z-0 opacity-40 bg-radial-[at_30%_30%,rgba(255,255,255,0.4)_0%,rgba(255,255,255,0)_70%] border border-white/10 backdrop-blur-sm animate-pulse"></div>
+          <div className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full z-0 opacity-30 bg-radial-[at_30%_30%,rgba(255,255,255,0.3)_0%,rgba(255,255,255,0)_70%] border border-white/5 backdrop-blur-md"></div>
           <div className="absolute top-[10%] left-[5%] w-12 h-12 bg-white/5 rounded-full blur-[2px]"></div>
 
           {/* Left Content Column */}
@@ -117,7 +117,7 @@ export default function TestimonialSection() {
                     slidesPerView: 1.5,
                   },
                 }}
-                className="testimonial-swiper !overflow-visible"
+                className="testimonial-swiper overflow-visible!"
               >
                 {testimonials.map((testimonial) => (
                   <SwiperSlide key={testimonial.id}>

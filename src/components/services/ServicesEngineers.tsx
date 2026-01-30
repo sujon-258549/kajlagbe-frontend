@@ -54,9 +54,9 @@ export default function ServicesEngineers() {
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden relative">
       <div className="main-container">
-        <div className="flex flex-col lg:flex-row gap-16 items-center">
+        <div className="flex flex-col lg:flex-row gap-10 md:gap-16 items-center">
           {/* Left Content */}
-          <div className="w-full lg:w-1/3 relative">
+          <div className="w-full lg:w-1/3 relative text-center lg:text-left">
             {/* Decorative Dotted Arrow (SVG representation) */}
             <div className="absolute -top-40 -left-10 w-40 h-40 pointer-events-none hidden lg:block opacity-50">
               <svg
@@ -82,7 +82,7 @@ export default function ServicesEngineers() {
               </svg>
             </div>
 
-            <div className="flex items-center gap-2 text-slate-500 font-medium mb-4">
+            <div className="flex items-center justify-center lg:justify-start gap-2 text-slate-500 font-medium mb-4">
               <Lightbulb className="w-5 h-5 text-[#fbbf24]" />
               <span className="uppercase tracking-wider text-sm">
                 Econest Workers
@@ -90,12 +90,12 @@ export default function ServicesEngineers() {
             </div>
 
             <Heading2 className="text-[#063022] mb-8 leading-tight">
-              Our Professionals <br /> Engineers
+              Our Professionals Engineers
             </Heading2>
 
-            <Button size="xl" className="">
+            <Button size="xl" className="mx-auto lg:mx-0">
               Explore More
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
 

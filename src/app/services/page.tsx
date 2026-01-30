@@ -21,7 +21,7 @@ export default function ServicesPage() {
         image="https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg"
       />
 
-      <div className="pb-16">
+      <div className="pb-6 md:pb-16">
         <Services />
       </div>
 

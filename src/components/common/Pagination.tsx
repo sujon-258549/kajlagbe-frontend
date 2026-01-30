@@ -49,7 +49,10 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <div
-      className={cn("flex items-center justify-center gap-2 mt-12", className)}
+      className={cn(
+        "flex items-center justify-center gap-2 mt-8 md:mt-12",
+        className,
+      )}
     >
       {showPrevNext && (
         <button

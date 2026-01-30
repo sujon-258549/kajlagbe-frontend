@@ -32,7 +32,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         isDetails
       />
 
-      <article className="py-20 lg:py-32">
+      <article className="py-12 md:py-20 lg:py-32">
         <div className="main-container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
             <div className="relative aspect-video w-full rounded-3xl overflow-hidden mb-12 shadow-2xl">

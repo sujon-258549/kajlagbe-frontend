@@ -41,7 +41,7 @@ const projects = [
 
 export default function ServicesVerticalSlider() {
   return (
-    <section className="bg-white py-10 md:py-16 lg:py-24">
+    <section className="bg-white pt-6 pb-14 md:py-16 lg:pt-6 lg:pb-6 mb-0">
       <div className="main-container px-4 md:px-6">
         {/* Sticky Container */}
         <div className="flex flex-col gap-10">
@@ -51,7 +51,7 @@ export default function ServicesVerticalSlider() {
               className="sticky top-20 md:top-32 w-full"
               style={{ zIndex: index + 1 }}
             >
-              <div className="bg-secondary border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-[450px] md:h-[300px] lg:h-[350px] relative shadow-2xl">
+              <div className="bg-secondary border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-[450px] md:h-[300px] lg:h-[350px] relative">
                 {/* Image Section with Custom Shape */}
                 <div className="h-[200px] md:h-full md:w-1/2 relative">
                   {/* Custom Mask Shape using CSS clip-path or overlay */}

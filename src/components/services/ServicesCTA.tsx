@@ -5,8 +5,8 @@ import { ArrowRight } from "lucide-react";
 export default function ServicesCTA() {
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-white">
-      <div className="main-container mx-auto px-4">
-        <div className="bg-secondary rounded-2xl p-12 lg:p-20 text-center relative overflow-hidden border border-white/10">
+      <div className="main-container">
+        <div className="bg-secondary rounded-2xl p-8 md:p-12 lg:p-20 text-center relative overflow-hidden border border-white/10">
           {/* Background Decorative Circles */}
           <div className="absolute top-0 left-0 w-64 h-64 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-2xl" />
           <div className="absolute bottom-0 right-0 w-80 h-80 bg-primary/10 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl" />

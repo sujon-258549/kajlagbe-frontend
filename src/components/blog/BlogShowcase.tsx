@@ -187,8 +187,11 @@ export default function BlogShowcase() {
   };
 
   return (
-    <section id="blog-showcase" className="py-10 md:py-16 lg:py-24 bg-white">
-      <div className="main-container mx-auto px-4">
+    <section
+      id="blog-showcase"
+      className="py-10 md:py-16 lg:py-24 bg-white font-outfit"
+    >
+      <div className="main-container">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {currentItems.map((item) => (
             <div
@@ -229,7 +232,7 @@ export default function BlogShowcase() {
         </div>
 
         {/* Pagination */}
-        <div className="mt-12 flex justify-center">
+        <div className="flex justify-center">
           <Pagination
             totalPages={totalPages}
             currentPage={currentPage}

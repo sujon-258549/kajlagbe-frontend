@@ -48,19 +48,19 @@ export default function SubscriptionPricing() {
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="main-container mx-auto px-4">
-        <div className="text-center mb-16">
+    <section className="py-10 md:py-16 lg:py-24 bg-gray-50">
+      <div className="main-container">
+        <div className="text-center mb-10 md:mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-secondary mb-4">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">
             Choose the plan that best fits your needs. No hidden fees.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {plans.map((plan, index) => (
+          {plans.map((plan) => (
             <div
               key={plan.name}
               className={`relative bg-white rounded-xl p-8 transition-all hover:-translate-y-2 duration-300 ${

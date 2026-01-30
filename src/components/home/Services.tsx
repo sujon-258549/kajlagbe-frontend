@@ -157,7 +157,7 @@ export default function Services() {
   ];
 
   return (
-    <section className="bg-green-50/30 relative py-10 md:py-16 lg:py-24 overflow-hidden">
+    <section className="bg-green-50/30 relative pb-6 pt-3.5 md:py-16 lg:py-24 overflow-hidden">
       {/* Background Pattern */}
       <div
         className="absolute inset-0 opacity-[0.03]"
@@ -170,7 +170,7 @@ export default function Services() {
 
       <div className="main-container mx-auto px-6 relative z-10">
         {/* Header */}
-        <div className="text-center max-w-5xl mx-auto mb-16 space-y-4">
+        <div className="text-center max-w-5xl mx-auto mb-8 md:mb-16 space-y-4">
           <Heading1 className="text-4xl md:text-6xl font-bold text-slate-900 leading-tight">
             Our Services
           </Heading1>
@@ -221,7 +221,7 @@ export default function Services() {
         </div>
 
         {/* CTA Button */}
-        <div className="mt-16 text-center">
+        <div className="mt-8 md:mt-16 text-center">
           <Button size="lg" asChild variant="default" className="">
             <Link href="/services">
               View All Categories

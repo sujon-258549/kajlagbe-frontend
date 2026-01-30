@@ -30,10 +30,10 @@ const faqs = [
 export default function ServicesFAQ() {
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-secondary">
-      <div className="main-container mx-auto px-4">
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-start">
+      <div className="main-container">
+        <div className="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-20 items-start">
           {/* Image Side */}
-          <div className="w-full lg:w-1/2 relative h-[500px] lg:h-[600px] rounded-2xl overflow-hidden border-2 border-gray-100">
+          <div className="w-full lg:w-1/2 relative h-[350px] md:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden border-2 border-gray-100">
             <Image
               src="https://images.unsplash.com/photo-1492496913980-501348b61469?q=80&w=1974&auto=format&fit=crop"
               alt="Farming FAQ"
@@ -46,7 +46,7 @@ export default function ServicesFAQ() {
 
           {/* FAQ Content */}
           <div className="w-full lg:w-1/2">
-            <div className="text-left mb-10">
+            <div className="text-center md:text-left mb-8 md:mb-10">
               <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block">
                 FAQ
               </span>

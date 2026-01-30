@@ -57,7 +57,7 @@ export default function StatsSection() {
 
       {/* Premium Background Decorations */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full opacity-5 bg-size-[32px_32px] [background-image:radial-gradient(white_1px,transparent_1px)]"></div>
+        <div className="absolute top-0 left-0 w-full h-full opacity-5 bg-size-[32px_32px] bg-[radial-gradient(white_1px,transparent_1px)]"></div>
 
         {/* Floating Background Icons */}
         <motion.div

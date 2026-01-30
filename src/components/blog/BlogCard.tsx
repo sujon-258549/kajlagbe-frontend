@@ -24,17 +24,17 @@ export default function BlogCard({ post }: BlogCardProps) {
         </div>
       </Link>
 
-      <div className="p-5 space-y-4">
+      <div className="p-4 md:p-6 space-y-4">
         {/* Title */}
         <Link href={`/blog/${post.slug}`} className="block">
-          <h4 className="text-xl  font-semibold text-secondary group-hover:text-primary transition-colors line-clamp-2">
+          <h4 className="text-lg md:text-xl font-bold text-secondary group-hover:text-primary transition-colors line-clamp-2 leading-tight">
             {post.title}
           </h4>
         </Link>
 
         {/* Author Info */}
         <div className="flex items-center gap-3">
-          <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-200">
+          <div className="relative w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden border border-gray-100">
             <Image
               src={post.author.avatar}
               alt={post.author.name}
@@ -42,21 +42,21 @@ export default function BlogCard({ post }: BlogCardProps) {
               className="object-cover"
             />
           </div>
-          <span className="text-sm font-bold text-gray-700">
+          <span className="text-xs md:text-sm font-bold text-slate-700">
             {post.author.name}
           </span>
         </div>
 
         {/* Footer: Date & Read More */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          <span className="text-sm font-semibold text-gray-500">
+          <span className="text-xs md:text-sm font-medium text-slate-500">
             {post.date}
           </span>
           <Link
             href={`/blog/${post.slug}`}
-            className="inline-flex items-center gap-2 text-sm font-bold text-secondary hover:text-primary transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs md:text-sm font-bold text-secondary hover:text-primary transition-colors"
           >
-            Read More <MoveRight className="w-4 h-4" />
+            Read More <MoveRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
           </Link>
         </div>
       </div>

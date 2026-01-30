@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
 import CustomImage from "../common/CustomImage";
-import Heading2 from "../common/Headings/Heading2";
 import Heading3 from "../common/Headings/Heading3";
 
 export default function AboutSection() {

@@ -18,7 +18,7 @@ export default function BlogPage() {
         image="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2664&auto=format&fit=crop"
       />
 
-      <section className="pt-5 lg:pt-10">
+      <section className="py-4 md:py-16 lg:py-20">
         <div className="main-container">
           <BlogList />
         </div>

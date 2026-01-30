@@ -88,7 +88,7 @@ const services = [
 
 export default function ServicesPossible() {
   return (
-    <section className="relative py-20 bg-[#063022] overflow-hidden">
+    <section className="relative py-10 md:py-16 lg:py-24 bg-[#063022] overflow-hidden">
       {/* Background Image/Texture */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         {/* Wind turbine background placeholder */}
@@ -102,9 +102,9 @@ export default function ServicesPossible() {
 
       <div className="main-container relative z-10">
         {/* Header Section */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16 gap-8">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-10 md:mb-16 gap-8 text-center md:text-left">
           <div className="max-w-2xl">
-            <div className="flex items-center gap-2 text-[#fbbf24] font-semibold mb-4">
+            <div className="flex items-center justify-center md:justify-start gap-2 text-[#fbbf24] font-semibold mb-4">
               <Leaf className="w-5 h-5" />
               <span className="uppercase tracking-wider text-sm">
                 What We Do
@@ -116,14 +116,14 @@ export default function ServicesPossible() {
             </Heading3>
           </div>
 
-          <div className="max-w-md text-slate-300">
+          <div className="max-w-md text-slate-300 mx-auto md:mx-0">
             <p className="mb-6 text-sm md:text-base leading-relaxed">
               &quot;Advanced cameras combined with a large display fast
               performance, and highly calibrated.&quot;
             </p>
             <a
               href="#"
-              className="text-[#fbbf24] font-semibold flex items-center gap-2 hover:gap-4 transition-all group"
+              className="text-[#fbbf24] font-semibold flex items-center justify-center md:justify-start gap-2 hover:gap-4 transition-all group"
             >
               Contact With Us
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

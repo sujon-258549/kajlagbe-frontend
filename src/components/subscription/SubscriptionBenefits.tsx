@@ -31,7 +31,7 @@ export default function SubscriptionBenefits() {
   ];
 
   return (
-    <section className="py-20 bg-secondary relative overflow-hidden">
+    <section className="py-10 md:py-16 lg:py-24 bg-secondary relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <svg
@@ -43,8 +43,8 @@ export default function SubscriptionBenefits() {
         </svg>
       </div>
 
-      <div className="main-container mx-auto px-4 relative z-10">
-        <div className="text-center mb-16">
+      <div className="main-container relative z-10">
+        <div className="text-center mb-10 md:mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
             Why Choose Our Subscription?
           </h2>

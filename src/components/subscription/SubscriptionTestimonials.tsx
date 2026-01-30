@@ -31,13 +31,13 @@ export default function SubscriptionTestimonials() {
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="main-container mx-auto px-4">
-        <div className="text-center mb-16">
+    <section className="py-10 md:py-16 lg:py-24 bg-gray-50">
+      <div className="main-container">
+        <div className="text-center mb-10 md:mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-secondary mb-4">
             Trusted by Thousands
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">
             See what our subscribers are saying about their experience.
           </p>
         </div>
