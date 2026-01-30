@@ -74,18 +74,18 @@ export default function ServicesPricing() {
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-secondary relative group/section">
-      <div className="main-container">
-        <div className="text-center max-w-2xl mx-auto mb-16 relative group/header">
-          <AdminOnly>
-            <button
-              onClick={() => setIsSectionModalOpen(true)}
-              className="absolute -top-6 right-0 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-white/20 text-white opacity-0 group-hover/header:opacity-100 transition-all hover:bg-white hover:text-secondary"
-              title="Edit Title & Tagline"
-            >
-              <Edit className="w-4 h-4" />
-            </button>
-          </AdminOnly>
+      <div className="main-container relative">
+        <AdminOnly>
+          <button
+            onClick={() => setIsSectionModalOpen(true)}
+            className="absolute top-0 right-0 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary"
+            title="Edit Title & Tagline"
+          >
+            <Edit className="w-5 h-5" />
+          </button>
+        </AdminOnly>
 
+        <div className="text-center max-w-2xl mx-auto mb-16 relative group/header">
           <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block">
             {sectionData.tagline}
           </span>
