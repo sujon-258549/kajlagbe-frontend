@@ -52,7 +52,7 @@ const engineers = [
 
 export default function ServicesEngineers() {
   return (
-    <section className="py-20 bg-white overflow-hidden relative">
+    <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden relative">
       <div className="main-container">
         <div className="flex flex-col lg:flex-row gap-16 items-center">
           {/* Left Content */}
