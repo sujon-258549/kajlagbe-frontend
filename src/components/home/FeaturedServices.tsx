@@ -40,11 +40,11 @@ const featured = [
 
 export default function FeaturedServices() {
   return (
-    <section className="py-24 bg-white">
-      <div className="main-container mx-auto px-6">
+    <section className="py-12 md:py-24 bg-white">
+      <div className="main-container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           {/* Slot 1 */}
-          <div className="relative group h-full rounded-2xl overflow-hidden border border-slate-200">
+          <div className="relative group h-[250px] md:h-full rounded-2xl overflow-hidden border border-slate-200">
             <CustomImage
               src={featured[0].image}
               alt={featured[0].title}
@@ -54,7 +54,7 @@ export default function FeaturedServices() {
             />
             <div
               className="absolute inset-0 flex flex-col justify-center items-center text-center p-4
-                            bg-black/20 backdrop-blur-sm opacity-0 group-hover:opacity-100
+                            bg-black/20 backdrop-blur-sm opacity-100 md:opacity-0 group-hover:opacity-100
                             transition-all duration-300"
             >
               <Heading5 className="text-white font-bold text-lg">
@@ -67,7 +67,7 @@ export default function FeaturedServices() {
           </div>
 
           {/* Slot 2 */}
-          <div className="relative group h-full rounded-2xl overflow-hidden border border-slate-200">
+          <div className="relative group h-[250px] md:h-full rounded-2xl overflow-hidden border border-slate-200">
             <CustomImage
               src={featured[1].image}
               alt={featured[1].title}
@@ -77,7 +77,7 @@ export default function FeaturedServices() {
             />
             <div
               className="absolute inset-0 flex flex-col justify-center items-center text-center p-4
-                            bg-black/20 backdrop-blur-sm opacity-0 group-hover:opacity-100
+                            bg-black/20 backdrop-blur-sm opacity-100 md:opacity-0 group-hover:opacity-100
                             transition-all duration-300"
             >
               <Heading5 className="text-white font-bold text-lg">
@@ -94,8 +94,8 @@ export default function FeaturedServices() {
             <span className="text-[#ff4d1c] font-serif italic text-2xl">
               Features
             </span>
-            <Heading3 className=" font-bold  leading-[1.1]">
-              Premier One-Stop <br />
+            <Heading3 className=" font-bold  leading-[1.1] text-2xl md:text-4xl lg:text-5xl">
+              Premier One-Stop <br className="hidden md:block" />
               Custom Print Solutions
             </Heading3>
             <p className="text-gray-500 text-sm leading-relaxed max-w-md">
@@ -113,18 +113,18 @@ export default function FeaturedServices() {
           {featured.slice(2).map((service, index) => (
             <div
               key={index}
-              className="relative group h-full rounded-2xl overflow-hidden border border-slate-200"
+              className="relative group h-[250px] md:h-[350px] lg:h-full rounded-2xl overflow-hidden border border-slate-200"
             >
               <CustomImage
                 src={service.image}
                 alt={service.title}
                 fill
-                wrapperClassName="w-full h-[350px]"
+                wrapperClassName="w-full h-full"
                 className="object-cover transition-transform duration-500 group-hover:scale-110"
               />
               <div
                 className="absolute inset-0 flex flex-col justify-center items-center text-center p-4
-                              bg-black/20 backdrop-blur-sm opacity-0 group-hover:opacity-100
+                              bg-black/20 backdrop-blur-sm opacity-100 md:opacity-0 group-hover:opacity-100
                               transition-all duration-300"
               >
                 <Heading5 className="text-white font-bold text-lg">

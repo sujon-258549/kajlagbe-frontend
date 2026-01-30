@@ -41,21 +41,21 @@ const projects = [
 
 export default function ServicesVerticalSlider() {
   return (
-    <section className="bg-white py-20">
-      <div className="main-container">
+    <section className="bg-white py-12 md:py-20 lg:py-28">
+      <div className="main-container px-4 md:px-6">
         {/* Sticky Container */}
         <div className="flex flex-col gap-10">
           {projects.map((item, index) => (
             <div
               key={item.id}
-              className="sticky top-32 w-full"
+              className="sticky top-20 md:top-32 w-full"
               style={{ zIndex: index + 1 }}
             >
-              <div className="bg-secondary border border-white rounded-2xl overflow-hidden flex flex-col md:flex-row h-[300px] lg:h-[350px] relative">
+              <div className="bg-secondary border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-[450px] md:h-[300px] lg:h-[350px] relative shadow-2xl">
                 {/* Image Section with Custom Shape */}
-                <div className="md:w-1/2 relative h-full">
+                <div className="h-[200px] md:h-full md:w-1/2 relative">
                   {/* Custom Mask Shape using CSS clip-path or overlay */}
-                  <div className="absolute inset-0 z-10 pointer-events-none">
+                  <div className="absolute inset-0 z-10 pointer-events-none md:block hidden">
                     {/* Yellow Decoration on Top Left */}
                     <div className="absolute top-0 left-0 w-24 h-24 z-20">
                       <svg
@@ -78,7 +78,7 @@ export default function ServicesVerticalSlider() {
                 </div>
 
                 {/* Content Section */}
-                <div className="md:w-1/2 p-6 md:p-10 flex flex-col justify-center relative z-20">
+                <div className="flex-1 md:w-1/2 p-6 md:p-10 flex flex-col justify-center relative z-20">
                   <span className="text-white/80 text-xs font-semibold mb-2 uppercase tracking-wide">
                     {item.category}
                   </span>

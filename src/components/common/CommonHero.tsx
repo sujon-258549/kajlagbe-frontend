@@ -19,17 +19,18 @@ export default function CommonHero({
   return (
     <section className="py-10">
       <div className="main-container mx-auto">
-        <div className="relative w-full h-[350px] md:h-[450px] rounded-2xl overflow-hidden shadow-xl bg-gray-100 flex">
-          {/* Right Side Image (Absolute Layer) */}
-          <div className="absolute inset-0 z-0">
-            <Image
-              src={image}
-              alt={title}
-              fill
-              className="object-cover"
-              priority
-            />
-            {/* Dark Overlay for Image */}
+        <div className="relative w-full h-[300px] sm:h-[350px] md:h-[450px] rounded-2xl overflow-hidden          {/* Center Column: Images */}
+          <div className="w-full lg:w-1/3 relative h-[300px] md:h-[500px] order-1 lg:order-2 flex items-center justify-center">
+            <div className="relative w-full h-full transform scale-100 md:scale-110">
+              <Image
+                src="/images/home/benefits_packets.png"
+                alt="Organic Food Packets"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+          </div>erlay for Image */}
             <div className="absolute inset-0 bg-black/10" />
 
             {/* Play Button - Positioned in the right half visually */}
@@ -63,20 +64,20 @@ export default function CommonHero({
           {/* Content Layer */}
           <div className="relative z-30 w-full h-full flex flex-col md:flex-row">
             {/* Left Content Half */}
-            <div className="w-full md:w-1/2 h-full flex flex-col justify-center pl-8 md:pl-20 pr-12">
+            <div className="w-full md:w-1/2 h-full flex flex-col justify-center px-6 md:pl-20 md:pr-12">
               <div className="relative pt-10 md:pt-0">
                 <div className="flex items-center gap-3 text-white/70 text-sm md:text-base font-medium mb-4">
                   <Link
                     href="/"
-                    className="hover:text-[#FDD835] transition-colors"
-                  >
-                    Home
-                  </Link>
-                  <ArrowRight className="w-4 h-4" />
-                  <span className="text-white">{breadcrumb}</span>
+                    className={`relative rounded-xl p-8 transition-all duration-300 bg-white ${
+                plan.recommended
+                  ? "border border-[#86b86b] lg:scale-105 z-10"
+                  : "border border-gray-100"
+              }`}
+            >      <span className="text-white">{breadcrumb}</span>
                 </div>
 
-                <Heading1 className=" font-bold text-white tracking-tight leading-none">
+                <Heading1 className=" font-bold text-white tracking-tight leading-tight text-3xl md:text-5xl lg:text-6xl">
                   {title}
                 </Heading1>
               </div>

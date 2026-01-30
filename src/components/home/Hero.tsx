@@ -38,7 +38,7 @@ export default function Hero() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <section className="relative w-full h-[400px] md:h-[500px] overflow-hidden bg-secondary">
+    <section className="relative w-full h-[450px] md:h-[500px] lg:h-[600px] overflow-hidden bg-secondary">
       <Swiper
         modules={[Navigation, Autoplay, EffectFade]}
         effect="fade"
@@ -69,14 +69,14 @@ export default function Hero() {
             </div>
 
             {/* Content main-container */}
-            <div className="main-container mx-auto px-6 h-full relative z-10 flex flex-col justify-center">
-              <div className="max-w-3xl transform transition-all duration-1000 translate-y-0 opacity-100 border-2 border-dashed border-secondary p-8 md:p-12 rounded-2xl bg-secondary/20 backdrop-blur-sm">
+            <div className="main-container mx-auto px-4 md:px-6 h-full relative z-10 flex flex-col justify-center">
+              <div className="max-w-3xl transform transition-all duration-1000 translate-y-0 opacity-100 border-2 border-dashed border-secondary/30 p-6 md:p-12 rounded-2xl bg-secondary/40 backdrop-blur-md">
                 <div className="space-y-6">
                   <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-sm border border-slate-200 text-white font-bold tracking-wider uppercase text-xs w-fit">
                     <span className="w-2 h-2 rounded-lg bg-primary animate-pulse" />
                     Marketplace Excellence
                   </div>
-                  <Heading1 className=" text-white leading-tight font-bold">
+                  <Heading1 className=" text-white leading-tight font-bold text-3xl md:text-5xl lg:text-7xl">
                     {slide.title}
                   </Heading1>
                   <p className="text-white/80 text-base md:text-lg font-medium max-w-xl leading-relaxed line-clamp-2 md:line-clamp-none">
@@ -95,9 +95,9 @@ export default function Hero() {
         ))}
 
         {/* Custom Navigation - Bottom Left */}
-        <div className="absolute bottom-10 left-0 z-20 w-full">
-          <div className="main-container mx-auto px-6 flex items-center gap-6">
-            <div className="flex items-center gap-4 text-white font-bold text-lg">
+        <div className="absolute bottom-6 md:bottom-10 left-0 z-20 w-full">
+          <div className="main-container mx-auto px-4 md:px-6 flex items-center gap-6">
+            <div className="flex items-center gap-4 text-white font-bold text-base md:text-lg">
               <button
                 onClick={() => swiperRef.current?.slidePrev()}
                 className="hover:text-[#3ABEF9] transition-colors"
