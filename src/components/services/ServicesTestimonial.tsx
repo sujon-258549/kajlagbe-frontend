@@ -17,7 +17,6 @@ import ServicesTestimonialSectionModal from "../modal/services/ServicesTestimoni
 
 import {
   ServicesTestimonialItem,
-  ServicesTestimonialItemSchema,
   ServicesTestimonialSectionData,
 } from "@/schemas/services/testimonial.schema";
 
@@ -122,7 +121,7 @@ export default function ServicesTestimonial() {
         />
         <div className="absolute inset-0 bg-[#0f392ea8] mix-blend-multiply" />
         {/* Dark green overlay matching the image */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0d2e25] to-[#0f392e]/80" />
+        <div className="absolute inset-0 bg-linear-to-r from-[#0d2e25] to-[#0f392e]/80" />
       </div>
 
       <div className="main-container relative z-10">
@@ -193,7 +192,7 @@ export default function ServicesTestimonial() {
                   </AdminOnly>
 
                   {/* Image Container with Play Button */}
-                  <div className="relative w-full md:w-1/3 shrink-0 aspect-[3/4] rounded-xl overflow-hidden bg-secondary">
+                  <div className="relative w-full md:w-1/3 shrink-0 aspect-3/4 rounded-xl overflow-hidden bg-secondary">
                     <CustomImage
                       src={item.image}
                       alt={item.name}
