@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Upload, X, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
@@ -126,7 +126,7 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
     return (
       <div className={cn("space-y-2", containerClassName)}>
         {label && (
-          <label className="text-sm font-medium text-slate-700 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          <label className="text-sm font-medium text-slate-700 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3 inline-block">
             {label}
           </label>
         )}

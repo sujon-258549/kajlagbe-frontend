@@ -1,9 +1,11 @@
 "use client";
 
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Play, ArrowRight } from "lucide-react";
+import { Play, ArrowRight, Edit } from "lucide-react";
 import Heading1 from "./Headings/Heading1";
+import AboutHeroModal from "@/components/modal/about/AboutHeroModal";
 
 interface CommonHeroProps {
   title?: string;
@@ -18,10 +20,12 @@ export default function CommonHero({
   image = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2664&auto=format&fit=crop",
   breadcrumb,
 }: CommonHeroProps) {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
   return (
     <section className="py-10">
       <div className="main-container mx-auto px-4">
-        <div className="relative w-full h-[300px] sm:h-[350px] md:h-[450px] rounded-2xl overflow-hidden shadow-xl bg-gray-100 flex">
+        <div className="relative w-full h-[250px] sm:h-[300px] md:h-[400px] rounded-2xl overflow-hidden shadow-xl bg-gray-100 flex">
           {/* Right Side Image (Absolute Layer) */}
           <div className="absolute inset-0 z-0">
             <Image
@@ -60,7 +64,7 @@ export default function CommonHero({
 
           {/* Double Slanted Dividers */}
           <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-[15px] -translate-x-[150%] bg-white z-50 origin-center -skew-x-12" />
-          <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-[15px] -translate-x-[50%] bg-primary z-50 origin-center -skew-x-12 shadow-[-2px_0_10px_rgba(0,0,0,0.1)]" />
+          <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-[15px] -translate-x-[50%] bg-primary z-50 origin-center -skew-x-12 shadow-[-2px_0_10px_rgba(0,0,0,0.14)]" />
 
           {/* Content Layer */}
           <div className="relative z-30 w-full h-full flex flex-col md:flex-row">
@@ -78,7 +82,7 @@ export default function CommonHero({
                   <span className="text-white">{breadcrumb || title}</span>
                 </div>
 
-                <Heading1 className=" font-bold text-white tracking-tight leading-tight text-3xl md:text-5xl lg:text-7xl">
+                <Heading1 className=" font-bold text-white tracking-tight leading-tight ">
                   {title}
                 </Heading1>
                 {subtitle && (
@@ -90,10 +94,26 @@ export default function CommonHero({
             </div>
 
             {/* Right Content Half */}
-            <div className="w-full md:w-1/2 h-full hidden md:block"></div>
+            <div className="w-full md:w-1/2 h-full hidden md:block relative">
+              {/* Edit Icon - Top Right of Hero Content Area */}
+              <button
+                onClick={() => setIsEditModalOpen(true)}
+                className="absolute top-3 right-3 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/30 text-white transition-all border border-white/20 backdrop-blur-md z-40 group shadow-lg"
+                title="Edit Hero"
+              >
+                <Edit className="w-5 h-5 transition-transform group-hover:rotate-12" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
+      <AboutHeroModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        title={title}
+        subtitle={subtitle}
+        image={image}
+      />
     </section>
   );
 }

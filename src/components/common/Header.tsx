@@ -196,7 +196,7 @@ export default function Header() {
           {/* Actions */}
           <div className="flex items-center gap-2 sm:gap-4">
             <Link href="/login">
-              <Button size="sm" className="px-3 sm:px-4 text-[13px] sm:text-sm">
+              <Button size="lg" className="px-3 sm:px-4 text-[13px] sm:text-sm">
                 <span className="hidden sm:inline">Login</span>{" "}
                 <LogInIcon className="h-4 w-4" />
               </Button>

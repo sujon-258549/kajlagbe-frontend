@@ -29,7 +29,7 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
         {label && (
           <label
             className={cn(
-              "font-medium text-slate-700 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+              "font-medium text-slate-700 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3 inline-block",
               size === "sm" ? "text-xs" : "text-sm",
             )}
           >

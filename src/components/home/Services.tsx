@@ -171,7 +171,7 @@ export default function Services() {
       <div className="main-container mx-auto px-6 relative z-10">
         {/* Header */}
         <div className="text-center max-w-5xl mx-auto mb-8 md:mb-16 space-y-4">
-          <Heading1 className="text-4xl md:text-6xl font-bold text-slate-900 leading-tight">
+          <Heading1 className="font-bold text-slate-900 leading-tight">
             Our Services
           </Heading1>
           <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-normal">

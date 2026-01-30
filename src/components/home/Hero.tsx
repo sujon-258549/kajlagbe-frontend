@@ -76,7 +76,7 @@ export default function Hero() {
                     <span className="w-2 h-2 rounded-lg bg-primary animate-pulse" />
                     Marketplace Excellence
                   </div>
-                  <Heading1 className=" text-white leading-tight font-bold text-3xl md:text-5xl lg:text-7xl">
+                  <Heading1 className=" text-white leading-tight font-bold ">
                     {slide.title}
                   </Heading1>
                   <p className="text-white/80 text-base md:text-lg font-medium max-w-xl leading-relaxed line-clamp-2 md:line-clamp-none">
