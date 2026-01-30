@@ -1,26 +1,5 @@
 import { useState } from "react";
-import {
-  ArrowRight,
-  Edit,
-  Wrench,
-  Sparkles,
-  Hammer,
-  Axe,
-  Droplets,
-  Zap,
-  Palette,
-  Leaf,
-  Bug,
-  Settings,
-  Thermometer,
-  Home,
-  Square,
-  Shield,
-  Cpu,
-  Truck,
-  Trash2,
-  Eye,
-} from "lucide-react";
+import { ArrowRight, Edit, Wrench } from "lucide-react";
 import * as Icons from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";

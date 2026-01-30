@@ -16,7 +16,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
-import ImageUpload from "@/components/common/ImageUpload";
 
 // Schema for Pricing Plan
 export const pricingSchema = z.object({
