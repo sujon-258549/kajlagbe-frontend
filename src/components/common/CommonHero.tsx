@@ -11,6 +11,7 @@ interface CommonHeroProps {
   title?: string;
   subtitle?: string;
   image?: string;
+  bgImage?: string;
   breadcrumb?: string;
 }
 
@@ -18,6 +19,7 @@ export default function CommonHero({
   title = "Page Title",
   subtitle,
   image = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2664&auto=format&fit=crop",
+  bgImage = "https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=2670&auto=format&fit=crop",
   breadcrumb,
 }: CommonHeroProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -56,7 +58,10 @@ export default function CommonHero({
           <div className="hidden md:block absolute top-0 bottom-0 right-1/2 w-[120%] bg-[#0B3D2E] z-10 origin-right -skew-x-12 overflow-hidden">
             {/* Texture inside, clipped by parent */}
             <div className="absolute inset-0 opacity-10 pointer-events-none skew-x-12 origin-right scale-110">
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=2670&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay grayscale" />
+              <div
+                className="absolute inset-0 bg-cover bg-center mix-blend-overlay grayscale"
+                style={{ backgroundImage: `url(${bgImage})` }}
+              />
             </div>
           </div>
           {/* Mobile Fallback */}
@@ -113,6 +118,7 @@ export default function CommonHero({
         title={title}
         subtitle={subtitle}
         image={image}
+        bgImage={bgImage}
       />
     </section>
   );
