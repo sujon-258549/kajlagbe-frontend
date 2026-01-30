@@ -13,12 +13,11 @@ import AdminOnly from "../common/auth/AdminOnly";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit } from "lucide-react";
 import ServicesTestimonialModal from "../modal/services/ServicesTestimonialModal";
+
 import {
   ServicesTestimonialItem,
   ServicesTestimonialItemSchema,
-} from "@/schemas/services/testimonial.schema"; // Make sure to stick to one schema file if possible or create new one
-// Assuming reusing or creating similar logic. I will create a new modal/schema if needed.
-// For now I'll assume usage of a new ServiceTestimonialModal component.
+} from "@/schemas/services/testimonial.schema";
 
 const initialTestimonials = [
   {
@@ -63,21 +62,25 @@ const partners = [
 ];
 
 export default function ServicesTestimonial() {
-  const [testimonials, setTestimonials] = useState(initialTestimonials);
+  const [testimonials, setTestimonials] = useState<ServicesTestimonialItem[]>(
+    initialTestimonials as ServicesTestimonialItem[],
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<any>(undefined); // Typing 'any' temporarily to avoid schema conflict if not created yet
+  const [editingItem, setEditingItem] = useState<
+    ServicesTestimonialItem | undefined
+  >(undefined);
 
   const handleAddItem = () => {
     setEditingItem(undefined);
     setIsModalOpen(true);
   };
 
-  const handleEditItem = (item: any) => {
+  const handleEditItem = (item: ServicesTestimonialItem) => {
     setEditingItem(item);
     setIsModalOpen(true);
   };
 
-  const handleSaveItem = (data: any) => {
+  const handleSaveItem = (data: ServicesTestimonialItem) => {
     if (editingItem) {
       setTestimonials((prev) =>
         prev.map((item) => (item.id === editingItem.id ? data : item)),

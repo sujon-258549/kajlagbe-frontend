@@ -10,6 +10,7 @@ interface ImageUploadProps extends React.InputHTMLAttributes<HTMLInputElement> {
   containerClassName?: string;
   register?: UseFormRegisterReturn; // Pass react-hook-form register
   isSingle?: boolean;
+  onValueChange?: (value: string | string[]) => void;
 }
 
 const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
@@ -21,6 +22,7 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
       containerClassName,
       register,
       onChange,
+      onValueChange,
       value,
       isSingle = true,
       ...props
@@ -55,7 +57,11 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
           const file = fileList[0];
           const reader = new FileReader();
           reader.onloadend = () => {
-            setPreviews([reader.result as string]);
+            const result = reader.result as string;
+            setPreviews([result]);
+            if (onValueChange) {
+              onValueChange(result);
+            }
           };
           reader.readAsDataURL(file);
         } else {
@@ -67,6 +73,9 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
               processed++;
               if (processed === fileList.length) {
                 setPreviews(newPreviews);
+                if (onValueChange) {
+                  onValueChange(newPreviews);
+                }
               }
             };
             reader.readAsDataURL(file);
@@ -89,11 +98,18 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
 
       if (isSingle) {
         setPreviews([]);
+        if (onValueChange) {
+          onValueChange("");
+        }
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
       } else {
-        setPreviews((prev) => prev.filter((_, i) => i !== index));
+        const newPreviews = previews.filter((_, i) => i !== index);
+        setPreviews(newPreviews);
+        if (onValueChange) {
+          onValueChange(newPreviews);
+        }
         if (fileInputRef.current && fileInputRef.current.files) {
           const dt = new DataTransfer();
           const files = fileInputRef.current.files;

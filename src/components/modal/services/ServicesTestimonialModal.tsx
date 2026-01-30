@@ -1,15 +1,12 @@
 "use client";
 
 import React, { useEffect } from "react";
-import CommonModal from "@/components/modal/common/CommonModal";
+import CommonModal from "@/components/modal/common/CommonModal"; // Adjust path if needed
 import FormInput from "@/components/common/FormInput";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import {
-  ServicesTestimonialItem,
-  testimonialSchema,
-} from "@/schemas/services/testimonial.schema";
 import {
   Form,
   FormControl,
@@ -18,8 +15,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
 import ImageUpload from "@/components/common/ImageUpload";
+import {
+  ServicesTestimonialItemSchema,
+  ServicesTestimonialItem,
+} from "@/schemas/services/testimonial.schema";
 
 interface ServicesTestimonialModalProps {
   isOpen: boolean;
@@ -37,9 +37,8 @@ const ServicesTestimonialModal: React.FC<ServicesTestimonialModalProps> = ({
   onDelete,
 }) => {
   const form = useForm<ServicesTestimonialItem>({
-    resolver: zodResolver(testimonialSchema) as any,
+    resolver: zodResolver(ServicesTestimonialItemSchema),
     defaultValues: {
-      id: undefined,
       name: "",
       role: "",
       title: "",
@@ -49,75 +48,64 @@ const ServicesTestimonialModal: React.FC<ServicesTestimonialModalProps> = ({
   });
 
   useEffect(() => {
-    if (isOpen) {
-      if (item) {
-        form.reset(item);
-      } else {
-        form.reset({
-          id: undefined,
-          name: "",
-          role: "",
-          title: "",
-          content: "",
-          image: "",
-        });
-      }
+    if (item) {
+      form.reset(item);
+    } else {
+      form.reset({
+        name: "",
+        role: "",
+        title: "",
+        content: "",
+        image: "",
+      });
     }
-  }, [item, isOpen, form]);
+  }, [item, form, isOpen]);
 
   const handleSubmit = (data: ServicesTestimonialItem) => {
     onSave(data);
     onClose();
   };
 
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
-
   return (
-    <>
-      <CommonModal
-        isOpen={isOpen}
-        onClose={onClose}
-        title={item ? "Edit Testimonial" : "Add Testimonial"}
-        description={
-          item
-            ? "Modify the testimonial details below."
-            : "Fill in the details to add a new testimonial."
-        }
-      >
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-4"
-          >
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <FormInput placeholder="Jane Doe" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Role</FormLabel>
-                    <FormControl>
-                      <FormInput placeholder="Manager" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
+    <CommonModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={item ? "Edit Testimonial" : "Add Testimonial"}
+      description={
+        item ? "Edit the testimonial details." : "Add a new testimonial."
+      }
+      showBackground={false}
+      maxWidth="lg"
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="John Doe" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Role</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="CEO" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="title"
@@ -125,94 +113,67 @@ const ServicesTestimonialModal: React.FC<ServicesTestimonialModalProps> = ({
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <FormInput placeholder="Review Title" {...field} />
+                    <FormInput placeholder="Great Service" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+          </div>
 
-            <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Content</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Write the review here..."
-                      className="h-24 resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="content"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Review Content</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Write the testimonial here..."
+                    className="h-24 resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Image</FormLabel>
-                  <FormControl>
-                    <ImageUpload {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="image"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Author Image</FormLabel>
+                <FormControl>
+                  <ImageUpload
+                    value={field.value ? [field.value] : []}
+                    onValueChange={(val) => field.onChange(val)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <div className="flex justify-between items-center pt-4">
-              {item && onDelete ? (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={() => setDeleteConfirmOpen(true)}
-                >
-                  Delete Testimonial
-                </Button>
-              ) : (
-                <div />
-              )}
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={onClose} type="button">
-                  Cancel
-                </Button>
-                <Button type="submit" className="bg-secondary text-white">
-                  Save Changes
-                </Button>
-              </div>
+          <div className="flex justify-between pt-4 border-t">
+            {item && onDelete && (
+              <Button type="button" variant="destructive" onClick={onDelete}>
+                Delete
+              </Button>
+            )}
+            <div className="flex gap-2 ml-auto">
+              <Button variant="outline" onClick={onClose} type="button">
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-secondary text-white">
+                {item ? "Save Changes" : "Add Testimonial"}
+              </Button>
             </div>
-          </form>
-        </Form>
-      </CommonModal>
-
-      {/* Delete Confirmation Modal */}
-      <CommonModal
-        isOpen={deleteConfirmOpen}
-        onClose={() => setDeleteConfirmOpen(false)}
-        title="Delete Testimonial"
-        description="Are you sure you want to delete this testimonial? This action cannot be undone."
-        maxWidth="sm"
-      >
-        <div className="flex justify-end gap-3 mt-4">
-          <Button variant="outline" onClick={() => setDeleteConfirmOpen(false)}>
-            Cancel
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={() => {
-              if (onDelete) onDelete();
-              setDeleteConfirmOpen(false);
-            }}
-          >
-            Delete
-          </Button>
-        </div>
-      </CommonModal>
-    </>
+          </div>
+        </form>
+      </Form>
+    </CommonModal>
   );
 };
 
