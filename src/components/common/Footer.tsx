@@ -17,7 +17,7 @@ export default function Footer() {
                 alt="Kajlagbe Logo"
                 width={160}
                 height={50}
-                className="h-12 w-auto object-contain -ml-3"
+                className="h-12 w-auto object-contain"
                 priority
                 unoptimized
               />

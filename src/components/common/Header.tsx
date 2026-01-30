@@ -5,7 +5,14 @@ import Link from "next/link";
 import { LogInIcon, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import {
   Accordion,
   AccordionContent,
@@ -14,14 +21,16 @@ import {
 } from "@/components/ui/accordion";
 
 import TopBar from "./TopBar";
+import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { servicesData } from "@/data/servicesData";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronDown } from "lucide-react";
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const [activeCategory, setActiveCategory] = useState(
     servicesData.length > 0 ? servicesData[0].slug : "",
@@ -87,6 +96,11 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8 h-full">
             {navItems.map((item) => {
+              const isActive =
+                item.href === "/"
+                  ? pathname === "/"
+                  : pathname.startsWith(item.href);
+
               if (item.name === "Services") {
                 return (
                   <div
@@ -95,10 +109,19 @@ export default function Header() {
                   >
                     <Link
                       href={item.href}
-                      className="text-[14px] font-bold text-secondary hover:text-primary uppercase tracking-wide transition-colors relative flex items-center gap-1 py-4"
+                      className={`text-[14px] font-bold uppercase tracking-wide transition-colors relative flex items-center gap-1 py-4 ${
+                        isActive
+                          ? "text-primary"
+                          : "text-secondary hover:text-primary"
+                      }`}
                     >
                       {item.name}
-                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                      <ChevronDown className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-180" />
+                      <span
+                        className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300 ${
+                          isActive ? "w-full" : "w-0 group-hover:w-full"
+                        }`}
+                      ></span>
                     </Link>
 
                     {/* Mega Menu Dropdown */}
@@ -153,10 +176,18 @@ export default function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-[14px] font-bold text-secondary hover:text-primary uppercase tracking-wide transition-colors relative group py-4"
+                  className={`text-[14px] font-bold uppercase tracking-wide transition-colors relative group py-4 ${
+                    isActive
+                      ? "text-primary"
+                      : "text-secondary hover:text-primary"
+                  }`}
                 >
                   {item.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                  <span
+                    className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300 ${
+                      isActive ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  ></span>
                 </Link>
               );
             })}
@@ -190,6 +221,12 @@ export default function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px] p-6">
+                <SheetHeader>
+                  <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
+                  <SheetDescription className="sr-only">
+                    Navigation menu
+                  </SheetDescription>
+                </SheetHeader>
                 <div className="flex flex-col gap-6 mt-14">
                   {/* Mobile Search inside menu */}
                   <div className="relative">
@@ -202,6 +239,11 @@ export default function Header() {
                   </div>
                   <nav className="flex flex-col gap-2">
                     {navItems.map((item) => {
+                      const isActive =
+                        item.href === "/"
+                          ? pathname === "/"
+                          : pathname.startsWith(item.href);
+
                       if (item.name === "Services") {
                         return (
                           <Accordion
@@ -214,7 +256,9 @@ export default function Header() {
                               value="services"
                               className="border-none"
                             >
-                              <AccordionTrigger className="text-lg font-medium hover:text-secondary transition-colors py-2 hover:no-underline">
+                              <AccordionTrigger
+                                className={`text-lg font-medium transition-colors py-2 hover:no-underline ${isActive ? "text-primary" : "text-black hover:text-secondary"}`}
+                              >
                                 {item.name}
                               </AccordionTrigger>
                               <AccordionContent>
@@ -263,7 +307,9 @@ export default function Header() {
                         <Link
                           key={item.name}
                           href={item.href}
-                          className="text-lg font-medium hover:text-secondary transition-colors border-b border-gray-100 py-3 block"
+                          className={`text-lg font-medium transition-colors border-b border-gray-100 py-3 block ${
+                            isActive ? "text-primary" : "hover:text-secondary"
+                          }`}
                           onClick={() => setIsMenuOpen(false)}
                         >
                           {item.name}

@@ -31,8 +31,13 @@ export default function SubscriptionTestimonials() {
   ];
 
   return (
-    <section className="py-10 md:py-16 lg:py-24 bg-gray-50">
-      <div className="main-container">
+    <section className="py-10 md:py-16 lg:py-24 bg-gray-50 relative overflow-hidden">
+      {/* Decorative Background Blobs for Glassmorphism */}
+      <div className="absolute top-1/4 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px]" />
+      <div className="absolute bottom-1/4 right-10 w-80 h-80 bg-blue-400/20 rounded-full blur-[100px]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg h-full max-h-[500px] bg-purple-300/20 rounded-full blur-[120px]" />
+
+      <div className="main-container relative z-10">
         <div className="text-center mb-10 md:mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-secondary mb-4">
             Trusted by Thousands
@@ -46,9 +51,9 @@ export default function SubscriptionTestimonials() {
           {testimonials.map((item, index) => (
             <div
               key={index}
-              className="bg-white p-8 rounded-xl border border-gray-200 flex flex-col items-center text-center transition-shadow duration-300"
+              className="bg-white/60 backdrop-blur-md p-8 rounded-xl border border-white/50 shadow-xl flex flex-col items-center text-center transition-all duration-300"
             >
-              <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-gray-50 mb-6">
+              <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md mb-6 duration-300">
                 <Image
                   src={item.image}
                   alt={item.name}
@@ -56,14 +61,14 @@ export default function SubscriptionTestimonials() {
                   className="object-cover"
                 />
               </div>
-              <p className="text-gray-600 italic mb-6">
+              <p className="text-gray-700 italic mb-6 leading-relaxed">
                 &quot;{item.quote}&quot;
               </p>
               <div>
                 <h4 className="text-lg font-bold text-secondary">
                   {item.name}
                 </h4>
-                <span className="text-primary text-sm font-semibold">
+                <span className="text-primary text-sm font-bold uppercase tracking-wide">
                   {item.role}
                 </span>
               </div>

@@ -17,7 +17,7 @@ export default function AboutSection() {
                 src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80"
                 alt="About Us"
                 fill
-                wrapperClassName="w-full h-[500px]"
+                wrapperClassName="w-full h-[350px] lg:h-[500px]"
                 className="object-cover hover:scale-105 transition-transform duration-700"
               />
             </div>

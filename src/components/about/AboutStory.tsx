@@ -7,7 +7,7 @@ import Heading4 from "@/components/common/Headings/Heading4";
 
 export default function AboutStory() {
   return (
-    <section className="py-10 md:py-16 lg:py-24 overflow-hidden">
+    <section className="pt-5 pb-10 md:py-16 lg:py-24 overflow-hidden">
       <div className="main-container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           {/* Image Grid */}

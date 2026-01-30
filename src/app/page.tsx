@@ -30,11 +30,15 @@ export default function Home() {
       <HomeVideoSection />
       <TestimonialSection />
       <NewBlogSection />
-      <ServicesVerticalSlider />
+      <div className="md:-my-0 -my-12">
+        <ServicesVerticalSlider />
+      </div>
       {/* <PortfolioSection /> */}
       <WhyChooseUs />
 
-      <FAQSection />
+      <div className="">
+        <FAQSection />
+      </div>
     </div>
   );
 }

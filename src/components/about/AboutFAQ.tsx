@@ -26,7 +26,12 @@ export default function AboutFAQ() {
               </p>
             </div>
 
-            <Accordion type="single" collapsible className="w-full">
+            <Accordion
+              type="single"
+              collapsible
+              defaultValue="item-1"
+              className="w-full"
+            >
               <AccordionItem value="item-1">
                 <AccordionTrigger className="text-secondary font-bold text-base md:text-lg text-left">
                   Is your food 100% organic?

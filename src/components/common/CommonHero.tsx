@@ -7,14 +7,16 @@ import Heading1 from "./Headings/Heading1";
 
 interface CommonHeroProps {
   title?: string;
+  subtitle?: string;
   image?: string;
   breadcrumb?: string;
 }
 
 export default function CommonHero({
   title = "Page Title",
+  subtitle,
   image = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2664&auto=format&fit=crop",
-  breadcrumb = "Page",
+  breadcrumb,
 }: CommonHeroProps) {
   return (
     <section className="py-10">
@@ -73,12 +75,17 @@ export default function CommonHero({
                     Home
                   </Link>
                   <ArrowRight className="w-4 h-4" />
-                  <span className="text-white">{breadcrumb}</span>
+                  <span className="text-white">{breadcrumb || title}</span>
                 </div>
 
                 <Heading1 className=" font-bold text-white tracking-tight leading-tight text-3xl md:text-5xl lg:text-7xl">
                   {title}
                 </Heading1>
+                {subtitle && (
+                  <p className="text-white/80 text-lg md:text-xl mt-4 font-medium max-w-2xl">
+                    {subtitle}
+                  </p>
+                )}
               </div>
             </div>
 

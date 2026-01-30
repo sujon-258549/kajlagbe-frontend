@@ -5,7 +5,7 @@ import Heading4 from "../common/Headings/Heading4";
 
 export default function WhyChooseUs() {
   return (
-    <section className="py-20">
+    <section className=" md:py-20 pt-16 pb-10">
       <div className="main-container mx-auto px-4 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         <div className="relative">
           <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
@@ -13,13 +13,13 @@ export default function WhyChooseUs() {
               src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80"
               alt="Meeting"
               fill
-              wrapperClassName="w-full h-[600px]"
+              wrapperClassName="w-full h-[350px] lg:h-[600px]"
               className="object-cover hover:scale-105 transition-transform duration-700"
             />
           </div>
           {/* Decorative Elements */}
-          <div className="absolute -bottom-6 -left-6 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-0"></div>
-          <div className="absolute -top-6 -right-6 w-32 h-32 bg-secondary/10 rounded-full blur-2xl -z-0"></div>
+          <div className="absolute -bottom-6 -left-6 w-64 h-64 bg-primary/10 rounded-full blur-3xl z-0"></div>
+          <div className="absolute -top-6 -right-6 w-32 h-32 bg-secondary/10 rounded-full blur-2xl z-0"></div>
         </div>
         <div className="space-y-6 md:space-y-8">
           <div className="space-y-4">

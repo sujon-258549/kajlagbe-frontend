@@ -52,10 +52,10 @@ const blogPosts: BlogPost[] = [
 
 export default function NewBlogSection() {
   return (
-    <section className="py-20">
+    <section className="md:py-20 py-12">
       <div className="main-container">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-secondary font-bold text-sm tracking-wide uppercase">
               <Leaf className="w-4 h-4" />
