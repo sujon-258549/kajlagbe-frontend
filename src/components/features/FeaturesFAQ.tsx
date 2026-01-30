@@ -40,7 +40,7 @@ export default function FeaturesFAQ() {
               <span className="text-[#86b86b] font-bold text-sm tracking-widest uppercase">
                 LEARN MORE
               </span>
-              <h2 className="text-3xl lg:text-5xl font-black text-[#154d2e] leading-tight">
+              <h2 className="text-3xl lg:text-5xl font-black text-secondary leading-tight">
                 Learn more about our food, our process & our promise
               </h2>
             </div>
@@ -63,7 +63,7 @@ export default function FeaturesFAQ() {
                   >
                     <span
                       className={`font-bold text-lg transition-colors ${
-                        openIndex === index ? "text-white" : "text-[#154d2e]"
+                        openIndex === index ? "text-white" : "text-secondary"
                       }`}
                     >
                       {faq.question}
@@ -102,7 +102,7 @@ export default function FeaturesFAQ() {
                 fill
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-linear-to-t from-[#154d2e]/60 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-secondary/60 to-transparent" />
 
               {/* Floating Review Card */}
               <div className="absolute bottom-10 left-10 right-10 bg-white/10 backdrop-blur-xl p-8 rounded-2xl border border-white/20 text-white space-y-4">

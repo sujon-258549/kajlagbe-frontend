@@ -54,7 +54,7 @@ export default function DashboardOverview() {
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                 {stat.label}
               </p>
-              <h3 className="text-2xl font-bold text-[#154d2e]">
+              <h3 className="text-2xl font-bold text-secondary">
                 {stat.value}
               </h3>
             </div>
@@ -69,7 +69,7 @@ export default function DashboardOverview() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white p-8 rounded-lg border border-gray-200 space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold text-[#154d2e]">Recent Bids</h3>
+            <h3 className="text-xl font-bold text-secondary">Recent Bids</h3>
             <button className="text-xs font-bold text-secondary uppercase tracking-widest hover:underline cursor-pointer">
               View All
             </button>
@@ -80,11 +80,11 @@ export default function DashboardOverview() {
                 key={i}
                 className="flex items-center gap-4 p-4 border border-slate-100 rounded-lg hover:bg-slate-50 transition-colors"
               >
-                <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center text-[#154d2e] font-bold text-xl">
+                <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center text-secondary font-bold text-xl">
                   W
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-bold text-[#154d2e] text-sm">
+                  <h4 className="font-bold text-secondary text-sm">
                     Website Modernization
                   </h4>
                   <p className="text-xs text-slate-500 font-medium">
@@ -101,7 +101,7 @@ export default function DashboardOverview() {
 
         <div className="bg-white p-8 rounded-lg border border-gray-200 space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold text-[#154d2e]">Latest Jobs</h3>
+            <h3 className="text-xl font-bold text-secondary">Latest Jobs</h3>
             <button className="text-xs font-bold text-secondary uppercase tracking-widest hover:underline cursor-pointer">
               View All
             </button>
@@ -116,14 +116,14 @@ export default function DashboardOverview() {
                   A
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-bold text-[#154d2e] text-sm">
+                  <h4 className="font-bold text-secondary text-sm">
                     App Development
                   </h4>
                   <p className="text-xs text-slate-500 font-medium">
                     Bids: 12 • Posted 1 day ago
                   </p>
                 </div>
-                <span className="text-[10px] bg-[#86b86b]/20 text-[#154d2e] px-2 py-1 rounded-full font-bold uppercase">
+                <span className="text-[10px] bg-[#86b86b]/20 text-secondary px-2 py-1 rounded-full font-bold uppercase">
                   Active
                 </span>
               </div>

@@ -57,7 +57,7 @@ export default function NewBlogSection() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-[#154d2e] font-bold text-sm tracking-wide uppercase">
+            <div className="flex items-center gap-2 text-secondary font-bold text-sm tracking-wide uppercase">
               <Leaf className="w-4 h-4" />
               <span>News & Blog</span>
             </div>
@@ -123,7 +123,7 @@ export default function NewBlogSection() {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl md:text-[22px] font-bold text-[#002A3A] leading-snug group-hover:text-[#154d2e] transition-colors">
+                <h3 className="text-xl md:text-[22px] font-bold text-[#002A3A] leading-snug group-hover:text-secondary transition-colors">
                   <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                 </h3>
 
@@ -133,7 +133,7 @@ export default function NewBlogSection() {
                   className="inline-flex items-center gap-2 border border-slate-200 bg-white rounded-full px-5 py-2.5 text-xs font-bold text-[#002A3A] shadow-sm group-hover:bg-[#002A3A] group-hover:text-white transition-all mt-2"
                 >
                   Read More
-                  <div className="bg-[#154d2e] rounded-full p-0.5 group-hover:bg-white group-hover:text-[#002A3A] transition-colors">
+                  <div className="bg-secondary rounded-full p-0.5 group-hover:bg-white group-hover:text-[#002A3A] transition-colors">
                     <ArrowRight className="w-3 h-3" />
                   </div>
                 </Link>

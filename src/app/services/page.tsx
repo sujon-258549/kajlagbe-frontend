@@ -6,6 +6,12 @@ import ServicesEngineers from "@/components/services/ServicesEngineers";
 import ServicesVerticalSlider from "@/components/services/ServicesVerticalSlider";
 import ServicesBlog from "@/components/services/ServicesBlog";
 
+import ServicesBenefits from "@/components/services/ServicesBenefits";
+import ServicesProcess from "@/components/services/ServicesProcess";
+import ServicesPricing from "@/components/services/ServicesPricing";
+import ServicesFAQ from "@/components/services/ServicesFAQ";
+import ServicesCTA from "@/components/services/ServicesCTA";
+
 export default function ServicesPage() {
   return (
     <div className="min-h-screen bg-white">
@@ -15,7 +21,7 @@ export default function ServicesPage() {
         image="https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg"
       />
 
-      <div className="pt-16 pb-16">
+      <div className="pb-16">
         <Services />
       </div>
 
@@ -26,7 +32,15 @@ export default function ServicesPage() {
       <ServicesVerticalSlider />
 
       <ServicesTestimonial />
+
+      <ServicesBenefits />
+
+      <ServicesPricing />
+      <ServicesCTA />
+      <ServicesFAQ />
+
       <ServicesBlog />
+      <ServicesProcess />
     </div>
   );
 }

@@ -9,8 +9,10 @@ import "swiper/css";
 import "swiper/css/effect-creative";
 import "swiper/css/pagination";
 import { ArrowRight, MessageSquare, Play, Leaf } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Heading2 from "@/components/common/Headings/Heading2";
+import Marquee from "react-fast-marquee";
+
+import Heading3 from "@/components/common/Headings/Heading3";
+import Heading4 from "@/components/common/Headings/Heading4";
 
 const testimonials = [
   {
@@ -107,25 +109,25 @@ const partners = [
 
 export default function AboutTestimonialSlider() {
   return (
-    <section className="py-20 lg:py-28 bg-white overflow-hidden">
+    <section className="py-16 lg:py-24 bg-white overflow-hidden">
       <div className="main-container mx-auto px-4">
         <div className="flex flex-col lg:flex-row gap-16 lg:gap-8 items-center mb-20">
           {/* Left Content */}
           <div className="w-full lg:w-5/12 space-y-8">
-            <div className="flex items-center gap-2 text-[#063022] font-semibold">
+            <div className="flex items-center gap-2 text-secondary font-semibold">
               <Leaf className="w-5 h-5 fill-current" />
               <span className="text-sm uppercase tracking-wide">
                 Testimonials
               </span>
             </div>
 
-            <Heading2 className="text-[#063022] font-bold text-4xl lg:text-5xl leading-tight">
+            <Heading3 className="text-secondary font-bold leading-tight">
               Why They Believe <br />
-              <span className="inline-flex items-center justify-center w-12 h-12 bg-[#063022] text-[#fcd34d] rounded-full mx-2 align-middle">
-                <span className="text-2xl font-serif">❝</span>
+              <span className="inline-flex items-center justify-center w-10 h-10 bg-secondary text-primary rounded-full mx-2 align-middle">
+                <span className="text-xl font-serif">❝</span>
               </span>
               In Us
-            </Heading2>
+            </Heading3>
 
             <p className="text-slate-500 text-lg leading-relaxed">
               Likely to then a dental prosthetic is added then dental prosthetic
@@ -143,10 +145,10 @@ export default function AboutTestimonialSlider() {
                 99%
               </span>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-[#063022] flex items-center justify-center text-[#fcd34d]">
+                <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-primary">
                   <Leaf className="w-4 h-4 fill-current" />
                 </div>
-                <span className="font-bold text-[#063022]">
+                <span className="font-bold text-secondary">
                   Positive Reviews
                 </span>
               </div>
@@ -154,14 +156,14 @@ export default function AboutTestimonialSlider() {
 
             <div className="pt-4">
               <button className="flex items-center gap-3 px-6 py-4 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all group">
-                <div className="w-10 h-10 rounded-full bg-[#fcd34d]/20 text-[#fcd34d] flex items-center justify-center group-hover:bg-[#fcd34d] group-hover:text-white transition-colors">
+                <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
                   <MessageSquare className="w-5 h-5 fill-current" />
                 </div>
                 <div className="text-left">
                   <span className="block text-xs text-slate-500 font-medium">
                     Write your honest
                   </span>
-                  <span className="flex text-sm font-bold text-[#063022] items-center gap-1">
+                  <span className="flex text-sm font-bold text-secondary items-center gap-1">
                     review <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
@@ -203,7 +205,7 @@ export default function AboutTestimonialSlider() {
                     key={item.id}
                     className="rounded-3xl overflow-hidden shadow-2xl"
                   >
-                    <div className="bg-[#063022] flex flex-col md:flex-row h-full md:h-[400px]">
+                    <div className="bg-secondary flex flex-col md:flex-row h-full md:h-[400px]">
                       {/* Image Half */}
                       <div className="md:w-5/12 relative h-64 md:h-full">
                         <Image
@@ -236,7 +238,7 @@ export default function AboutTestimonialSlider() {
                         </p>
 
                         <div>
-                          <h4 className="text-xl font-bold">{item.name}</h4>
+                          <Heading4 className="font-bold">{item.name}</Heading4>
                           <p className="text-sm text-gray-400">{item.role}</p>
                         </div>
                       </div>
@@ -249,38 +251,38 @@ export default function AboutTestimonialSlider() {
         </div>
 
         {/* Major Partners Section */}
-        <div className="mt-20 lg:mt-32">
-          <div className="flex items-center gap-4 mb-12">
+        {/* Major Partners Section */}
+        <div className="mt-16 lg:mt-24">
+          <div className="flex items-center gap-4 mb-10">
             <div className="h-px bg-slate-200 grow"></div>
-            <h3 className="text-2xl font-bold text-[#063022]">
-              Major Partners
-            </h3>
+            <Heading3 className="text-secondary uppercase tracking-wider text-lg">
+              Trusted Partners
+            </Heading3>
             <div className="h-px bg-slate-200 grow"></div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-16">
-            {partners.map((partner, index) => (
-              <div
-                key={index}
-                className="bg-[#063022] rounded-2xl p-6 h-28 flex items-center justify-center hover:scale-105 transition-transform duration-300 group"
-              >
-                <div className="relative w-full h-full">
-                  {/* Using text for now as the image shows custom logos that aren't in the provided URLs */}
-                  <span className="text-white font-bold text-xl opacity-80 group-hover:opacity-100 transition-opacity">
+          <div className="relative w-full overflow-hidden">
+            <div className="absolute left-0 top-0 bottom-0 w-20 z-10 bg-linear-to-r from-white to-transparent pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-20 z-10 bg-linear-to-l from-white to-transparent pointer-events-none" />
+
+            <Marquee
+              gradient={false}
+              speed={40}
+              pauseOnHover
+              autoFill
+              className="py-4"
+            >
+              {partners.map((partner, index) => (
+                <div
+                  key={index}
+                  className="mx-4 bg-secondary rounded-xl p-6 h-24 min-w-[200px] flex items-center justify-center hover:bg-secondary/90 transition-colors group cursor-pointer border border-secondary"
+                >
+                  <span className="text-white font-bold text-lg opacity-70 group-hover:opacity-100 transition-opacity tracking-wide">
                     {partner.name}
                   </span>
                 </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center">
-            <Button className="bg-[#fcd34d] text-[#063022] hover:bg-[#063022] hover:text-[#fcd34d] rounded-full px-2 py-2 pl-8 pr-2 font-bold text-sm h-14 flex items-center gap-3 transition-all">
-              Become a Partner
-              <div className="w-10 h-10 rounded-full bg-[#063022] flex items-center justify-center text-[#fcd34d] group-hover:bg-[#fcd34d] group-hover:text-[#063022]">
-                <ArrowRight className="w-5 h-5" />
-              </div>
-            </Button>
+              ))}
+            </Marquee>
           </div>
         </div>
         <style>{`

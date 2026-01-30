@@ -34,7 +34,7 @@ export default function ArtisanSection() {
         <span className="text-[#86b86b] font-bold text-sm tracking-widest uppercase mb-4 block">
           OUR PRODUCTS
         </span>
-        <Heading2 className="text-[#154d2e] mb-16 max-w-2xl mx-auto leading-tight">
+        <Heading2 className="text-secondary mb-16 max-w-2xl mx-auto leading-tight">
           Artisan food products crafted for flavor seekers
         </Heading2>
 
@@ -53,7 +53,7 @@ export default function ArtisanSection() {
                 </div>
               </div>
               <div className="space-y-3">
-                <Heading3 className="text-xl font-bold text-[#154d2e]">
+                <Heading3 className="text-xl font-bold text-secondary">
                   {product.title}
                 </Heading3>
                 <p className="text-slate-500 text-sm font-medium">
@@ -61,7 +61,7 @@ export default function ArtisanSection() {
                 </p>
                 <Link
                   href="#"
-                  className="inline-flex items-center gap-2 text-sm font-bold text-[#154d2e] hover:text-[#86b86b] transition-colors"
+                  className="inline-flex items-center gap-2 text-sm font-bold text-secondary hover:text-[#86b86b] transition-colors"
                 >
                   Read More <MoveRight className="w-4 h-4" />
                 </Link>

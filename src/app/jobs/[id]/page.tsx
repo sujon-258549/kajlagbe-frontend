@@ -423,7 +423,7 @@ export default function JobDetailsPage({
               </div>
 
               {/* Bottom Application Section */}
-              <div className="bg-[#154d2e] rounded-lg p-8 text-white relative overflow-hidden">
+              <div className="bg-secondary rounded-lg p-8 text-white relative overflow-hidden">
                 <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
                   <div className="space-y-2 text-center md:text-left">
                     <h3 className="text-xl font-bold">
@@ -434,7 +434,7 @@ export default function JobDetailsPage({
                       review. Application deadline is {deadline}.
                     </p>
                   </div>
-                  <Button className="w-full md:w-auto h-12 px-12 bg-white hover:bg-slate-100 text-[#154d2e] font-bold rounded-lg border-none shadow-none">
+                  <Button className="w-full md:w-auto h-12 px-12 bg-white hover:bg-slate-100 text-secondary font-bold rounded-lg border-none shadow-none">
                     Submit Application
                   </Button>
                 </div>

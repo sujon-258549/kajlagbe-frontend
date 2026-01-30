@@ -119,7 +119,7 @@ export default function GetWorkPage() {
               <div className="space-y-4 flex-1">
                 <div className="space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-[10px] bg-green-50 text-[#154d2e] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border border-green-100">
+                    <span className="text-[10px] bg-green-50 text-secondary font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border border-green-100">
                       Verified Client
                     </span>
                     <span className="text-xs text-slate-400 font-bold uppercase tracking-widest">

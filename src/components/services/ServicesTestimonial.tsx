@@ -78,7 +78,7 @@ export default function ServicesTestimonial() {
               What People Saying
             </h2>
           </div>
-          <button className="bg-[#154d2e] hover:bg-[#0f392e] text-white px-6 py-3 rounded-full text-sm font-semibold transition-all flex items-center gap-2 border border-white/20 backdrop-blur-sm group">
+          <button className="bg-secondary hover:bg-[#0f392e] text-white px-6 py-3 rounded-full text-sm font-semibold transition-all flex items-center gap-2 border border-white/20 backdrop-blur-sm group">
             View All Reviews
             <span className="bg-[#fbbf24] text-black w-6 h-6 rounded-full flex items-center justify-center group-hover:rotate-45 transition-transform duration-300">
               <ArrowRight className="w-3 h-3" />
@@ -104,14 +104,14 @@ export default function ServicesTestimonial() {
               <SwiperSlide key={item.id}>
                 <div className="bg-white/90 backdrop-blur-sm border border-white/20 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-6 items-center md:items-start group hover:shadow-2xl transition-shadow duration-300 h-full">
                   {/* Image Container with Play Button */}
-                  <div className="relative w-full md:w-1/3 shrink-0 aspect-[3/4] rounded-xl overflow-hidden bg-[#154d2e]">
+                  <div className="relative w-full md:w-1/3 shrink-0 aspect-[3/4] rounded-xl overflow-hidden bg-secondary">
                     <CustomImage
                       src={item.image}
                       alt={item.name}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-[#154d2e]/20 group-hover:bg-[#154d2e]/40 transition-colors duration-300 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-secondary/20 group-hover:bg-secondary/40 transition-colors duration-300 flex items-center justify-center">
                       <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 cursor-pointer hover:scale-110 transition-transform">
                         <Play className="w-4 h-4 text-white fill-white ml-1" />
                       </div>
@@ -121,7 +121,7 @@ export default function ServicesTestimonial() {
                   {/* Content */}
                   <div className="flex-1 space-y-4 text-center md:text-left">
                     <div className="flex flex-col gap-1">
-                      <h3 className="text-[#154d2e] font-bold text-xl">
+                      <h3 className="text-secondary font-bold text-xl">
                         {item.title}
                       </h3>
                       <div className="flex justify-center md:justify-start">

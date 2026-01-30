@@ -54,7 +54,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {/* Tags and Social Share */}
             <div className="flex flex-col md:flex-row items-center justify-between gap-8 mt-16 pt-8 border-t border-slate-100">
               <div className="flex flex-wrap items-center gap-4">
-                <span className="text-sm font-bold text-[#154d2e]">Tags:</span>
+                <span className="text-sm font-bold text-secondary">Tags:</span>
                 {post.tags.map((tag) => (
                   <span
                     key={tag}
@@ -66,13 +66,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-[#154d2e] hover:bg-[#86b86b] hover:text-white transition-all cursor-pointer">
+                <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-secondary hover:bg-[#86b86b] hover:text-white transition-all cursor-pointer">
                   <Facebook className="w-4 h-4" />
                 </div>
-                <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-[#154d2e] hover:bg-[#86b86b] hover:text-white transition-all cursor-pointer">
+                <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-secondary hover:bg-[#86b86b] hover:text-white transition-all cursor-pointer">
                   <Twitter className="w-4 h-4" />
                 </div>
-                <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-[#154d2e] hover:bg-[#86b86b] hover:text-white transition-all cursor-pointer">
+                <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-secondary hover:bg-[#86b86b] hover:text-white transition-all cursor-pointer">
                   <Linkedin className="w-4 h-4" />
                 </div>
               </div>

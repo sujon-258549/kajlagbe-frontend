@@ -40,10 +40,10 @@ export default function HomeVideoSection() {
           />
           {/* Fallback Image */}
           <Image
-             src="/images/home/video_bg.png"
-             alt="Cinematic Food background"
-             fill
-             className="object-cover"
+            src="/images/home/video_bg.png"
+            alt="Cinematic Food background"
+            fill
+            className="object-cover"
           />
         </video>
         {/* Dark Overlay */}
@@ -60,7 +60,7 @@ export default function HomeVideoSection() {
             {/* Play Button Outer Ring */}
             <div className="relative w-20 h-20 md:w-28 md:h-28 flex items-center justify-center rounded-full bg-white/20 backdrop-blur-sm border border-white/30 group-hover:bg-white/30 transition-all duration-300">
               {/* Play Button Inner */}
-              <div className="w-14 h-14 md:w-18 md:h-18 flex items-center justify-center rounded-full bg-white text-[#154d2e] shadow-xl animate-pulse-slow">
+              <div className="w-14 h-14 md:w-18 md:h-18 flex items-center justify-center rounded-full bg-white text-secondary shadow-xl animate-pulse-slow">
                 <Play className="w-6 h-6 md:w-8 md:h-8 fill-current ml-1" />
               </div>
             </div>

@@ -2,7 +2,7 @@ import Heading3 from "@/components/common/Headings/Heading3";
 
 export default function AboutStats() {
   return (
-    <section className="py-16 bg-[#154d2e] text-white">
+    <section className="py-12 bg-secondary text-white">
       <div className="main-container mx-auto px-4">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center lg:divide-x divide-x-0 divide-white/10">
           <div className="p-4">

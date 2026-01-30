@@ -54,10 +54,10 @@ const Pagination: React.FC<PaginationProps> = ({
       {showPrevNext && (
         <button
           className={cn(
-            "w-12 h-12 flex items-center justify-center rounded-lg border border-slate-200 transition-all",
+            "w-10 h-10 flex items-center justify-center rounded-lg border border-gray-400 transition-all duration-300 shadow-sm",
             currentPage === 1
-              ? "opacity-50 cursor-not-allowed bg-slate-50 text-slate-400"
-              : "hover:border-[#86b86b] hover:text-[#86b86b] bg-white text-slate-700 cursor-pointer",
+              ? "opacity-50 cursor-not-allowed bg-gray-50 text-gray-400"
+              : "hover:border-primary hover:text-primary hover:bg-green-50 bg-white text-gray-700 cursor-pointer active:scale-95",
           )}
           disabled={currentPage === 1}
           onClick={() => handlePageChange(currentPage - 1)}
@@ -71,7 +71,7 @@ const Pagination: React.FC<PaginationProps> = ({
           page === "..." ? (
             <span
               key={`dots-${index}`}
-              className="w-10 text-center text-slate-400 font-bold"
+              className="w-10 text-center text-gray-400 font-bold"
             >
               ...
             </span>
@@ -80,10 +80,10 @@ const Pagination: React.FC<PaginationProps> = ({
               key={`page-${page}`}
               onClick={() => handlePageChange(page)}
               className={cn(
-                "w-12 h-12 flex items-center justify-center rounded-lg font-bold transition-all cursor-pointer",
+                "w-10 h-10 flex items-center justify-center rounded-lg font-bold transition-all duration-300 shadow-sm text-sm",
                 page === currentPage
-                  ? "bg-[#154d2e] text-white"
-                  : "bg-white border border-slate-200 text-slate-700 hover:border-[#86b86b] hover:text-[#86b86b]",
+                  ? "bg-secondary text-white shadow-md border border-secondary scale-105"
+                  : "bg-white border border-gray-400 text-gray-700 hover:border-primary hover:text-primary hover:bg-green-50 active:scale-95",
               )}
             >
               {page}
@@ -95,10 +95,10 @@ const Pagination: React.FC<PaginationProps> = ({
       {showPrevNext && (
         <button
           className={cn(
-            "w-12 h-12 flex items-center justify-center rounded-lg border border-slate-200 transition-all",
+            "w-10 h-10 flex items-center justify-center rounded-lg border border-gray-400 transition-all duration-300 shadow-sm",
             currentPage === totalPages
-              ? "opacity-50 cursor-not-allowed bg-slate-50 text-slate-400"
-              : "hover:border-[#86b86b] hover:text-[#86b86b] bg-white text-slate-700 cursor-pointer",
+              ? "opacity-50 cursor-not-allowed bg-gray-50 text-gray-400"
+              : "hover:border-primary hover:text-primary hover:bg-green-50 bg-white text-gray-700 cursor-pointer active:scale-95",
           )}
           disabled={currentPage === totalPages}
           onClick={() => handlePageChange(currentPage + 1)}

@@ -32,7 +32,7 @@ export default function AboutTestimonials() {
           <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block">
             TESTIMONIALS
           </span>
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#154d2e]">
+          <h2 className="text-3xl lg:text-4xl font-bold text-secondary">
             Trusted by families, loved for flavor, known for quality
           </h2>
         </div>
@@ -63,7 +63,7 @@ export default function AboutTestimonials() {
                   />
                 </div>
                 <div>
-                  <h4 className="font-bold text-[#154d2e] leading-snug">
+                  <h4 className="font-bold text-secondary leading-snug">
                     {t.name}
                   </h4>
                   <p className="text-xs text-slate-500 uppercase">{t.role}</p>

@@ -31,22 +31,24 @@ export default function BlogList() {
   };
 
   return (
-    <div className="space-y-16 min-h-[800px]">
+    <div className="space-y-8 min-h-[600px]">
       {isLoading ? (
         <BlogGridSkeleton />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentPosts.map((post, index) => (
             <BlogCard key={post.id} post={post} index={index} />
           ))}
         </div>
       )}
 
-      <Pagination
+    <div className="flex justify-center">
+        <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
         onPageChange={handlePageChange}
-      />
+      /> 
+    </div>
     </div>
   );
 }

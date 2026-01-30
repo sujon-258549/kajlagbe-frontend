@@ -54,11 +54,11 @@ export default function HomeBenefits() {
       <div className="main-container mx-auto px-4">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f0f9eb] rounded-full text-[#154d2e] text-sm font-semibold border border-[#dcf0d1] mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f0f9eb] rounded-full text-secondary text-sm font-semibold border border-[#dcf0d1] mb-6">
             <Sparkles className="w-4 h-4" />
             Our Benefits
           </div>
-          <Heading2 className=" text-[#154d2e] leading-tight">
+          <Heading2 className=" text-secondary leading-tight">
             Discover the benefits that set our food products apart
           </Heading2>
         </div>
@@ -126,7 +126,7 @@ export default function HomeBenefits() {
             From clean ingredients to conscious choices –{" "}
             <Link
               href="/about"
-              className="text-[#154d2e] underline decoration-[#86b86b] decoration-2 underline-offset-4 hover:text-[#86b86b] transition-colors"
+              className="text-secondary underline decoration-[#86b86b] decoration-2 underline-offset-4 hover:text-[#86b86b] transition-colors"
             >
               discover what sets us apart.
             </Link>

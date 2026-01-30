@@ -1,11 +1,13 @@
 import Image from "next/image";
 import { Check } from "lucide-react";
 
+import Heading2 from "@/components/common/Headings/Heading2";
 import Heading3 from "@/components/common/Headings/Heading3";
+import Heading4 from "@/components/common/Headings/Heading4";
 
 export default function AboutStory() {
   return (
-    <section className="py-16 lg:py-24 overflow-hidden">
+    <section className="py-12 lg:py-20 overflow-hidden">
       <div className="main-container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-6">
           {/* Image Grid */}
@@ -23,14 +25,14 @@ export default function AboutStory() {
                   />
                 </div>
                 <div className="bg-[#bce68a]/30 p-6 rounded-2xl text-center">
-                  <Heading3 className="text-3xl font-bold text-[#154d2e]">
+                  <Heading3 className="text-3xl font-bold text-secondary">
                     100%
                   </Heading3>
-                  <p className="text-[#154d2e] font-medium">Organic Food</p>
+                  <p className="text-secondary font-medium">Organic Food</p>
                 </div>
               </div>
               <div className="space-y-4">
-                <div className="bg-[#154d2e] p-6 rounded-2xl text-center text-white">
+                <div className="bg-secondary p-6 rounded-2xl text-center text-white">
                   <Check className="w-8 h-8 mx-auto mb-2" />
                   <p className="font-medium">Certified Product</p>
                 </div>
@@ -50,12 +52,12 @@ export default function AboutStory() {
 
           {/* Content */}
           <div className="w-full lg:w-1/2 space-y-6">
-            <div className="inline-block px-3 py-1 bg-[#154d2e]/10 rounded-full text-[#154d2e] font-medium text-sm">
+            <div className="inline-block px-3 py-1 bg-secondary/10 rounded-full text-secondary font-medium text-sm">
               About Us
             </div>
-            <h2 className="text-3xl lg:text-4xl font-bold text-[#154d2e] leading-snug">
+            <Heading2 className="text-secondary leading-snug">
               Pure is the only one farm that need no cover & extra fertilizer
-            </h2>
+            </Heading2>
             <p className="text-slate-600 leading-relaxed">
               We believe that nature knows best. That,s why our farm is
               dedicated to growing produce the way it was meant to be
@@ -69,9 +71,9 @@ export default function AboutStory() {
                   <Check className="w-3 h-3 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-[#154d2e]">
+                  <Heading4 className="text-secondary">
                     Only Pure Ingredients
-                  </h4>
+                  </Heading4>
                   <p className="text-sm text-slate-500">
                     We never compromise on the quality of our inputs.
                   </p>
@@ -82,9 +84,9 @@ export default function AboutStory() {
                   <Check className="w-3 h-3 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-[#154d2e]">
+                  <Heading4 className="text-secondary">
                     Sustainability First
-                  </h4>
+                  </Heading4>
                   <p className="text-sm text-slate-500">
                     Our farming practices enrich the land rather than depleting
                     it.

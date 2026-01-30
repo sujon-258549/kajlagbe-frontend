@@ -18,7 +18,7 @@ export default function FAQSidebar() {
             <li key={idx}>
               <a
                 href={`#${cat.id}`}
-                className="flex items-center justify-between group text-[#154d2e] font-bold hover:text-[#86b86b] transition-all"
+                className="flex items-center justify-between group text-secondary font-bold hover:text-[#86b86b] transition-all"
               >
                 <span className="text-[15px]">{cat.name}</span>
                 <ArrowUpRight className="w-4 h-4 opacity-40 group-hover:opacity-100 transition-opacity" />
@@ -32,7 +32,7 @@ export default function FAQSidebar() {
       </div>
 
       {/* Support Info Box */}
-      <div className="bg-[#154d2e] p-8 rounded-2xl text-white space-y-8 relative overflow-hidden">
+      <div className="bg-secondary p-8 rounded-2xl text-white space-y-8 relative overflow-hidden">
         {/* Decorative Logo Background */}
         <div className="absolute -bottom-10 -right-10 opacity-5 w-48 h-48">
           <Image

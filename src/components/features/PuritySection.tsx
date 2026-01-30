@@ -20,7 +20,7 @@ export default function PuritySection() {
               <span className="text-[#86b86b] font-bold text-sm tracking-widest uppercase">
                 OUR MISSION
               </span>
-              <Heading2 className="text-[#154d2e] leading-tight">
+              <Heading2 className="text-secondary leading-tight">
                 Rooted in purity, grown with care, delivered with love
               </Heading2>
               <p className="text-slate-600 font-medium text-lg leading-relaxed">
@@ -36,7 +36,7 @@ export default function PuritySection() {
                   <div className="w-6 h-6 rounded-full bg-[#86b86b]/10 flex items-center justify-center">
                     <Check className="w-4 h-4 text-[#86b86b]" strokeWidth={3} />
                   </div>
-                  <span className="font-bold text-[#154d2e]">{point}</span>
+                  <span className="font-bold text-secondary">{point}</span>
                 </div>
               ))}
             </div>
@@ -46,7 +46,7 @@ export default function PuritySection() {
                 25<span className="text-lg">+</span>
               </div>
               <div>
-                <h4 className="font-bold text-[#154d2e] text-xl">
+                <h4 className="font-bold text-secondary text-xl">
                   Years of Experience
                 </h4>
                 <p className="text-slate-500 font-medium">
@@ -86,7 +86,7 @@ export default function PuritySection() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-12 border-t border-slate-200">
           {stats.map((stat, index) => (
             <div key={index} className="text-center space-y-2">
-              <h3 className="text-4xl lg:text-5xl font-black text-[#154d2e]">
+              <h3 className="text-4xl lg:text-5xl font-black text-secondary">
                 {stat.value}
               </h3>
               <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">

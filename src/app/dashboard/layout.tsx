@@ -17,7 +17,7 @@ export default function DashboardLayout({
             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none">
               Dashboard
             </span>
-            <span className="text-lg font-bold text-[#154d2e]">Kajlagbe</span>
+            <span className="text-lg font-bold text-secondary">Kajlagbe</span>
           </div>
 
           <Sheet>

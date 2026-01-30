@@ -20,7 +20,7 @@ const FAQSection = ({ title, id, items }: FAQSectionProps) => {
 
   return (
     <div id={id} className="scroll-mt-32 space-y-8">
-      <h2 className="text-3xl lg:text-4xl font-black text-[#154d2e]">
+      <h2 className="text-3xl lg:text-4xl font-black text-secondary">
         {title}
       </h2>
       <div className="space-y-4">
@@ -41,7 +41,7 @@ const FAQSection = ({ title, id, items }: FAQSectionProps) => {
               <span
                 className={cn(
                   "font-bold text-[16px] transition-colors",
-                  openIndex === idx ? "text-white" : "text-[#154d2e]",
+                  openIndex === idx ? "text-white" : "text-secondary",
                 )}
               >
                 {`${idx + 1}. ${faq.question}`}

@@ -37,7 +37,7 @@ export default function FeaturesTrust() {
         <span className="text-[#86b86b] font-bold text-sm tracking-widest uppercase mb-4 block">
           TESTIMONIALS
         </span>
-        <Heading2 className="text-[#154d2e] mb-20 max-w-3xl mx-auto leading-tight">
+        <Heading2 className="text-secondary mb-20 max-w-3xl mx-auto leading-tight">
           Trusted by families, <br />
           <span className="text-slate-300">remembered by palate</span>
         </Heading2>
@@ -67,7 +67,7 @@ export default function FeaturesTrust() {
                   <Image src={t.image} alt={t.name} fill />
                 </div>
                 <div>
-                  <h4 className="font-bold text-[#154d2e]">{t.name}</h4>
+                  <h4 className="font-bold text-secondary">{t.name}</h4>
                   <p className="text-slate-400 text-sm font-bold uppercase tracking-wider">
                     {t.role}
                   </p>

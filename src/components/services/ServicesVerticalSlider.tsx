@@ -37,7 +37,6 @@ const projects = [
       "https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&q=80&w=800",
     number: "06",
   },
-  
 ];
 
 export default function ServicesVerticalSlider() {
@@ -52,7 +51,7 @@ export default function ServicesVerticalSlider() {
               className="sticky top-32 w-full"
               style={{ zIndex: index + 1 }}
             >
-              <div className="bg-secondary border border-white rounded-lg overflow-hidden flex flex-col md:flex-row h-[300px] lg:h-[350px] relative">
+              <div className="bg-secondary border border-white rounded-2xl overflow-hidden flex flex-col md:flex-row h-[300px] lg:h-[350px] relative">
                 {/* Image Section with Custom Shape */}
                 <div className="md:w-1/2 relative h-full">
                   {/* Custom Mask Shape using CSS clip-path or overlay */}
@@ -61,7 +60,7 @@ export default function ServicesVerticalSlider() {
                     <div className="absolute top-0 left-0 w-24 h-24 z-20">
                       <svg
                         viewBox="0 0 100 100"
-                        className="w-full h-full text-[#fcd34d] fill-current"
+                        className="w-full h-full text-primary fill-current"
                       >
                         <path d="M0 0 L60 0 L30 30 L0 60 Z" />
                       </svg>
@@ -88,9 +87,9 @@ export default function ServicesVerticalSlider() {
                     {item.title}
                   </Heading3>
 
-                  <button className="bg-[#fcd34d] text-[#063022] px-5 py-2.5 rounded-full font-bold text-xs w-fit flex items-center gap-2 hover:bg-white transition-colors group/btn">
+                  <button className="bg-primary text-white px-5 py-2.5 rounded-full font-bold text-xs w-fit flex items-center gap-2 hover:bg-white hover:text-secondary transition-colors group/btn">
                     Explore Project
-                    <span className="w-5 h-5 bg-[#063022] rounded-full flex items-center justify-center group-hover/btn:rotate-45 transition-transform text-white">
+                    <span className="w-5 h-5 bg-secondary rounded-full flex items-center justify-center group-hover/btn:rotate-45 transition-transform text-white">
                       <ArrowRight className="w-3 h-3" />
                     </span>
                   </button>

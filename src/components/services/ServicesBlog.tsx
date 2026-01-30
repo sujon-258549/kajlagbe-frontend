@@ -50,7 +50,7 @@ export default function ServicesBlog() {
               News & Blog
             </span>
           </div>
-          <Heading2 className="text-[#063022]">Our Daily Update</Heading2>
+          <Heading2 className="text-secondary">Our Daily Update</Heading2>
         </div>
 
         {/* Blog Grid */}
@@ -58,7 +58,7 @@ export default function ServicesBlog() {
           {blogs.map((item) => (
             <div
               key={item.id}
-              className="group rounded-2xl overflow-hidden bg-[#063022] hover:-translate-y-2 transition-transform duration-300"
+              className="group rounded-2xl overflow-hidden bg-secondary border border-white/10 hover:border-primary/50 hover:-translate-y-2 transition-all duration-300"
             >
               {/* Image Section */}
               <div className="relative h-64 overflow-hidden">
@@ -70,7 +70,7 @@ export default function ServicesBlog() {
                 />
 
                 {/* Date Badge */}
-                <div className="absolute top-4 right-4 bg-[#fcd34d] rounded-full w-14 h-14 flex flex-col items-center justify-center text-[#063022] font-bold z-10 border-4 border-[#063022]/20">
+                <div className="absolute top-4 right-4 bg-[#fcd34d] rounded-full w-14 h-14 flex flex-col items-center justify-center text-secondary font-bold z-10 border-4 border-secondary/20">
                   <span className="text-lg leading-none">{item.date}</span>
                   <span className="text-[10px] uppercase leading-none">
                     {item.month}

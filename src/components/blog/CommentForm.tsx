@@ -9,7 +9,7 @@ export default function CommentForm() {
   return (
     <div className="space-y-8 mt-16 pt-16 border-t border-slate-100">
       <div className="space-y-2">
-        <Heading3 className="font-bold text-[#154d2e]">Leave a Reply</Heading3>
+        <Heading3 className="font-bold text-secondary">Leave a Reply</Heading3>
         <p className="text-slate-500">
           Your email address will not be published. Required fields are marked *
         </p>
@@ -20,7 +20,7 @@ export default function CommentForm() {
         onSubmit={(e) => e.preventDefault()}
       >
         <div className="md:col-span-2 space-y-2">
-          <label className="text-sm font-bold text-[#154d2e] tracking-wide block mb-3">
+          <label className="text-sm font-bold text-secondary tracking-wide block mb-3">
             COMMENT *
           </label>
           <Textarea
@@ -31,7 +31,7 @@ export default function CommentForm() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-bold text-[#154d2e] tracking-wide block mb-3">
+          <label className="text-sm font-bold text-secondary tracking-wide block mb-3">
             NAME *
           </label>
           <Input
@@ -42,7 +42,7 @@ export default function CommentForm() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-bold text-[#154d2e] tracking-wide block mb-3">
+          <label className="text-sm font-bold text-secondary tracking-wide block mb-3">
             PHONE *
           </label>
           <Input
@@ -53,7 +53,7 @@ export default function CommentForm() {
         </div>
 
         <div className="md:col-span-2 space-y-2">
-          <label className="text-sm font-bold text-[#154d2e] tracking-wide block mb-3">
+          <label className="text-sm font-bold text-secondary tracking-wide block mb-3">
             WEBSITE
           </label>
           <Input
@@ -82,7 +82,7 @@ export default function CommentForm() {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="px-10 py-3 bg-secondary text-white font-bold rounded-lg hover:bg-[#154d2e] transition-all shadow-lg shadow-secondary/20 cursor-pointer uppercase tracking-wider text-sm"
+            className="px-10 py-3 bg-secondary text-white font-bold rounded-lg hover:bg-secondary transition-all shadow-lg shadow-secondary/20 cursor-pointer uppercase tracking-wider text-sm"
           >
             Post Comment
           </motion.button>

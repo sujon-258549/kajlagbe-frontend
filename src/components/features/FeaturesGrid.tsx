@@ -56,7 +56,7 @@ export default function FeaturesGrid() {
               <div className="w-16 h-16 bg-[#86b86b]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#86b86b] transition-colors">
                 <feature.icon className="w-8 h-8 text-[#86b86b] group-hover:text-white transition-colors" />
               </div>
-              <Heading3 className="text-xl font-bold text-[#154d2e] mb-4">
+              <Heading3 className="text-xl font-bold text-secondary mb-4">
                 {feature.title}
               </Heading3>
               <p className="text-slate-500 leading-relaxed font-medium">
