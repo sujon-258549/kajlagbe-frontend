@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -8,13 +8,24 @@ import { Autoplay, EffectCreative } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-creative";
 import "swiper/css/pagination";
-import { ArrowRight, MessageSquare, Play, Leaf } from "lucide-react";
+import {
+  ArrowRight,
+  MessageSquare,
+  Play,
+  Leaf,
+  Edit,
+  Plus,
+} from "lucide-react";
 import Marquee from "react-fast-marquee";
 
 import Heading3 from "@/components/common/Headings/Heading3";
 import Heading4 from "@/components/common/Headings/Heading4";
+import AdminOnly from "@/components/common/auth/AdminOnly";
+import { Button } from "@/components/ui/button";
+import AboutTestimonialItemModal from "@/components/modal/about/AboutTestimonialItemModal";
+import { AboutTestimonialItem } from "@/schemas/about/testimonial.schema";
 
-const testimonials = [
+const initialTestimonials = [
   {
     id: 1,
     name: "Penelope Miller",
@@ -108,8 +119,45 @@ const partners = [
 ];
 
 export default function AboutTestimonialSlider() {
+  const [testimonials, setTestimonials] =
+    useState<AboutTestimonialItem[]>(initialTestimonials);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<
+    AboutTestimonialItem | undefined
+  >(undefined);
+
+  const handleAddItem = () => {
+    setEditingItem(undefined);
+    setIsModalOpen(true);
+  };
+
+  const handleEditItem = (item: AboutTestimonialItem) => {
+    setEditingItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveItem = (data: AboutTestimonialItem) => {
+    if (editingItem) {
+      setTestimonials((prev) =>
+        prev.map((item) => (item.id === editingItem.id ? data : item)),
+      );
+    } else {
+      setTestimonials((prev) => [{ ...data, id: Date.now() }, ...prev]);
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteItem = () => {
+    if (editingItem) {
+      setTestimonials((prev) =>
+        prev.filter((item) => item.id !== editingItem.id),
+      );
+      setIsModalOpen(false);
+    }
+  };
+
   return (
-    <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden">
+    <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden relative group/section">
       <div className="main-container mx-auto px-4">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center mb-16 md:mb-20">
           {/* Left Content */}
@@ -154,8 +202,8 @@ export default function AboutTestimonialSlider() {
               </div>
             </div>
 
-            <div className="pt-4">
-              <button className="flex items-center gap-3 px-6 py-4 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all group">
+            <div className="pt-4 flex flex-col gap-4">
+              <button className="flex items-center gap-3 px-6 py-4 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all group w-fit">
                 <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
                   <MessageSquare className="w-5 h-5 fill-current" />
                 </div>
@@ -168,6 +216,15 @@ export default function AboutTestimonialSlider() {
                   </span>
                 </div>
               </button>
+
+              <AdminOnly>
+                <Button
+                  onClick={handleAddItem}
+                  className="bg-secondary hover:bg-secondary/90 text-white gap-2 font-bold w-full md:w-auto"
+                >
+                  <Plus className="w-4 h-4" /> Add Testimonial
+                </Button>
+              </AdminOnly>
             </div>
           </div>
 
@@ -210,7 +267,7 @@ export default function AboutTestimonialSlider() {
                     key={item.id}
                     className="rounded-3xl overflow-hidden shadow-2xl"
                   >
-                    <div className="bg-secondary flex flex-col md:flex-row h-full md:h-[400px]">
+                    <div className="bg-secondary flex flex-col md:flex-row h-full md:h-[400px] relative group">
                       {/* Image Half */}
                       <div className="md:w-5/12 relative h-64 md:h-full">
                         <Image
@@ -231,6 +288,17 @@ export default function AboutTestimonialSlider() {
                         <div className="absolute top-0 right-0 p-8 opacity-10">
                           <span className="text-8xl font-serif">❝</span>
                         </div>
+
+                        {/* Edit Button */}
+                        <AdminOnly>
+                          <button
+                            onClick={() => handleEditItem(item)}
+                            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white opacity-0 group-hover:opacity-100 transition-all hover:bg-white hover:text-secondary z-20"
+                            title="Edit Testimonial"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                        </AdminOnly>
 
                         <div className="flex items-center gap-2 mb-6">
                           <div className="px-3 py-1 rounded-full border border-white/20 text-xs font-semibold bg-white/5">
@@ -303,6 +371,14 @@ export default function AboutTestimonialSlider() {
             background: transparent !important;
           }
         `}</style>
+
+        <AboutTestimonialItemModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          item={editingItem}
+          onSave={handleSaveItem}
+          onDelete={handleDeleteItem}
+        />
       </div>
     </section>
   );

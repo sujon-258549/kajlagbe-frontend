@@ -37,7 +37,7 @@ const AboutTestimonialItemModal: React.FC<AboutTestimonialItemModalProps> = ({
   onDelete,
 }) => {
   const form = useForm<AboutTestimonialItem>({
-    resolver: zodResolver(aboutTestimonialItemSchema),
+    resolver: zodResolver(aboutTestimonialItemSchema) as any,
     defaultValues: {
       id: 0,
       name: "",
