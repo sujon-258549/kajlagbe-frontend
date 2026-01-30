@@ -13,10 +13,12 @@ import AdminOnly from "../common/auth/AdminOnly";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit } from "lucide-react";
 import ServicesTestimonialModal from "../modal/services/ServicesTestimonialModal";
+import ServicesTestimonialSectionModal from "../modal/services/ServicesTestimonialSectionModal";
 
 import {
   ServicesTestimonialItem,
   ServicesTestimonialItemSchema,
+  ServicesTestimonialSectionData,
 } from "@/schemas/services/testimonial.schema";
 
 const initialTestimonials = [
@@ -66,6 +68,14 @@ export default function ServicesTestimonial() {
     initialTestimonials as ServicesTestimonialItem[],
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
+  const [sectionData, setSectionData] =
+    useState<ServicesTestimonialSectionData>({
+      subtitle: "Testimonials",
+      title: "What People Saying",
+      backgroundImage:
+        "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&q=80&w=2000",
+    });
   const [editingItem, setEditingItem] = useState<
     ServicesTestimonialItem | undefined
   >(undefined);
@@ -105,7 +115,7 @@ export default function ServicesTestimonial() {
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&q=80&w=2000"
+          src={sectionData.backgroundImage}
           alt="Background"
           fill
           className="object-cover"
@@ -118,12 +128,22 @@ export default function ServicesTestimonial() {
       <div className="main-container relative z-10">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-8 md:mb-12 gap-6 text-center md:text-left">
+          <AdminOnly>
+            <button
+              onClick={() => setIsSectionModalOpen(true)}
+              className="absolute top-0 right-0 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-white opacity-0 group-hover/section:opacity-100 transition-all hover:scale-110"
+              title="Edit Section"
+            >
+              <Edit className="w-5 h-5" />
+            </button>
+          </AdminOnly>
+
           <div className="text-white">
             <span className="uppercase tracking-widest text-xs font-semibold mb-2 block text-white/80">
-              Testimonials
+              {sectionData.subtitle}
             </span>
             <h2 className="text-3xl md:text-5xl font-bold text-white">
-              What People Saying
+              {sectionData.title}
             </h2>
           </div>
           <div className="flex gap-3">
@@ -256,6 +276,12 @@ export default function ServicesTestimonial() {
         item={editingItem}
         onSave={handleSaveItem}
         onDelete={handleDeleteItem}
+      />
+      <ServicesTestimonialSectionModal
+        isOpen={isSectionModalOpen}
+        onClose={() => setIsSectionModalOpen(false)}
+        initialData={sectionData}
+        onUpdate={(data) => setSectionData(data)}
       />
     </section>
   );

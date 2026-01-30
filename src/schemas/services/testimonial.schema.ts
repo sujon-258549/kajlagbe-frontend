@@ -12,3 +12,13 @@ export const ServicesTestimonialItemSchema = z.object({
 export type ServicesTestimonialItem = z.infer<
   typeof ServicesTestimonialItemSchema
 >;
+
+export const ServicesTestimonialSectionSchema = z.object({
+  subtitle: z.string().min(1, "Subtitle is required"),
+  title: z.string().min(1, "Title is required"),
+  backgroundImage: z.string().min(1, "Background image is required"),
+});
+
+export type ServicesTestimonialSectionData = z.infer<
+  typeof ServicesTestimonialSectionSchema
+>;
