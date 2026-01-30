@@ -1,10 +1,14 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Edit } from "lucide-react";
 import CustomImage from "../common/CustomImage";
 import Heading3 from "../common/Headings/Heading3";
+import AdminOnly from "../common/auth/AdminOnly";
+import SliderModal from "../modal/services/SliderModal";
+import { ServiceSliderFormData } from "@/schemas/services/slider.schema";
 
-const projects = [
+const initialProjects = [
   {
     id: 1,
     category: "Tree Plantation",
@@ -29,29 +33,37 @@ const projects = [
       "https://images.unsplash.com/photo-1591193686104-fddba4d0e4d8?auto=format&fit=crop&q=80&w=800",
     number: "05",
   },
-  {
-    id: 4,
-    category: "Renewable Energy",
-    title: "Clean energy powers the future without harming the planet.",
-    image:
-      "https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&q=80&w=800",
-    number: "06",
-  },
 ];
 
 export default function ServicesVerticalSlider() {
+  const [data, setData] = useState<ServiceSliderFormData>({
+    projects: initialProjects,
+  });
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
   return (
-    <section className="bg-white pt-6 pb-12 md:py-16 lg:pt-6 lg:pb-6 mb-0">
-      <div className="main-container px-4 md:px-6">
+    <section className="bg-white pt-6 pb-12 md:py-16 lg:pt-6 lg:pb-6 mb-0 group/section relative">
+      <div className="main-container px-4 md:px-6 relative">
+        {/* Edit Button */}
+        <AdminOnly>
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className="absolute top-0 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-secondary hover:text-white"
+            title="Edit Slider"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
+
         {/* Sticky Container */}
         <div className="flex flex-col gap-10">
-          {projects.map((item, index) => (
+          {data.projects.map((item, index) => (
             <div
               key={item.id}
               className="sticky top-20 md:top-32 w-full"
               style={{ zIndex: index + 1 }}
             >
-              <div className="bg-secondary border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-[450px] md:h-[300px] lg:h-[350px] relative">
+              <div className="bg-secondary border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-[450px] md:h-[300px] lg:h-[350px] relative shadow-2xl">
                 {/* Image Section with Custom Shape */}
                 <div className="h-[200px] md:h-full md:w-1/2 relative">
                   {/* Custom Mask Shape using CSS clip-path or overlay */}
@@ -104,6 +116,17 @@ export default function ServicesVerticalSlider() {
           ))}
         </div>
       </div>
+
+      <AdminOnly>
+        <SliderModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          initialData={data}
+          onUpdate={(newData: ServiceSliderFormData) => setData(newData)}
+        />
+      </AdminOnly>
     </section>
+  );
+}
   );
 }
