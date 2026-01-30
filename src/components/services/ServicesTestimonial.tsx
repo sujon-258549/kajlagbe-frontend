@@ -13,8 +13,11 @@ import AdminOnly from "../common/auth/AdminOnly";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit } from "lucide-react";
 import ServicesTestimonialModal from "../modal/services/ServicesTestimonialModal";
-import { ServicesTestimonialItem, ServicesTestimonialItemSchema } from "@/schemas/services/testimonial.schema"; // Make sure to stick to one schema file if possible or create new one
-// Assuming reusing or creating similar logic. I will create a new modal/schema if needed. 
+import {
+  ServicesTestimonialItem,
+  ServicesTestimonialItemSchema,
+} from "@/schemas/services/testimonial.schema"; // Make sure to stick to one schema file if possible or create new one
+// Assuming reusing or creating similar logic. I will create a new modal/schema if needed.
 // For now I'll assume usage of a new ServiceTestimonialModal component.
 
 const initialTestimonials = [
@@ -60,37 +63,39 @@ const partners = [
 ];
 
 export default function ServicesTestimonial() {
-    const [testimonials, setTestimonials] = useState(initialTestimonials);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingItem, setEditingItem] = useState<any>(undefined); // Typing 'any' temporarily to avoid schema conflict if not created yet
+  const [testimonials, setTestimonials] = useState(initialTestimonials);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<any>(undefined); // Typing 'any' temporarily to avoid schema conflict if not created yet
 
-    const handleAddItem = () => {
-        setEditingItem(undefined);
-        setIsModalOpen(true);
-    };  
+  const handleAddItem = () => {
+    setEditingItem(undefined);
+    setIsModalOpen(true);
+  };
 
-    const handleEditItem = (item: any) => {
-        setEditingItem(item);
-        setIsModalOpen(true);
-    };
+  const handleEditItem = (item: any) => {
+    setEditingItem(item);
+    setIsModalOpen(true);
+  };
 
-    const handleSaveItem = (data: any) => {
-        if (editingItem) {
-        setTestimonials((prev) =>
-            prev.map((item) => (item.id === editingItem.id ? data : item))
-        );
-        } else {
-        setTestimonials((prev) => [{ ...data, id: Date.now() }, ...prev]);
-        }
-        setIsModalOpen(false);
-    };
+  const handleSaveItem = (data: any) => {
+    if (editingItem) {
+      setTestimonials((prev) =>
+        prev.map((item) => (item.id === editingItem.id ? data : item)),
+      );
+    } else {
+      setTestimonials((prev) => [{ ...data, id: Date.now() }, ...prev]);
+    }
+    setIsModalOpen(false);
+  };
 
-    const handleDeleteItem = () => {
-        if (editingItem) {
-        setTestimonials((prev) => prev.filter((item) => item.id !== editingItem.id));
-        setIsModalOpen(false);
-        }
-    };
+  const handleDeleteItem = () => {
+    if (editingItem) {
+      setTestimonials((prev) =>
+        prev.filter((item) => item.id !== editingItem.id),
+      );
+      setIsModalOpen(false);
+    }
+  };
 
   return (
     <section className="relative py-10 md:py-16 lg:py-24 overflow-hidden group/section">
@@ -119,16 +124,19 @@ export default function ServicesTestimonial() {
             </h2>
           </div>
           <div className="flex gap-3">
-             <AdminOnly>
-                <Button onClick={handleAddItem} className="bg-secondary hover:bg-[#0f392e] text-white rounded-full">
-                    <Plus className="w-4 h-4 mr-2" /> Add Review
-                </Button>
-             </AdminOnly>
-             <button className="bg-secondary hover:bg-[#0f392e] text-white px-6 py-3 rounded-full text-sm font-semibold transition-all flex items-center gap-2 border border-white/20 backdrop-blur-sm group">
-                View All Reviews
-                <span className="bg-[#fbbf24] text-black w-6 h-6 rounded-full flex items-center justify-center group-hover:rotate-45 transition-transform duration-300">
+            <AdminOnly>
+              <Button
+                onClick={handleAddItem}
+                className="bg-secondary hover:bg-[#0f392e] text-white rounded-full"
+              >
+                <Plus className="w-4 h-4 mr-2" /> Add Review
+              </Button>
+            </AdminOnly>
+            <button className="bg-secondary hover:bg-[#0f392e] text-white px-6 py-3 rounded-full text-sm font-semibold transition-all flex items-center gap-2 border border-white/20 backdrop-blur-sm group">
+              View All Reviews
+              <span className="bg-[#fbbf24] text-black w-6 h-6 rounded-full flex items-center justify-center group-hover:rotate-45 transition-transform duration-300">
                 <ArrowRight className="w-3 h-3" />
-                </span>
+              </span>
             </button>
           </div>
         </div>
@@ -150,15 +158,14 @@ export default function ServicesTestimonial() {
             {testimonials.map((item) => (
               <SwiperSlide key={item.id}>
                 <div className="bg-white/90 backdrop-blur-sm border border-white/20 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-6 items-center md:items-start group hover:shadow-2xl transition-shadow duration-300 h-full relative">
-                  
                   {/* Edit Button */}
                   <AdminOnly>
                     <button
-                        onClick={() => handleEditItem(item)}
-                        className="absolute top-4 right-4 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-secondary text-white opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
-                        title="Edit Testimonial"
+                      onClick={() => handleEditItem(item)}
+                      className="absolute top-4 right-4 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-secondary text-white opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+                      title="Edit Testimonial"
                     >
-                        <Edit className="w-4 h-4" />
+                      <Edit className="w-4 h-4" />
                     </button>
                   </AdminOnly>
 
@@ -240,7 +247,6 @@ export default function ServicesTestimonial() {
           </Marquee>
         </div>
       </div>
-      </div>
       <ServicesTestimonialModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -249,6 +255,5 @@ export default function ServicesTestimonial() {
         onDelete={handleDeleteItem}
       />
     </section>
-  );
   );
 }
