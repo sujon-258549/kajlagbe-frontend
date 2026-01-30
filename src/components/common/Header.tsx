@@ -12,6 +12,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import TopBar from "./TopBar";
 import { useState, useEffect } from "react";
@@ -53,12 +59,14 @@ export default function Header() {
   return (
     <>
       {/* TopBar - Scrolls away */}
-      <div className="hidden md:block bg-secondary">
+      <div className="hidden lg:block bg-secondary">
         <TopBar />
       </div>
 
       {/* Placeholder to prevent layout shift when header becomes fixed */}
-      <div className={`${isScrolled ? "h-[78px]" : "h-0"} w-full`}></div>
+      <div
+        className={`${isScrolled ? "h-[56px] sm:h-[72px]" : "h-0"} w-full`}
+      ></div>
 
       {/* Main Navigation - Fixed with Slide Down Animation */}
       <header
@@ -69,21 +77,20 @@ export default function Header() {
         }`}
       >
         <div className="main-container mx-auto flex items-center justify-between gap-4">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2 group shrink-0">
             <Image
               src="/images/logo/logo.png"
               alt="Kajlagbe Logo"
               width={160}
               height={50}
-              className="h-12 w-auto object-contain"
+              className="h-8 sm:h-12 w-auto object-contain"
               priority
               unoptimized
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8 h-full">
+          <nav className="hidden lg:flex items-center gap-8 h-full">
             {navItems.map((item) => {
               if (item.name === "Services") {
                 return (
@@ -162,10 +169,10 @@ export default function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2 sm:gap-4">
-            {/* Get A Quote Button */}
             <Link href="/login">
-              <Button>
-                Login <LogInIcon />
+              <Button size="sm" className="px-3 sm:px-4 text-[13px] sm:text-sm">
+                <span className="hidden sm:inline">Login</span>{" "}
+                <LogInIcon className="h-4 w-4" />
               </Button>
             </Link>
 
@@ -182,7 +189,7 @@ export default function Header() {
             {/* Mobile Menu */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
+                <Button variant="ghost" size="icon" className="lg:hidden">
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
@@ -203,16 +210,71 @@ export default function Header() {
                       className="pl-9"
                     />
                   </div>
-                  <nav className="flex flex-col gap-4">
-                    {navItems.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className="text-lg font-medium hover:text-secondary transition-colors border-b pb-2"
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
+                  <nav className="flex flex-col gap-2">
+                    {navItems.map((item) => {
+                      if (item.name === "Services") {
+                        return (
+                          <Accordion
+                            type="single"
+                            collapsible
+                            key={item.name}
+                            className="w-full"
+                          >
+                            <AccordionItem
+                              value="services"
+                              className="border-none"
+                            >
+                              <AccordionTrigger className="text-lg font-medium hover:text-secondary transition-colors py-2 hover:no-underline">
+                                {item.name}
+                              </AccordionTrigger>
+                              <AccordionContent>
+                                <div className="flex flex-col gap-2 pl-4 border-l-2 border-slate-100 mt-2">
+                                  {servicesData.map((category) => (
+                                    <div
+                                      key={category.slug}
+                                      className="flex flex-col gap-1"
+                                    >
+                                      <div className="text-sm font-bold text-secondary/60 uppercase tracking-wider mt-2 mb-1">
+                                        {category.title}
+                                      </div>
+                                      <div className="grid grid-cols-1 gap-1">
+                                        {category.subServices
+                                          .slice(0, 5)
+                                          .map((sub) => (
+                                            <Link
+                                              key={sub.slug}
+                                              href={`/services/${category.slug}/${sub.slug}`}
+                                              className="text-sm text-slate-500 hover:text-secondary py-1"
+                                            >
+                                              {sub.name}
+                                            </Link>
+                                          ))}
+                                        <Link
+                                          href={`/services#${category.slug}`}
+                                          className="text-xs font-bold text-primary hover:underline py-1"
+                                        >
+                                          View all {category.title}
+                                        </Link>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </AccordionContent>
+                            </AccordionItem>
+                          </Accordion>
+                        );
+                      }
+
+                      return (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          className="text-lg font-medium hover:text-secondary transition-colors border-b border-gray-100 py-3 block"
+                        >
+                          {item.name}
+                        </Link>
+                      );
+                    })}
                   </nav>
                 </div>
               </SheetContent>
