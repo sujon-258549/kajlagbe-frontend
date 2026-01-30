@@ -134,12 +134,13 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
         <div
           onClick={() => fileInputRef.current?.click()}
           className={cn(
-            "relative group cursor-pointer flex flex-col items-center justify-center w-full min-h-[128px] rounded-xl border-2 border-dashed transition-all duration-200 bg-slate-50 hover:bg-slate-100",
+            "relative group cursor-pointer flex flex-col items-center justify-center rounded-xl border-2 border-dashed transition-all duration-200 bg-slate-50 hover:bg-slate-100",
+            isSingle ? "aspect-square w-40" : "w-full min-h-[160px]",
             error
               ? "border-red-300 bg-red-50"
               : "border-slate-300 hover:border-primary/50",
             previews.length > 0
-              ? "border-solid border-primary/20 bg-white p-2"
+              ? "border-solid border-primary/20 bg-white"
               : "",
             className,
           )}
@@ -147,7 +148,7 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
           {previews.length > 0 ? (
             isSingle ? (
               // Single Image View
-              <div className="relative w-full h-32 rounded-lg overflow-hidden">
+              <div className="relative w-full h-full rounded-lg overflow-hidden">
                 <Image
                   src={previews[0]}
                   alt="Preview"
