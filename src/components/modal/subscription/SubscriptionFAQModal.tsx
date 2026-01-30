@@ -208,7 +208,7 @@ const SubscriptionFAQModal: React.FC<SubscriptionFAQModalProps> = ({
                       <FormInput placeholder="e.g. S4L8T2kFFn4" {...field} />
                     </FormControl>
                     <FormMessage className="text-[10px]">
-                      Tip: Use the ID after 'v=' in the URL.
+                      Tip: Use the ID after &apos;v=&apos; in the URL.
                     </FormMessage>
                   </FormItem>
                 )}

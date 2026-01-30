@@ -27,6 +27,7 @@ interface SubscriptionHeroModalProps {
   subtitle?: string;
   image: string;
   bgImage?: string;
+  onUpdate?: (data: SubscriptionHeroFormData) => void;
 }
 
 const SubscriptionHeroModal: React.FC<SubscriptionHeroModalProps> = ({
@@ -36,6 +37,7 @@ const SubscriptionHeroModal: React.FC<SubscriptionHeroModalProps> = ({
   subtitle,
   image,
   bgImage,
+  onUpdate,
 }) => {
   const form = useForm<SubscriptionHeroFormData>({
     resolver: zodResolver(subscriptionHeroSchema),
@@ -48,7 +50,9 @@ const SubscriptionHeroModal: React.FC<SubscriptionHeroModalProps> = ({
   });
 
   const onSubmit = (data: SubscriptionHeroFormData) => {
-    console.log("Subscription Hero Updated Data:", data);
+    if (onUpdate) {
+      onUpdate(data);
+    }
     onClose();
   };
 
