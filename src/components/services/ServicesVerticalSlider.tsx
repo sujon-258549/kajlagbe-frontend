@@ -73,7 +73,7 @@ export default function ServicesVerticalSlider() {
   };
 
   return (
-    <section className="bg-white pt-6 pb-12 md:py-16 lg:pt-6 lg:pb-6 mb-0 group/section relative">
+    <section className="bg-white pt-6 pb-12 md:py-16 lg:pt-6 lg:pb-24 mb-0 group/section relative">
       <div className="main-container px-4 md:px-6 relative">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-secondary">
@@ -97,7 +97,7 @@ export default function ServicesVerticalSlider() {
               className="sticky top-20 md:top-32 w-full group/card"
               style={{ zIndex: index + 1 }}
             >
-              <div className="bg-secondary border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-[450px] md:h-[300px] lg:h-[350px] relative shadow-2xl">
+              <div className="bg-secondary border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-[450px] md:h-[300px] lg:h-[350px] relative ">
                 {/* Image Section with Custom Shape */}
                 <div className="h-[200px] md:h-full md:w-1/2 relative">
                   {/* Custom Mask Shape using CSS clip-path or overlay */}

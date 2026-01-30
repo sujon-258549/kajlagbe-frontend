@@ -1,6 +1,5 @@
 "use client";
 
-import CommonHero from "@/components/common/CommonHero";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";

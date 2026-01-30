@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import ImageUpload from "@/components/common/ImageUpload";
@@ -48,6 +48,15 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
       bgImage: bgImage || "",
     },
   });
+
+  useEffect(() => {
+    form.reset({
+      title: title,
+      subtitle: subtitle || "",
+      image: image,
+      bgImage: bgImage || "",
+    });
+  }, [title, subtitle, image, bgImage, form, isOpen]);
   const onSubmit = (data: AboutHeroFormData) => {
     console.log("Hero Section Updated Data (Validated):", data);
     if (onUpdate) {
