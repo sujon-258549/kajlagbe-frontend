@@ -1,19 +1,22 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Leaf } from "lucide-react";
+import { ArrowLeft, ArrowRight, Leaf, Edit, Plus } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import CustomImage from "../common/CustomImage";
-import Heading2 from "../common/Headings/Heading2";
 import Heading3 from "../common/Headings/Heading3";
-import Heading4 from "../common/Headings/Heading4";
 import Heading5 from "../common/Headings/Heading5";
+import AdminOnly from "../common/auth/AdminOnly";
+import { Button } from "../ui/button";
+import WhatWeDoModal from "../modal/services/WhatWeDoModal";
+import { WhatWeDoItem } from "@/schemas/services/whatWeDo.schema";
 
-const services = [
+const initialServices = [
   {
     id: 1,
     title: "Solar Collection",
@@ -87,6 +90,40 @@ const services = [
 ];
 
 export default function ServicesPossible() {
+  const [services, setServices] = useState<WhatWeDoItem[]>(initialServices);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<WhatWeDoItem | undefined>(
+    undefined,
+  );
+
+  const handleAddItem = () => {
+    setEditingItem(undefined);
+    setIsModalOpen(true);
+  };
+
+  const handleEditItem = (item: WhatWeDoItem) => {
+    setEditingItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveItem = (data: WhatWeDoItem) => {
+    if (editingItem) {
+      setServices((prev) =>
+        prev.map((item) => (item.id === editingItem.id ? data : item)),
+      );
+    } else {
+      setServices((prev) => [{ ...data, id: Date.now() }, ...prev]);
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteItem = () => {
+    if (editingItem) {
+      setServices((prev) => prev.filter((item) => item.id !== editingItem.id));
+      setIsModalOpen(false);
+    }
+  };
+
   return (
     <section className="relative py-10 md:py-16 lg:py-24 bg-[#063022] overflow-hidden">
       {/* Background Image/Texture */}
@@ -103,17 +140,26 @@ export default function ServicesPossible() {
       <div className="main-container relative z-10">
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-10 md:mb-16 gap-8 text-center md:text-left">
-          <div className="max-w-2xl">
-            <div className="flex items-center justify-center md:justify-start gap-2 text-[#fbbf24] font-semibold mb-4">
+          <div className="max-w-2xl text-left">
+            <div className="flex items-center justify-start gap-2 text-[#fbbf24] font-semibold mb-4">
               <Leaf className="w-5 h-5" />
               <span className="uppercase tracking-wider text-sm">
                 What We Do
               </span>
             </div>
-            <Heading3 className=" text-white leading-tight">
+            <Heading3 className=" text-white leading-tight mb-6">
               It&apos;s All Possible, We Can
               <br /> Do it Together
             </Heading3>
+
+            <AdminOnly>
+              <Button
+                onClick={handleAddItem}
+                className="bg-[#fbbf24] hover:bg-[#d9a51d] text-[#063022] gap-2 font-bold mb-4"
+              >
+                <Plus className="w-4 h-4" /> Add Category
+              </Button>
+            </AdminOnly>
           </div>
 
           <div className="max-w-md text-slate-300 mx-auto md:mx-0">
@@ -165,18 +211,32 @@ export default function ServicesPossible() {
                   {/* Top Content */}
                   <div className="p-4 pb-4">
                     {/* Number Icon */}
-                    <div className="w-8 h-8 relative flex items-center justify-center mb-3">
-                      {/* Starburst shape */}
-                      <svg
-                        viewBox="0 0 24 24"
-                        className="w-full h-full text-[#fcd34d] absolute inset-0 fill-current"
-                      >
-                        <path d="M12 2L14.4 7.2L20 7.8L15.6 11.6L17 17L12 14L7 17L8.4 11.6L4 7.8L9.6 7.2L12 2Z" />
-                      </svg>
-                      <span className="relative z-10 text-[10px] font-bold text-white">
-                        {item.number}
-                      </span>
+                    <div className="flex justify-between items-start">
+                      <div className="w-8 h-8 relative flex items-center justify-center mb-3">
+                        {/* Starburst shape */}
+                        <svg
+                          viewBox="0 0 24 24"
+                          className="w-full h-full text-[#fcd34d] absolute inset-0 fill-current"
+                        >
+                          <path d="M12 2L14.4 7.2L20 7.8L15.6 11.6L17 17L12 14L7 17L8.4 11.6L4 7.8L9.6 7.2L12 2Z" />
+                        </svg>
+                        <span className="relative z-10 text-[10px] font-bold text-white">
+                          {item.number}
+                        </span>
+                      </div>
+
+                      {/* Edit Button */}
+                      <AdminOnly>
+                        <button
+                          onClick={() => handleEditItem(item)}
+                          className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-white hover:text-secondary transition-all z-20"
+                          title="Edit Category"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                      </AdminOnly>
                     </div>
+
                     <Heading5 className="text-white text-base font-bold mb-3">
                       {item.title}
                     </Heading5>
@@ -225,6 +285,14 @@ export default function ServicesPossible() {
           border-radius: 9999px;
         }
       `}</style>
+
+      <WhatWeDoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        item={editingItem}
+        onSave={handleSaveItem}
+        onDelete={handleDeleteItem}
+      />
     </section>
   );
 }
