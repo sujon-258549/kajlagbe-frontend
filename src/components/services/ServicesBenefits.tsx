@@ -41,6 +41,8 @@ const ICONS = {
 export default function ServicesBenefits() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [benefitsData, setBenefitsData] = useState<BenefitsFormData>({
+    sectionTitle: "WHY CHOOSE US",
+    sectionDesc: "We bring excellence to every field we touch",
     items: initialBenefits.map((b) => ({
       id: b.title,
       title: b.title,
@@ -68,10 +70,10 @@ export default function ServicesBenefits() {
 
           <div className="lg:col-span-4 mb-8 text-center md:text-left">
             <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block">
-              WHY CHOOSE US
+              {benefitsData.sectionTitle}
             </span>
             <Heading3 className="text-secondary max-w-2xl">
-              We bring excellence to every field we touch
+              {benefitsData.sectionDesc}
             </Heading3>
           </div>
 

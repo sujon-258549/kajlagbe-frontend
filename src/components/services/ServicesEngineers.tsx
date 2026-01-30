@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Share2, Lightbulb, Edit, Plus } from "lucide-react";
+import { ArrowRight, Share2, Lightbulb, Edit } from "lucide-react";
 import CustomImage from "../common/CustomImage";
 import Heading2 from "../common/Headings/Heading2";
 import { Button } from "../ui/button";
 import AdminOnly from "../common/auth/AdminOnly";
 import ServiceEngineerItemModal from "../modal/services/ServiceEngineerItemModal";
+import ServicesEngineersSectionModal, {
+  EngineersSectionFormData,
+} from "../modal/services/ServicesEngineersSectionModal";
 import { ServiceEngineerItem } from "@/schemas/services/engineers.schema";
 
 const initialEngineers = [
@@ -57,19 +60,21 @@ const initialEngineers = [
 export default function ServicesEngineers() {
   const [engineers, setEngineers] =
     useState<ServiceEngineerItem[]>(initialEngineers);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [sectionData, setSectionData] = useState<EngineersSectionFormData>({
+    tagline: "Econest Workers",
+    title: "Our Professionals Engineers",
+    exploreText: "Explore More",
+  });
+
+  const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+  const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<
     ServiceEngineerItem | undefined
   >(undefined);
 
-  const handleAddItem = () => {
-    setEditingItem(undefined);
-    setIsModalOpen(true);
-  };
-
   const handleEditItem = (item: ServiceEngineerItem) => {
     setEditingItem(item);
-    setIsModalOpen(true);
+    setIsItemModalOpen(true);
   };
 
   const handleSaveItem = (data: ServiceEngineerItem) => {
@@ -77,25 +82,30 @@ export default function ServicesEngineers() {
       setEngineers((prev) =>
         prev.map((item) => (item.id === editingItem.id ? data : item)),
       );
-    } else {
-      setEngineers((prev) => [{ ...data, id: Date.now() }, ...prev]);
     }
-    setIsModalOpen(false);
+    setIsItemModalOpen(false);
   };
 
-  const handleDeleteItem = () => {
-    if (editingItem) {
-      setEngineers((prev) => prev.filter((item) => item.id !== editingItem.id));
-      setIsModalOpen(false);
-    }
+  const handleSectionUpdate = (data: EngineersSectionFormData) => {
+    setSectionData(data);
   };
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden relative group/section">
-      <div className="main-container">
+      <div className="main-container relative">
+        <AdminOnly>
+          <button
+            onClick={() => setIsSectionModalOpen(true)}
+            className="absolute top-0 left-10 bg-secondary z-50 w-8 h-8 flex items-center justify-center rounded-full text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white"
+            title="Edit Section Details"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
+
         <div className="flex flex-col lg:flex-row gap-10 md:gap-16 items-start">
           {/* Left Content */}
-          <div className="w-full lg:w-1/3 relative text-center lg:text-left sticky top-24">
+          <div className="w-full lg:w-1/3 relative text-center lg:text-left sticky top-24 group/left-content">
             {/* Decorative Dotted Arrow (SVG representation) */}
             <div className="absolute -top-40 -left-10 w-40 h-40 pointer-events-none hidden lg:block opacity-50">
               <svg
@@ -124,25 +134,16 @@ export default function ServicesEngineers() {
             <div className="flex items-center justify-center lg:justify-start gap-2 text-slate-500 font-medium mb-4">
               <Lightbulb className="w-5 h-5 text-[#fbbf24]" />
               <span className="uppercase tracking-wider text-sm">
-                Econest Workers
+                {sectionData.tagline}
               </span>
             </div>
 
             <Heading2 className="text-[#063022] mb-8 leading-tight">
-              Our Professionals Engineers
+              {sectionData.title}
             </Heading2>
 
-            <AdminOnly>
-              <Button
-                onClick={handleAddItem}
-                className="bg-secondary hover:bg-secondary/90 text-white gap-2 font-bold mb-8 w-full md:w-auto"
-              >
-                <Plus className="w-4 h-4" /> Add Engineer
-              </Button>
-            </AdminOnly>
-
             <Button size="xl" className="mx-auto lg:mx-0 hidden lg:flex">
-              Explore More
+              {sectionData.exploreText || "Explore More"}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
@@ -171,7 +172,7 @@ export default function ServicesEngineers() {
                     <AdminOnly>
                       <button
                         onClick={() => handleEditItem(item)}
-                        className="absolute bottom-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/90 text-secondary opacity-0 group-hover:opacity-100 transition-all z-20 hover:bg-white shadow-md"
+                        className="absolute top-3 right-14 w-8 h-8 flex items-center justify-center rounded-full bg-white/90 text-secondary opacity-0 group-hover:opacity-100 transition-all z-20 hover:bg-white shadow-md"
                         title="Edit Engineer"
                       >
                         <Edit className="w-4 h-4" />
@@ -190,7 +191,7 @@ export default function ServicesEngineers() {
             </div>
             <div className="mt-8 lg:hidden flex justify-center">
               <Button size="xl">
-                Explore More
+                {sectionData.exploreText || "Explore More"}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
@@ -198,12 +199,18 @@ export default function ServicesEngineers() {
         </div>
       </div>
 
+      <ServicesEngineersSectionModal
+        isOpen={isSectionModalOpen}
+        onClose={() => setIsSectionModalOpen(false)}
+        initialData={sectionData}
+        onUpdate={handleSectionUpdate}
+      />
+
       <ServiceEngineerItemModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isItemModalOpen}
+        onClose={() => setIsItemModalOpen(false)}
         item={editingItem}
         onSave={handleSaveItem}
-        onDelete={handleDeleteItem}
       />
     </section>
   );

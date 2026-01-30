@@ -101,107 +101,178 @@ const ServicesModal: React.FC<ServicesModalProps> = ({
     <CommonModal
       isOpen={isOpen}
       onClose={onClose}
-      title="Manage Services"
-      description="Add, edit, or remove services."
-      showBackground={false}
+      title="Manage Services Section"
+      description="Update section details and manage services."
+      showBackground={true}
       maxWidth="4xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 gap-6 max-h-[60vh] overflow-y-auto p-1">
-            {form.watch("services").map((service, index) => (
-              <div
-                key={index}
-                className="p-4 border rounded-lg bg-gray-50 relative space-y-3"
-              >
-                <div className="flex justify-between items-center mb-2">
-                  <FormLabel className="font-bold text-lg">
-                    Service {index + 1}
-                  </FormLabel>
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => removeService(index)}
-                  >
-                    Remove
-                  </Button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name={`services.${index}.title`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Title</FormLabel>
-                        <FormControl>
-                          <FormInput placeholder="Home Repair" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name={`services.${index}.slug`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Slug</FormLabel>
-                        <FormControl>
-                          <FormInput placeholder="home-repair" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name={`services.${index}.iconName`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Icon</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select an icon" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="max-h-[200px]">
-                            {ICON_OPTIONS.map((iconName) => {
-                              const IconComp = (Icons as any)[iconName];
-                              return (
-                                <SelectItem key={iconName} value={iconName}>
-                                  <div className="flex items-center gap-2">
-                                    {IconComp && (
-                                      <IconComp className="w-4 h-4" />
-                                    )}
-                                    <span>{iconName}</span>
-                                  </div>
-                                </SelectItem>
-                              );
-                            })}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+          {/* Section Settings */}
+          <div className="bg-gray-50/50 p-4 rounded-lg space-y-4 border border-gray-100">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="bg-secondary/10 p-2 rounded-full">
+                <Icons.Settings className="w-4 h-4 text-secondary" />
               </div>
-            ))}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={addService}
-              className="w-full"
-            >
-              + Add New Service
-            </Button>
+              <h3 className="font-semibold text-gray-800">Section Settings</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="sectionTitle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Section Title</FormLabel>
+                    <FormControl>
+                      <FormInput placeholder="Our Services" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="sectionDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Section Description</FormLabel>
+                    <FormControl>
+                      <FormInput placeholder="Description..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            {/* Background Image - optional per user request for "modal bg" (assuming section bg) */}
+            {/* Note: I'll skip ImageUpload for now as user just said "modal bg add koro" which might refer to the modal's background? 
+             Wait, "modal bg" usually means standard modal background. "title and desc add koro modal bg add koro" -> 
+             "Add title and desc, add modal bg". 
+             Maybe they want the modal to use the CommonModal's `image` prop?
+             Or maybe they want a field for the section's background image?
+             I'll add the field for sectionBackgroundImage as a text input for URL or similar, or just leave it for now if not strictly clear.
+             Actually, let's add it as a standard input for image URL to be safe, or just skip if it complicates things without ImageUpload import.
+             I'll add it as a text input for now.
+             */}
+            <FormField
+              control={form.control}
+              name="sectionBackgroundImage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Section Background Image URL</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="bg-secondary/10 p-2 rounded-full">
+                  <Icons.List className="w-4 h-4 text-secondary" />
+                </div>
+                <h3 className="font-semibold text-gray-800">Services List</h3>
+              </div>
+              <Button
+                type="button"
+                onClick={addService}
+                size="sm"
+                className="bg-secondary text-white"
+              >
+                + Add New
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 max-h-[40vh] overflow-y-auto p-1 custom-scrollbar">
+              {form.watch("services").map((service, index) => (
+                <div
+                  key={index}
+                  className="p-4 border rounded-lg bg-white shadow-sm relative group"
+                >
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
+                      <FormField
+                        control={form.control}
+                        name={`services.${index}.title`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <FormInput
+                                placeholder="Title"
+                                className="h-9"
+                                {...field}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`services.${index}.slug`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <FormInput
+                                placeholder="Slug"
+                                className="h-9"
+                                {...field}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`services.${index}.iconName`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="h-9">
+                                  <SelectValue placeholder="Icon" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="max-h-[200px]">
+                                {ICON_OPTIONS.map((iconName) => {
+                                  const IconComp = (Icons as any)[iconName];
+                                  return (
+                                    <SelectItem key={iconName} value={iconName}>
+                                      <div className="flex items-center gap-2">
+                                        {IconComp && (
+                                          <IconComp className="w-4 h-4" />
+                                        )}
+                                        <span>{iconName}</span>
+                                      </div>
+                                    </SelectItem>
+                                  );
+                                })}
+                              </SelectContent>
+                            </Select>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      onClick={() => removeService(index)}
+                    >
+                      <Icons.Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t">

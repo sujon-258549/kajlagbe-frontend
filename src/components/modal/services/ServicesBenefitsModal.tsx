@@ -15,10 +15,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
+import FormTextarea from "@/components/common/FormTextarea";
 
 // Schema for Benefits
 export const benefitsSchema = z.object({
+  sectionTitle: z.string().optional(),
+  sectionDesc: z.string().optional(),
   items: z.array(
     z.object({
       id: z.string().optional(),
@@ -63,12 +65,45 @@ const ServicesBenefitsModal: React.FC<ServicesBenefitsModalProps> = ({
       onClose={onClose}
       title="Edit Services Benefits"
       description="Update the benefits section content."
-      showBackground={false}
       maxWidth="3xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-4 p-4 border rounded-lg bg-gray-50">
+              <h3 className="font-bold text-lg">Section Details</h3>
+              <FormField
+                control={form.control}
+                name="sectionTitle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Section Tagline</FormLabel>
+                    <FormControl>
+                      <FormInput placeholder="WHY CHOOSE US" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="sectionDesc"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Section Title</FormLabel>
+                    <FormControl>
+                      <FormTextarea
+                        placeholder="We bring excellence to every field we touch"
+                        rows={2}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             {form.watch("items").map((_, index) => (
               <div
                 key={index}
@@ -101,9 +136,8 @@ const ServicesBenefitsModal: React.FC<ServicesBenefitsModalProps> = ({
                       <FormItem>
                         <FormLabel>Description</FormLabel>
                         <FormControl>
-                          <Textarea
+                          <FormTextarea
                             placeholder="Description"
-                            className="resize-none"
                             rows={3}
                             {...field}
                           />

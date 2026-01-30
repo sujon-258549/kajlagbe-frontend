@@ -24,6 +24,9 @@ import AdminOnly from "@/components/common/auth/AdminOnly";
 import { Button } from "@/components/ui/button";
 import AboutTestimonialItemModal from "@/components/modal/about/AboutTestimonialItemModal";
 import { AboutTestimonialItem } from "@/schemas/about/testimonial.schema";
+import AboutPartnersModal, {
+  AboutPartnersData,
+} from "@/components/modal/about/AboutPartnersModal";
 
 const initialTestimonials = [
   {
@@ -88,40 +91,21 @@ const initialTestimonials = [
   },
 ];
 
-// ... inside the component ...
-// <Marquee gradient={false} speed={40} className="py-4" autoFill>
-
-const partners = [
-  {
-    name: "Kudi",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2560px-Google_2015_logo.svg.png",
-  },
-  {
-    name: "DISRUPT",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/2560px-IBM_logo.svg.png",
-  },
-  {
-    name: "AIR PEACE",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Tata_Consultancy_Services_Logo.svg/2560px-Tata_Consultancy_Services_Logo.svg.png",
-  },
-  {
-    name: "Arik",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Airbnb_Logo_B%C3%A9lo.svg/2560px-Airbnb_Logo_B%C3%A9lo.svg.png",
-  },
-  {
-    name: "TRANSIT",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/2560px-Amazon_logo.svg.png",
-  },
-  {
-    name: "Spectranet",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/2560px-Netflix_2015_logo.svg.png",
-  },
+const initialPartners = [
+  { name: "Kudi" },
+  { name: "DISRUPT" },
+  { name: "AIR PEACE" },
+  { name: "Arik" },
+  { name: "TRANSIT" },
+  { name: "Spectranet" },
 ];
 
 export default function AboutTestimonialSlider() {
   const [testimonials, setTestimonials] =
     useState<AboutTestimonialItem[]>(initialTestimonials);
+  const [partners, setPartners] = useState(initialPartners);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPartnersModalOpen, setIsPartnersModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<
     AboutTestimonialItem | undefined
   >(undefined);
@@ -156,6 +140,10 @@ export default function AboutTestimonialSlider() {
     }
   };
 
+  const handlePartnersUpdate = (data: AboutPartnersData) => {
+    setPartners(data.partners);
+  };
+
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden relative group/section">
       <div className="main-container mx-auto px-4">
@@ -169,7 +157,7 @@ export default function AboutTestimonialSlider() {
               </span>
             </div>
 
-            <Heading3 className="text-secondary font-bold leading-tight text-3xl md:text-4xl lg:text-5xl">
+            <Heading3 className="text-secondary font-bold leading-tight ">
               Why They Believe <br className="hidden md:block" />
               <span className="inline-flex items-center justify-center w-10 h-10 bg-secondary text-primary rounded-full mx-2 align-middle">
                 <span className="text-xl font-serif">❝</span>
@@ -324,14 +312,23 @@ export default function AboutTestimonialSlider() {
         </div>
 
         {/* Major Partners Section */}
-        {/* Major Partners Section */}
-        <div className="mt-16 lg:mt-24">
-          <div className="flex items-center gap-4 mb-10">
+        <div className="mt-16 lg:mt-24 relative group/partners">
+          <div className="flex items-center gap-4 mb-10 relative">
             <div className="h-px bg-slate-200 grow"></div>
             <Heading3 className="text-secondary uppercase tracking-wider text-lg">
               Trusted Partners
             </Heading3>
             <div className="h-px bg-slate-200 grow"></div>
+
+            <AdminOnly>
+              <button
+                onClick={() => setIsPartnersModalOpen(true)}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-secondary/10 text-secondary hover:bg-secondary hover:text-white transition-all opacity-0 group-hover/partners:opacity-100"
+                title="Edit Partners"
+              >
+                <Edit className="w-4 h-4" />
+              </button>
+            </AdminOnly>
           </div>
 
           <div className="relative w-full overflow-hidden">
@@ -378,6 +375,13 @@ export default function AboutTestimonialSlider() {
           item={editingItem}
           onSave={handleSaveItem}
           onDelete={handleDeleteItem}
+        />
+
+        <AboutPartnersModal
+          isOpen={isPartnersModalOpen}
+          onClose={() => setIsPartnersModalOpen(false)}
+          initialData={{ partners }}
+          onUpdate={handlePartnersUpdate}
         />
       </div>
     </section>

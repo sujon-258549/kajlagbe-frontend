@@ -26,6 +26,9 @@ export const serviceItemSchema = z.object({
 });
 
 export const servicesSchema = z.object({
+  sectionTitle: z.string().min(1, "Section Title is required"),
+  sectionDescription: z.string().min(1, "Section Description is required"),
+  sectionBackgroundImage: z.string().optional(),
   services: z.array(serviceItemSchema),
 });
 

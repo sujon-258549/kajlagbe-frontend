@@ -12,8 +12,11 @@ import CustomImage from "../common/CustomImage";
 import Heading3 from "../common/Headings/Heading3";
 import Heading5 from "../common/Headings/Heading5";
 import AdminOnly from "../common/auth/AdminOnly";
-import { Button } from "../ui/button";
+
 import WhatWeDoModal from "../modal/services/WhatWeDoModal";
+import ServicesPossibleSectionModal, {
+  PossibleSectionFormData,
+} from "../modal/services/ServicesPossibleSectionModal";
 import { WhatWeDoItem } from "@/schemas/services/whatWeDo.schema";
 
 const initialServices = [
@@ -91,7 +94,15 @@ const initialServices = [
 
 export default function ServicesPossible() {
   const [services, setServices] = useState<WhatWeDoItem[]>(initialServices);
+  const [sectionData, setSectionData] = useState<PossibleSectionFormData>({
+    tagline: "What We Do",
+    title: "It's All Possible, We Can\nDo it Together",
+    description:
+      "Advanced cameras combined with a large display fast performance, and highly calibrated.",
+  });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<WhatWeDoItem | undefined>(
     undefined,
   );
@@ -124,8 +135,12 @@ export default function ServicesPossible() {
     }
   };
 
+  const handleSectionUpdate = (data: PossibleSectionFormData) => {
+    setSectionData(data);
+  };
+
   return (
-    <section className="relative py-10 md:py-16 lg:py-24 bg-[#063022] overflow-hidden">
+    <section className="relative py-10 md:py-16 lg:py-24 bg-[#063022] overflow-hidden group/section">
       {/* Background Image/Texture */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         {/* Wind turbine background placeholder */}
@@ -138,41 +153,50 @@ export default function ServicesPossible() {
       </div>
 
       <div className="main-container relative z-10">
+        <AdminOnly>
+          <button
+            onClick={() => setIsSectionModalOpen(true)}
+            className="absolute -top-5 left-7 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary"
+            title="Edit Section Details"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
+
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-10 md:mb-16 gap-8 text-center md:text-left">
           <div className="max-w-2xl text-left">
             <div className="flex items-center justify-start gap-2 text-[#fbbf24] font-semibold mb-4">
               <Leaf className="w-5 h-5" />
               <span className="uppercase tracking-wider text-sm">
-                What We Do
+                {sectionData.tagline}
               </span>
             </div>
-            <Heading3 className=" text-white leading-tight mb-6">
-              It&apos;s All Possible, We Can
-              <br /> Do it Together
+            <Heading3 className=" text-white leading-tight mb-6 whitespace-pre-line">
+              {sectionData.title}
             </Heading3>
-
-            <AdminOnly>
-              <Button
-                onClick={handleAddItem}
-                className="bg-[#fbbf24] hover:bg-[#d9a51d] text-[#063022] gap-2 font-bold mb-4"
-              >
-                <Plus className="w-4 h-4" /> Add Category
-              </Button>
-            </AdminOnly>
           </div>
 
-          <div className="max-w-md text-slate-300 mx-auto md:mx-0">
-            <p className="mb-6 text-sm md:text-base leading-relaxed">
-              &quot;Advanced cameras combined with a large display fast
-              performance, and highly calibrated.&quot;
+          <div className="max-w-md mx-auto md:mx-0 flex flex-col items-center md:items-end text-center md:text-right group/right-col relative">
+            <AdminOnly>
+              <button
+                onClick={handleAddItem}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-[#fbbf24] text-[#063022] hover:bg-white hover:text-secondary transition-all mb-6 shadow-lg hover:shadow-xl"
+                title="Add Category"
+              >
+                <Plus className="w-5 h-5" />
+              </button>
+            </AdminOnly>
+
+            <p className="mb-6 text-slate-300 md:text-lg leading-relaxed font-light">
+              &quot;{sectionData.description}&quot;
             </p>
             <a
               href="#"
-              className="text-[#fbbf24] font-semibold flex items-center justify-center md:justify-start gap-2 hover:gap-4 transition-all group"
+              className="inline-flex items-center gap-2 text-[#fbbf24] font-bold tracking-wide hover:text-white transition-colors group/link pb-1 border-b-2 border-transparent hover:border-[#fbbf24]"
             >
-              Contact With Us
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              CONTACT WITH US
+              <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
             </a>
           </div>
         </div>
@@ -285,6 +309,13 @@ export default function ServicesPossible() {
           border-radius: 9999px;
         }
       `}</style>
+
+      <ServicesPossibleSectionModal
+        isOpen={isSectionModalOpen}
+        onClose={() => setIsSectionModalOpen(false)}
+        initialData={sectionData}
+        onUpdate={handleSectionUpdate}
+      />
 
       <WhatWeDoModal
         isOpen={isModalOpen}

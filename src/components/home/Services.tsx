@@ -9,7 +9,11 @@ import Heading1 from "@/components/common/Headings/Heading1";
 import Heading5 from "../common/Headings/Heading5";
 import AdminOnly from "../common/auth/AdminOnly";
 import ServicesModal from "../modal/services/ServicesModal";
-import { ServicesFormData } from "@/schemas/services/services.schema";
+import ServiceItemModal from "../modal/services/ServiceItemModal";
+import {
+  ServicesFormData,
+  ServiceItem,
+} from "@/schemas/services/services.schema";
 
 const initialServices = [
   {
@@ -106,12 +110,41 @@ const initialServices = [
 
 export default function Services() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editingItem, setEditingItem] = useState<ServiceItem | undefined>(
+    undefined,
+  );
+
   const [servicesData, setServicesData] = useState<ServicesFormData>({
+    sectionTitle: "Our Services",
+    sectionDescription:
+      "Explore verified professionals across all essential categories — simple, fast, and reliable.",
+    sectionBackgroundImage: "",
     services: initialServices,
   });
 
   const handleUpdate = (data: ServicesFormData) => {
     setServicesData(data);
+  };
+
+  const handleEditItem = (e: React.MouseEvent, index: number) => {
+    e.preventDefault(); // Prevent link navigation
+    e.stopPropagation();
+    setEditingIndex(index);
+    setEditingItem(servicesData.services[index]);
+    setIsItemModalOpen(true);
+  };
+
+  const handleSaveItem = (newItem: ServiceItem) => {
+    if (editingIndex !== null) {
+      const updatedServices = [...servicesData.services];
+      updatedServices[editingIndex] = newItem;
+      setServicesData({ ...servicesData, services: updatedServices });
+    }
+    setIsItemModalOpen(false);
+    setEditingIndex(null);
+    setEditingItem(undefined);
   };
 
   const getIconComponent = (iconName: string) => {
@@ -130,13 +163,25 @@ export default function Services() {
         }}
       />
 
+      {/* Optional Section Background Image Only if provided */}
+      {servicesData.sectionBackgroundImage && (
+        <div className="absolute inset-0 z-0 select-none pointer-events-none">
+          {/* Note: In a real app we might use Next.js Image here, keeping it as a styled div for simplicity if it's a raw URL */}
+          <img
+            src={servicesData.sectionBackgroundImage}
+            alt=""
+            className="w-full h-full object-cover opacity-10"
+          />
+        </div>
+      )}
+
       <div className="main-container mx-auto px-6 relative z-10">
         <div className="absolute top-0 right-0 z-50">
           <AdminOnly>
             <button
               onClick={() => setIsModalOpen(true)}
               className="w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-white opacity-0 group-hover/section:opacity-100 transition-all hover:scale-110 hover:bg-primary shadow-lg"
-              title="Edit Services"
+              title="Edit Section"
             >
               <Edit className="w-5 h-5" />
             </button>
@@ -146,24 +191,36 @@ export default function Services() {
         {/* Header */}
         <div className="text-center max-w-5xl mx-auto mb-8 md:mb-16 space-y-4">
           <Heading1 className="font-bold text-slate-900 leading-tight">
-            Our Services
+            {servicesData.sectionTitle}
           </Heading1>
           <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-normal">
-            Explore verified professionals across all essential categories —
-            simple, fast, and reliable.
+            {servicesData.sectionDescription}
           </p>
         </div>
 
         {/* Services Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-          {servicesData.services.map((service) => {
+          {servicesData.services.map((service, index) => {
             const IconComp = getIconComponent(service.iconName);
             return (
               <Link
-                key={service.slug}
+                key={index} // Changed index as key to avoid issues if slug changes temporarily (though slug is preferred if stable)
                 href={`/services/${service.slug}`}
                 className="group relative h-[180px] w-full overflow-hidden rounded-xl bg-secondary border border-white/10 transition-colors"
               >
+                {/* Edit Button for Item */}
+                <div className="absolute top-3 right-3 z-30 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <AdminOnly>
+                    <button
+                      onClick={(e) => handleEditItem(e, index)}
+                      className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white text-white hover:text-secondary backdrop-blur-md transition-all shadow-lg"
+                      title="Edit Service"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  </AdminOnly>
+                </div>
+
                 {/* Background Image with Gradient Overlay */}
                 <div className="absolute inset-0">
                   <div className="absolute inset-0 z-0 bg-secondary" />
@@ -196,22 +253,19 @@ export default function Services() {
             );
           })}
         </div>
-
-        {/* CTA Button */}
-        <div className="mt-8 md:mt-16 text-center">
-          <Button size="lg" asChild variant="default" className="">
-            <Link href="/services">
-              View All Categories
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
-        </div>
       </div>
       <ServicesModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={servicesData}
         onUpdate={handleUpdate}
+      />
+
+      <ServiceItemModal
+        isOpen={isItemModalOpen}
+        onClose={() => setIsItemModalOpen(false)}
+        item={editingItem}
+        onSave={handleSaveItem}
       />
     </section>
   );

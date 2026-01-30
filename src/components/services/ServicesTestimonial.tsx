@@ -12,13 +12,18 @@ import { useState } from "react";
 import AdminOnly from "../common/auth/AdminOnly";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit } from "lucide-react";
-import ServicesTestimonialModal from "../modal/services/ServicesTestimonialModal";
-import ServicesTestimonialSectionModal from "../modal/services/ServicesTestimonialSectionModal";
+import ServicesTestimonialModal from "@/components/modal/services/ServicesTestimonialModal";
+import ServicesTestimonialSectionModal from "@/components/modal/services/ServicesTestimonialSectionModal";
+import ServicesPartnersModal, {
+  ServicesPartnersData,
+} from "@/components/modal/services/ServicesPartnersModal";
 
 import {
   ServicesTestimonialItem,
   ServicesTestimonialSectionData,
 } from "@/schemas/services/testimonial.schema";
+import Heading1 from "../common/Headings/Heading1";
+import Heading2 from "../common/Headings/Heading2";
 
 const initialTestimonials = [
   {
@@ -53,21 +58,23 @@ const initialTestimonials = [
   },
 ];
 
-const partners = [
-  { name: "Disrupt", logo: "/placeholder-logo.png" }, // Placeholder mainly, will use text if image fails
-  { name: "Air Peace", logo: "/placeholder-logo.png" },
-  { name: "Arik", logo: "/placeholder-logo.png" },
-  { name: "Transit", logo: "/placeholder-logo.png" },
-  { name: "Spectranet", logo: "/placeholder-logo.png" },
-  { name: "Kudi", logo: "/placeholder-logo.png" },
+const initialPartners = [
+  { name: "Disrupt" },
+  { name: "Air Peace" },
+  { name: "Arik" },
+  { name: "Transit" },
+  { name: "Spectranet" },
+  { name: "Kudi" },
 ];
 
 export default function ServicesTestimonial() {
   const [testimonials, setTestimonials] = useState<ServicesTestimonialItem[]>(
     initialTestimonials as ServicesTestimonialItem[],
   );
+  const [partners, setPartners] = useState(initialPartners);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
+  const [isPartnersModalOpen, setIsPartnersModalOpen] = useState(false);
   const [sectionData, setSectionData] =
     useState<ServicesTestimonialSectionData>({
       subtitle: "Testimonials",
@@ -109,6 +116,10 @@ export default function ServicesTestimonial() {
     }
   };
 
+  const handlePartnersUpdate = (data: ServicesPartnersData) => {
+    setPartners(data.partners);
+  };
+
   return (
     <section className="relative py-10 md:py-16 lg:py-24 overflow-hidden group/section">
       {/* Background Image with Overlay */}
@@ -130,7 +141,7 @@ export default function ServicesTestimonial() {
           <AdminOnly>
             <button
               onClick={() => setIsSectionModalOpen(true)}
-              className="absolute top-0 right-0 z-100 w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-white hover:scale-110 transition-transform"
+              className="absolute top-0 right-5 z-100 w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-white hover:scale-110 transition-transform"
               title="Edit Section"
             >
               <Edit className="w-5 h-5" />
@@ -141,9 +152,9 @@ export default function ServicesTestimonial() {
             <span className="uppercase tracking-widest text-xs font-semibold mb-2 block text-white/80">
               {sectionData.subtitle}
             </span>
-            <h2 className="text-3xl md:text-5xl font-bold text-white">
+            <Heading2 className=" font-bold text-white">
               {sectionData.title}
-            </h2>
+            </Heading2>
           </div>
           <div className="flex gap-3">
             <AdminOnly>
@@ -154,12 +165,7 @@ export default function ServicesTestimonial() {
                 <Plus className="w-4 h-4 mr-2" /> Add Review
               </Button>
             </AdminOnly>
-            <button className="bg-secondary hover:bg-[#0f392e] text-white px-6 py-3 rounded-full text-sm font-semibold transition-all flex items-center gap-2 border border-white/20 backdrop-blur-sm group">
-              View All Reviews
-              <span className="bg-[#fbbf24] text-black w-6 h-6 rounded-full flex items-center justify-center group-hover:rotate-45 transition-transform duration-300">
-                <ArrowRight className="w-3 h-3" />
-              </span>
-            </button>
+           
           </div>
         </div>
 
@@ -184,7 +190,7 @@ export default function ServicesTestimonial() {
                   <AdminOnly>
                     <button
                       onClick={() => handleEditItem(item)}
-                      className="absolute top-4 right-4 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-secondary text-white hover:scale-110 transition-transform"
+                      className="absolute top-4 right-10 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-secondary text-white hover:scale-110 transition-transform"
                       title="Edit Testimonial"
                     >
                       <Edit className="w-4 h-4" />
@@ -245,8 +251,19 @@ export default function ServicesTestimonial() {
         </div>
 
         {/* Major Partners Section */}
-        <div className="text-center">
-          <h3 className="text-white text-xl font-bold mb-8">Major Partners</h3>
+        <div className="text-center relative group/partners">
+          <div className="flex items-center justify-center mb-8 relative">
+            <h3 className="text-white text-xl font-bold">Major Partners</h3>
+            <AdminOnly>
+              <button
+                onClick={() => setIsPartnersModalOpen(true)}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-secondary hover:text-white transition-all opacity-0 group-hover/partners:opacity-100"
+                title="Edit Partners"
+              >
+                <Edit className="w-4 h-4" />
+              </button>
+            </AdminOnly>
+          </div>
           <Marquee
             gradient={false}
             speed={50}
@@ -281,6 +298,12 @@ export default function ServicesTestimonial() {
         onClose={() => setIsSectionModalOpen(false)}
         initialData={sectionData}
         onUpdate={(data) => setSectionData(data)}
+      />
+      <ServicesPartnersModal
+        isOpen={isPartnersModalOpen}
+        onClose={() => setIsPartnersModalOpen(false)}
+        initialData={{ partners }}
+        onUpdate={handlePartnersUpdate}
       />
     </section>
   );

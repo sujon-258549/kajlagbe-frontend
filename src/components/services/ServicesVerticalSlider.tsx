@@ -76,9 +76,9 @@ export default function ServicesVerticalSlider() {
     <section className="bg-white pt-6 pb-12 md:py-16 lg:pt-6 lg:pb-24 mb-0 group/section relative">
       <div className="main-container px-4 md:px-6 relative">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold text-secondary">
+          <Heading3 className="text-2xl font-bold text-secondary">
             Our Latest Projects
-          </h2>
+          </Heading3>
           <AdminOnly>
             <Button
               onClick={handleAddItem}

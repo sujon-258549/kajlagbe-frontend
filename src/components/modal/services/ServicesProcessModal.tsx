@@ -68,6 +68,7 @@ const ServicesProcessModal: React.FC<ServicesProcessModalProps> = ({
       title="Edit Process Section"
       description="Update the section title, subtitle, and process steps."
       maxWidth="3xl"
+      showBackground={true}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">

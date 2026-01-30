@@ -77,23 +77,23 @@ export default function ServicesProcess() {
 
   return (
     <section className="pb-10 pt-0 md:py-16 lg:py-24 bg-white relative group/section">
-      <div className="main-container">
+      <div className="main-container relative">
+        <AdminOnly>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-0 right-0 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-white hover:scale-110 transition-transform"
+            title="Edit Process"
+          >
+            <Edit className="w-5 h-5" />
+          </button>
+        </AdminOnly>
+
         <div className="text-center max-w-2xl mx-auto mb-10 md:mb-16 relative">
           <span className="text-secondary font-bold text-sm tracking-uppercase mb-2 block">
             {processData.subtitle}
           </span>
           <Heading2 className="text-secondary">{processData.title}</Heading2>
         </div>
-
-        <AdminOnly>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="absolute top-16 right-16 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-white hover:scale-110 transition-transform"
-            title="Edit Process"
-          >
-            <Edit className="w-5 h-5" />
-          </button>
-        </AdminOnly>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 relative">
           {/* Connector Line (Desktop) */}
