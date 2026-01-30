@@ -5,16 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-// Reusing the marquee style from the reference if possible, otherwise creating a custom simple one here
-const MarqueeItem = ({ text }: { text: string }) => (
-  <div className="flex items-center mx-4 gap-2">
-    <span className="text-xl">⛑</span>
-    <span className="font-bold uppercase tracking-wider text-white">
-      {text}
-    </span>
-  </div>
-);
-
+import ContactMarquee from "@/components/contact/ContactMarquee";
 import ContactInfo from "@/components/contact/ContactInfo";
 import ContactHeroModal from "@/components/modal/contact/ContactHeroModal";
 
@@ -30,23 +21,7 @@ export default function ContactPage() {
         ModalComponent={ContactHeroModal}
       />
 
-      {/* 2. Ticker/Marquee Section (Simulated based on image) */}
-      <div className="bg-primary py-4 overflow-hidden whitespace-nowrap text-white">
-        <div className="inline-flex animate-marquee">
-          {[
-            "Everyday Nourishment",
-            "Wholesome Goodness",
-            "Farm Fresh Finds",
-            "Flavors You Love",
-            "Everyday Nourishment",
-            "Wholesome Goodness",
-            "Farm Fresh Finds",
-            "Flavors You Love",
-          ].map((text, i) => (
-            <MarqueeItem key={i} text={text} />
-          ))}
-        </div>
-      </div>
+      <ContactMarquee />
 
       <ContactInfo />
 
