@@ -19,6 +19,11 @@ import { Textarea } from "@/components/ui/textarea";
 
 // Schema for FAQ
 export const faqSchema = z.object({
+  subtitle: z.string().min(1, "Subtitle is required"),
+  title: z.string().min(1, "Title is required"),
+  videoUrl: z.string().min(1, "Video URL is required"),
+  videoTitle: z.string().min(1, "Video Title is required"),
+  videoDescription: z.string().min(1, "Video Description is required"),
   faqs: z.array(
     z.object({
       id: z.string().optional(),
@@ -61,13 +66,95 @@ const ServicesFAQModal: React.FC<ServicesFAQModalProps> = ({
     <CommonModal
       isOpen={isOpen}
       onClose={onClose}
-      title="Edit FAQs"
-      description="Update Frequently Asked Questions."
-      showBackground={false}
+      title="Edit FAQ Section"
+      description="Update FAQ content, video, and section details."
       maxWidth="3xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="subtitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Subtitle</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="FAQ" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <FormInput
+                      placeholder="Frequently Asked Questions"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="space-y-4 border p-4 rounded-lg bg-gray-50">
+            <h4 className="font-bold text-sm">Video Settings</h4>
+            <FormField
+              control={form.control}
+              name="videoUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Video URL</FormLabel>
+                  <FormControl>
+                    <FormInput
+                      placeholder="e.g. https://www.youtube.com/embed/..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="videoTitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Video Overlay Title</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="Our Organic Promise" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="videoDescription"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Video Overlay Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Watch how we maintain..."
+                      className="resize-none"
+                      rows={2}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <div className="space-y-4">
             {form.watch("faqs").map((_, index) => (
               <div

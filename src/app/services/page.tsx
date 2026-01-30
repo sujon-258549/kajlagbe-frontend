@@ -32,10 +32,10 @@ export default function ServicesPage() {
 
       <ServicesPricing />
       <ServicesCTA />
-      <ServicesFAQ />
 
-      <ServicesBlog />
+    
       <ServicesProcess />
+      <ServicesFAQ />
     </div>
   );
 }

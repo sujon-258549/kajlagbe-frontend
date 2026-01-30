@@ -50,7 +50,6 @@ const ServicesTestimonialSectionModal: React.FC<
       onClose={onClose}
       title="Edit Testimonials Section"
       description="Update the section title, subtitle, and background image."
-      showBackground={false}
       maxWidth="lg"
     >
       <Form {...form}>

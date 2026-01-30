@@ -130,7 +130,7 @@ export default function ServicesTestimonial() {
           <AdminOnly>
             <button
               onClick={() => setIsSectionModalOpen(true)}
-              className="absolute top-0 right-0 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-white opacity-0 group-hover/section:opacity-100 transition-all hover:scale-110"
+              className="absolute top-0 right-0 z-100 w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-white hover:scale-110 transition-transform"
               title="Edit Section"
             >
               <Edit className="w-5 h-5" />
@@ -184,7 +184,7 @@ export default function ServicesTestimonial() {
                   <AdminOnly>
                     <button
                       onClick={() => handleEditItem(item)}
-                      className="absolute top-4 right-4 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-secondary text-white opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+                      className="absolute top-4 right-4 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-secondary text-white hover:scale-110 transition-transform"
                       title="Edit Testimonial"
                     >
                       <Edit className="w-4 h-4" />

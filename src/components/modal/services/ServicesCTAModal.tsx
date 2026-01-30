@@ -59,7 +59,6 @@ const ServicesCTAModal: React.FC<ServicesCTAModalProps> = ({
       onClose={onClose}
       title="Edit Call to Action"
       description="Update the CTA section."
-      showBackground={false}
       maxWidth="lg"
     >
       <Form {...form}>

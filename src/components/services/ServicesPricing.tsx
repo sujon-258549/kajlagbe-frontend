@@ -5,9 +5,12 @@ import { Check, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Heading2 from "@/components/common/Headings/Heading2";
 import AdminOnly from "../common/auth/AdminOnly";
-import ServicesPricingModal, {
-  PricingFormData,
-} from "../modal/services/ServicesPricingModal";
+import ServicesPricingSectionModal, {
+  PricingSectionFormData,
+} from "../modal/services/ServicesPricingSectionModal";
+import ServicesPricingCardModal, {
+  PricingCardFormData,
+} from "../modal/services/ServicesPricingCardModal";
 
 const initialPlans = [
   {
@@ -45,51 +48,70 @@ const initialPlans = [
     ],
     recommended: false,
   },
-  // Map helper to ensure consistent shape if needed, but schema matches
 ];
 
 export default function ServicesPricing() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [pricingData, setPricingData] = useState<PricingFormData>({
-    plans: initialPlans,
+  const [sectionData, setSectionData] = useState<PricingSectionFormData>({
+    tagline: "PRICING PLANS",
+    title: "Choose the right plan for your farm",
   });
+  const [plans, setPlans] = useState<PricingCardFormData[]>(initialPlans);
 
-  const handleUpdate = (data: PricingFormData) => {
-    setPricingData(data);
+  const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
+  const [editingCardIndex, setEditingCardIndex] = useState<number | null>(null);
+
+  const handleSectionUpdate = (data: PricingSectionFormData) => {
+    setSectionData(data);
+  };
+
+  const handleCardUpdate = (data: PricingCardFormData) => {
+    if (editingCardIndex !== null) {
+      const updatedPlans = [...plans];
+      updatedPlans[editingCardIndex] = data;
+      setPlans(updatedPlans);
+    }
   };
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-secondary relative group/section">
       <div className="main-container">
-        <div className="text-center max-w-2xl mx-auto mb-16 relative">
+        <div className="text-center max-w-2xl mx-auto mb-16 relative group/header">
           <AdminOnly>
             <button
-              onClick={() => setIsModalOpen(true)}
-              className="absolute top-0 right-0 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:scale-110 hover:bg-white hover:text-secondary"
-              title="Edit Pricing"
+              onClick={() => setIsSectionModalOpen(true)}
+              className="absolute -top-6 right-0 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-white/20 text-white opacity-0 group-hover/header:opacity-100 transition-all hover:bg-white hover:text-secondary"
+              title="Edit Title & Tagline"
             >
-              <Edit className="w-5 h-5" />
+              <Edit className="w-4 h-4" />
             </button>
           </AdminOnly>
 
           <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block">
-            PRICING PLANS
+            {sectionData.tagline}
           </span>
-          <Heading2 className="text-white">
-            Choose the right plan for your farm
-          </Heading2>
+          <Heading2 className="text-white">{sectionData.title}</Heading2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {pricingData.plans.map((plan, idx) => (
+          {plans.map((plan, idx) => (
             <div
               key={idx}
-              className={`relative rounded-xl p-8 transition-all duration-300 bg-white ${
+              className={`relative rounded-xl p-8 transition-all duration-300 bg-white group/card ${
                 plan.recommended
                   ? "border border-[#86b86b] lg:scale-105 z-10"
                   : "border border-gray-100"
               }`}
             >
+              <AdminOnly>
+                <button
+                  onClick={() => setEditingCardIndex(idx)}
+                  className="absolute top-4 right-4 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 opacity-0 group-hover/card:opacity-100 transition-all hover:bg-primary hover:text-white"
+                  title="Edit Card"
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
+              </AdminOnly>
+
               {plan.recommended && (
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider">
                   Recommended
@@ -142,12 +164,22 @@ export default function ServicesPricing() {
           ))}
         </div>
       </div>
-      <ServicesPricingModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        initialData={pricingData}
-        onUpdate={handleUpdate}
+
+      <ServicesPricingSectionModal
+        isOpen={isSectionModalOpen}
+        onClose={() => setIsSectionModalOpen(false)}
+        initialData={sectionData}
+        onUpdate={handleSectionUpdate}
       />
+
+      {editingCardIndex !== null && (
+        <ServicesPricingCardModal
+          isOpen={true} // It's controlled by the index being non-null
+          onClose={() => setEditingCardIndex(null)}
+          initialData={plans[editingCardIndex]}
+          onUpdate={handleCardUpdate}
+        />
+      )}
     </section>
   );
 }

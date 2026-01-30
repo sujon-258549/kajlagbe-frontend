@@ -19,12 +19,15 @@ import { Textarea } from "@/components/ui/textarea";
 
 // Schema for Process Steps
 export const processSchema = z.object({
+  subtitle: z.string().min(1, "Subtitle is required"),
+  title: z.string().min(1, "Title is required"),
   steps: z.array(
     z.object({
       id: z.string().optional(),
       number: z.string().min(1, "Number is required"),
       title: z.string().min(1, "Title is required"),
       description: z.string().min(1, "Description is required"),
+      icon: z.string().min(1, "Icon is required"),
     }),
   ),
 });
@@ -62,13 +65,44 @@ const ServicesProcessModal: React.FC<ServicesProcessModalProps> = ({
     <CommonModal
       isOpen={isOpen}
       onClose={onClose}
-      title="Edit Process Steps"
-      description="Update the 'How We Work' steps."
-      showBackground={false}
+      title="Edit Process Section"
+      description="Update the section title, subtitle, and process steps."
       maxWidth="3xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="subtitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Subtitle</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="HOW WE WORK" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <FormInput
+                      placeholder="Our proven process for perfect results"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <div className="space-y-4">
             {form.watch("steps").map((_, index) => (
               <div
@@ -110,6 +144,24 @@ const ServicesProcessModal: React.FC<ServicesProcessModalProps> = ({
                       )}
                     />
                   </div>
+                </div>
+                <div className="grid grid-cols-1 gap-4">
+                  <FormField
+                    control={form.control}
+                    name={`steps.${index}.icon`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Icon (Lucide Name or FA Class)</FormLabel>
+                        <FormControl>
+                          <FormInput
+                            placeholder="e.g. Clipboard or fa-solid fa-clipboard"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
                 <FormField
                   control={form.control}
