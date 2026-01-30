@@ -1,45 +1,67 @@
-import { Quote } from "lucide-react";
-import Image from "next/image";
+"use client";
 
-const testimonials = [
-  {
-    name: "Sarah Johnson",
-    role: "Happy Mom",
-    content:
-      "The freshest vegetables I've ever tasted! My kids actually love eating greens now.",
-    rating: 5,
-  },
-  {
-    name: "Mike Peters",
-    role: "Chef",
-    content:
-      "As a chef, quality is everything. This farm delivers the best produce consistently.",
-    rating: 5,
-  },
-  {
-    name: "Emily Davis",
-    role: "Health Coach",
-    content:
-      "I recommend this farm to all my clients. The nutritional density is unmatched.",
-    rating: 5,
-  },
-];
+import React, { useState } from "react";
+import { Quote, Edit } from "lucide-react";
+import Image from "next/image";
+import AdminOnly from "@/components/common/auth/AdminOnly";
+import AboutTestimonialsModal from "@/components/modal/about/AboutTestimonialsModal";
+import { AboutTestimonialsFormData } from "@/schemas/about/testimonials.schema";
 
 export default function AboutTestimonials() {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [data, setData] = useState<AboutTestimonialsFormData>({
+    badge: "TESTIMONIALS",
+    title: "Trusted by families, loved for flavor, known for quality",
+    items: [
+      {
+        name: "Sarah Johnson",
+        role: "Happy Mom",
+        content:
+          "The freshest vegetables I've ever tasted! My kids actually love eating greens now.",
+        rating: 5,
+      },
+      {
+        name: "Mike Peters",
+        role: "Chef",
+        content:
+          "As a chef, quality is everything. This farm delivers the best produce consistently.",
+        rating: 5,
+      },
+      {
+        name: "Emily Davis",
+        role: "Health Coach",
+        content:
+          "I recommend this farm to all my clients. The nutritional density is unmatched.",
+        rating: 5,
+      },
+    ],
+  });
+
   return (
-    <section className="py-10 md:py-16 lg:py-24 bg-[#f2f9ec]">
-      <div className="main-container mx-auto px-4">
+    <section className="py-10 md:py-16 lg:py-24 bg-[#f2f9ec] relative group/section">
+      <div className="main-container mx-auto px-4 relative">
+        {/* Edit Button */}
+        <AdminOnly>
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className="absolute top-6 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white z-50"
+            title="Edit Section"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
+
         <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
           <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block lowercase">
-            TESTIMONIALS
+            {data.badge}
           </span>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-secondary leading-tight">
-            Trusted by families, loved for flavor, known for quality
+            {data.title}
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((t, idx) => (
+          {data.items.map((t, idx) => (
             <div
               key={idx}
               className="bg-white p-8 rounded-2xl border border-gray-200 relative pt-12"
@@ -76,6 +98,14 @@ export default function AboutTestimonials() {
           ))}
         </div>
       </div>
+      <AdminOnly>
+        <AboutTestimonialsModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          initialData={data}
+          onUpdate={(newData) => setData(newData)}
+        />
+      </AdminOnly>
     </section>
   );
 }

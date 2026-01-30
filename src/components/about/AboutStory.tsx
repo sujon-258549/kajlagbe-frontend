@@ -43,7 +43,7 @@ export default function AboutStory() {
         <AdminOnly>
           <button
             onClick={() => setIsEditModalOpen(true)}
-            className="absolute -top-6 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all z-40 hover:bg-secondary hover:text-white"
+            className="absolute top-6 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all z-40 hover:bg-secondary hover:text-white"
             title="Edit Section"
           >
             <Edit className="w-4 h-4" />

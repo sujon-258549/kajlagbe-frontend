@@ -1,18 +1,28 @@
-import Link from "next/link";
+"use client";
+
+import React, { useState } from "react";
+import CommonHero from "@/components/common/CommonHero";
+import AboutHeroModal from "@/components/modal/about/AboutHeroModal";
+import { AboutHeroFormData } from "@/schemas/about/hero.schema";
 
 export default function AboutHero() {
+  const [data, setData] = useState<AboutHeroFormData>({
+    title: "About Us",
+    subtitle: "",
+    image:
+      "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg",
+    bgImage: "", // Optional in schema?
+  });
+
   return (
-    <section className="bg-secondary py-16 lg:py-24 text-center">
-      <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-        About Us
-      </h1>
-      <div className="flex items-center justify-center gap-2 text-white/80 text-sm font-medium">
-        <Link href="/" className="hover:text-white transition-colors">
-          Home
-        </Link>
-        <span>/</span>
-        <span className="text-white">About Us</span>
-      </div>
-    </section>
+    <CommonHero
+      title={data.title}
+      subtitle={data.subtitle}
+      breadcrumb="About Us"
+      image={data.image}
+      bgImage={data.bgImage}
+      ModalComponent={AboutHeroModal}
+      onUpdate={(newData) => setData((prev) => ({ ...prev, ...newData }))}
+    />
   );
 }

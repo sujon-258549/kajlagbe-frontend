@@ -1,12 +1,52 @@
+"use client";
+
+import React, { useState } from "react";
 import Image from "next/image";
-import { Sparkles, Leaf, Target } from "lucide-react";
+import { Sparkles, Leaf, Target, Edit } from "lucide-react";
 import Heading2 from "@/components/common/Headings/Heading2";
 import Heading4 from "@/components/common/Headings/Heading4";
+import AdminOnly from "@/components/common/auth/AdminOnly";
+import AboutMissionModal from "@/components/modal/about/AboutMissionModal";
+import { AboutMissionFormData } from "@/schemas/about/mission.schema";
 
 export default function AboutMission() {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [data, setData] = useState<AboutMissionFormData>({
+    badge: "About Us",
+    title: "Born from love for real food and a desire to do better",
+    description:
+      "We started with a simple idea: make honest high-quality food accessible to everyone. Tired of artificial additives & confusing labels, we set out to create better.",
+    mainImage: "/images/about/healthy_food_packet.png",
+    secondaryImage: "/images/about/fresh_vegetables_bag.png",
+    satisfactionRate: 98,
+    features: [
+      {
+        title: "Ethically Sourced, Honestly Made",
+        description:
+          "We believe that great food starts at the source. That's why we partner with local farmers and ethical suppliers who share our commitment to quality.",
+      },
+      {
+        title: "Nutrition That Fits Your Lifestyle",
+        description:
+          "We believe that great food starts at the source. That's why we partner with local farmers and ethical suppliers who share our commitment to quality.",
+      },
+    ],
+  });
+
   return (
-    <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden">
-      <div className="main-container mx-auto px-4">
+    <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden relative group/section">
+      <div className="main-container mx-auto px-4 relative">
+        {/* Edit Button */}
+        <AdminOnly>
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className="absolute top-6 right-8 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white"
+            title="Edit Section"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left Side: Image Collage */}
           <div className="relative">
@@ -14,7 +54,7 @@ export default function AboutMission() {
               {/* Top Main Image */}
               <div className="col-span-12 relative h-[250px] md:h-[380px] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden shadow-2xl">
                 <Image
-                  src="/images/about/healthy_food_packet.png"
+                  src={data.mainImage || "https://placehold.co/600x400/png"}
                   alt="Healthy Food Packet"
                   fill
                   className="object-cover"
@@ -27,7 +67,7 @@ export default function AboutMission() {
                   <Target className="w-5 h-5 md:w-6 md:h-6 text-secondary" />
                 </div>
                 <h3 className="text-3xl md:text-4xl font-bold text-secondary mb-1 md:mb-2">
-                  98 %
+                  {data.satisfactionRate} %
                 </h3>
                 <p className="text-secondary/70 font-medium text-sm md:text-base">
                   Satisfaction Rate
@@ -37,7 +77,9 @@ export default function AboutMission() {
               {/* Bottom Right: Fresh Vegetables */}
               <div className="col-span-12 md:col-span-7 relative h-[200px] md:h-[280px] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden shadow-xl">
                 <Image
-                  src="/images/about/fresh_vegetables_bag.png"
+                  src={
+                    data.secondaryImage || "https://placehold.co/600x400/png"
+                  }
                   alt="Fresh Vegetables"
                   fill
                   className="object-cover"
@@ -72,119 +114,76 @@ export default function AboutMission() {
             <div>
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f0f9eb] rounded-full text-secondary text-xs md:text-sm font-semibold border border-[#dcf0d1]">
                 <Sparkles className="w-3.5 h-3.5 md:w-4 h-4" />
-                About Us
+                {data.badge}
               </div>
             </div>
 
-            <Heading2 className="text-secondary leading-tight md:leading-[1.2] text-3xl md:text-4xl lg:text-5xl">
-              Born from love for real food and a desire to do better
+            <Heading2 className="text-secondary leading-tight md:leading-[1.2] ">
+              {data.title}
             </Heading2>
 
             <p className="text-slate-600 text-base md:text-lg leading-relaxed max-w-xl">
-              We started with a simple idea: make honest high-quality food
-              accessible to everyone. Tired of artificial additives & confusing
-              labels, we set out to create better.
+              {data.description}
             </p>
 
             <div className="space-y-8 md:space-y-10 pt-4">
-              {/* Feature 1 */}
-              <div className="flex gap-4 md:gap-6 items-start group">
-                <div className="shrink-0 w-12 h-12 md:w-14 md:h-14 bg-[#f5fbf0] rounded-2xl flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-all duration-300">
-                  <svg
-                    className="w-6 h-6 md:w-8 md:h-8 text-[#86b86b] group-hover:text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="12"
-                      cy="7"
-                      r="5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                    <circle
-                      cx="7"
-                      cy="17"
-                      r="5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                    <circle
-                      cx="17"
-                      cy="17"
-                      r="5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                  </svg>
+              {data.features.map((feature, index) => (
+                <div
+                  key={index}
+                  className="flex gap-4 md:gap-6 items-start group"
+                >
+                  <div className="shrink-0 w-12 h-12 md:w-14 md:h-14 bg-[#f5fbf0] rounded-2xl flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-all duration-300">
+                    <svg
+                      className="w-6 h-6 md:w-8 md:h-8 text-[#86b86b] group-hover:text-white"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <circle
+                        cx="12"
+                        cy="7"
+                        r="5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                      <circle
+                        cx="7"
+                        cy="17"
+                        r="5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                      <circle
+                        cx="17"
+                        cy="17"
+                        r="5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                    </svg>
+                  </div>
+                  <div className="space-y-1 md:space-y-2">
+                    <Heading4 className="text-lg md:text-xl font-bold text-secondary">
+                      {feature.title}
+                    </Heading4>
+                    <p className="text-sm md:text-base text-slate-500 leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </div>
                 </div>
-                <div className="space-y-1 md:space-y-2">
-                  <Heading4 className="text-lg md:text-xl font-bold text-secondary">
-                    Ethically Sourced, Honestly Made
-                  </Heading4>
-                  <p className="text-sm md:text-base text-slate-500 leading-relaxed">
-                    We believe that great food starts at the source. That&apos;s
-                    why we partner with local farmers and ethical suppliers who
-                    share our commitment to quality.
-                  </p>
-                </div>
-              </div>
-
-              {/* Feature 2 */}
-              <div className="flex gap-4 md:gap-6 items-start group">
-                <div className="shrink-0 w-12 h-12 md:w-14 md:h-14 bg-[#f5fbf0] rounded-2xl flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-all duration-300">
-                  <svg
-                    className="w-6 h-6 md:w-8 md:h-8 text-[#86b86b] group-hover:text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="7"
-                      cy="7"
-                      r="3"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                    <circle
-                      cx="17"
-                      cy="7"
-                      r="3"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                    <circle
-                      cx="7"
-                      cy="17"
-                      r="3"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                    <circle
-                      cx="17"
-                      cy="17"
-                      r="3"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                  </svg>
-                </div>
-                <div className="space-y-1 md:space-y-2">
-                  <Heading4 className="text-lg md:text-xl font-bold text-secondary">
-                    Nutrition That Fits Your Lifestyle
-                  </Heading4>
-                  <p className="text-sm md:text-base text-slate-500 leading-relaxed">
-                    We believe that great food starts at the source. That&apos;s
-                    why we partner with local farmers and ethical suppliers who
-                    share our commitment to quality.
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
+      <AdminOnly>
+        <AboutMissionModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          initialData={data}
+          onUpdate={(newData) => setData(newData)}
+        />
+      </AdminOnly>
     </section>
   );
 }

@@ -13,6 +13,7 @@ interface CommonHeroProps {
   image?: string;
   bgImage?: string;
   breadcrumb?: string;
+  onUpdate?: (data: any) => void;
   ModalComponent?: React.ComponentType<{
     isOpen: boolean;
     onClose: () => void;
@@ -20,6 +21,7 @@ interface CommonHeroProps {
     subtitle?: string;
     image: string;
     bgImage?: string;
+    onUpdate?: (data: any) => void;
   }>;
 }
 
@@ -30,6 +32,7 @@ export default function CommonHero({
   bgImage = "https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=2670&auto=format&fit=crop",
   breadcrumb,
   ModalComponent,
+  onUpdate,
 }: CommonHeroProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -113,7 +116,7 @@ export default function CommonHero({
                 <AdminOnly>
                   <button
                     onClick={() => setIsEditModalOpen(true)}
-                    className="absolute top-3 right-3 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/30 text-white transition-all border border-white/20 backdrop-blur-md z-40 group shadow-lg"
+                    className="absolute top-6 right-8 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/30 text-white transition-all border border-white/20 backdrop-blur-md z-40 group shadow-lg"
                     title="Edit Hero"
                   >
                     <Edit className="w-5 h-5" />
@@ -133,6 +136,7 @@ export default function CommonHero({
             subtitle={subtitle}
             image={image}
             bgImage={bgImage}
+            onUpdate={onUpdate}
           />
         </AdminOnly>
       )}

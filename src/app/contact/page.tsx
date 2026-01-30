@@ -4,7 +4,6 @@ import CommonHero from "@/components/common/CommonHero";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
 
 // Reusing the marquee style from the reference if possible, otherwise creating a custom simple one here
 const MarqueeItem = ({ text }: { text: string }) => (
@@ -16,6 +15,7 @@ const MarqueeItem = ({ text }: { text: string }) => (
   </div>
 );
 
+import ContactInfo from "@/components/contact/ContactInfo";
 import ContactHeroModal from "@/components/modal/contact/ContactHeroModal";
 
 // Reusing the marquee style from the reference if possible, otherwise creating a custom simple one here
@@ -48,33 +48,9 @@ export default function ContactPage() {
         </div>
       </div>
 
-      <div className="main-container">
-        <div className="my-16 space-y-20 ">
-          {/* 3. Info Cards Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <InfoCard
-              icon={Phone}
-              title="Contact Us"
-              lines={["+ (123) 456-789", "+ (978) 645-132"]}
-            />
-            <InfoCard
-              icon={Mail}
-              title="E - mail"
-              lines={["info@domainname.com", "support@domain.com"]}
-            />
-            <InfoCard
-              icon={MapPin}
-              title="Address"
-              lines={["1234 Maple Avenue, Suite 567", "United States"]}
-            />
-            <InfoCard
-              icon={Clock}
-              title="Working hours"
-              lines={["Mon-Sat : 10am to 07pm", "Sunday: Closed"]}
-            />
-          </div>
-        </div>
+      <ContactInfo />
 
+      <div className="main-container">
         {/* 4. Bottom Section: Map & Form */}
         <div className="grid lg:grid-cols-2 gap-0 mb-8 lg:mb-16 overflow-hidden rounded-3xl border border-gray-200">
           {/* Left: Google Map (Simulated) */}
@@ -163,32 +139,6 @@ export default function ContactPage() {
           animation: marquee 20s linear infinite;
         }
       `}</style>
-    </div>
-  );
-}
-
-function InfoCard({
-  icon: Icon,
-  title,
-  lines,
-}: {
-  icon: any;
-  title: string;
-  lines: string[];
-}) {
-  return (
-    <div className="bg-white p-8 rounded-xl border border-gray-200 flex flex-col items-start space-y-4 hover:-translate-y-1 transition-all duration-300">
-      <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
-        <Icon className="w-7 h-7" strokeWidth={1.5} />
-      </div>
-      <h3 className="font-bold text-xl text-secondary">{title}</h3>
-      <div className="space-y-1">
-        {lines.map((line, i) => (
-          <p key={i} className="text-gray-500 text-sm">
-            {line}
-          </p>
-        ))}
-      </div>
     </div>
   );
 }

@@ -27,6 +27,7 @@ interface AboutHeroModalProps {
   subtitle?: string;
   image: string;
   bgImage?: string;
+  onUpdate?: (data: AboutHeroFormData) => void;
 }
 
 const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
@@ -36,9 +37,10 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
   subtitle,
   image,
   bgImage,
+  onUpdate,
 }) => {
   const form = useForm<AboutHeroFormData>({
-    resolver: zodResolver(aboutHeroSchema),
+    resolver: zodResolver(aboutHeroSchema) as any,
     defaultValues: {
       title: title,
       subtitle: subtitle || "",
@@ -48,6 +50,9 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
   });
   const onSubmit = (data: AboutHeroFormData) => {
     console.log("Hero Section Updated Data (Validated):", data);
+    if (onUpdate) {
+      onUpdate(data);
+    }
     onClose();
   };
 
