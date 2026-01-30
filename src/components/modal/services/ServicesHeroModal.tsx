@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import ImageUpload from "@/components/common/ImageUpload";
@@ -27,6 +27,7 @@ interface ServicesHeroModalProps {
   subtitle?: string;
   image: string;
   bgImage?: string;
+  onUpdate?: (data: ServicesHeroFormData) => void;
 }
 
 const ServicesHeroModal: React.FC<ServicesHeroModalProps> = ({
@@ -36,6 +37,7 @@ const ServicesHeroModal: React.FC<ServicesHeroModalProps> = ({
   subtitle,
   image,
   bgImage,
+  onUpdate,
 }) => {
   const form = useForm<ServicesHeroFormData>({
     resolver: zodResolver(servicesHeroSchema),
@@ -47,8 +49,19 @@ const ServicesHeroModal: React.FC<ServicesHeroModalProps> = ({
     },
   });
 
+  useEffect(() => {
+    form.reset({
+      title: title,
+      subtitle: subtitle || "",
+      image: image,
+      bgImage: bgImage || "",
+    });
+  }, [title, subtitle, image, bgImage, form, isOpen]);
+
   const onSubmit = (data: ServicesHeroFormData) => {
-    console.log("Services Hero Updated Data:", data);
+    if (onUpdate) {
+      onUpdate(data);
+    }
     onClose();
   };
 
