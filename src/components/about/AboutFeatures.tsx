@@ -28,7 +28,7 @@ const features = [
 
 export default function AboutFeatures() {
   return (
-    <section className="py-16 lg:py-24 bg-secondary">
+    <section className="py-10 md:py-16 lg:py-24 bg-secondary">
       <div className="main-container mx-auto px-4 text-center">
         <div className="max-w-2xl mx-auto mb-12">
           <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block">

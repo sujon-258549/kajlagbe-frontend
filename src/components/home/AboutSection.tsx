@@ -8,7 +8,7 @@ import Heading3 from "../common/Headings/Heading3";
 
 export default function AboutSection() {
   return (
-    <section className="py-24 bg-white overflow-hidden">
+    <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden">
       <div className="main-container mx-auto px-6">
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           {/* Image Side */}

@@ -40,7 +40,7 @@ const featured = [
 
 export default function FeaturedServices() {
   return (
-    <section className="py-12 md:py-24 bg-white">
+    <section className="py-10 md:py-16 lg:py-24 bg-white">
       <div className="main-container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           {/* Slot 1 */}

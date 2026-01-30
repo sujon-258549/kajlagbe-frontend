@@ -5,12 +5,12 @@ import Heading4 from "@/components/common/Headings/Heading4";
 
 export default function AboutMission() {
   return (
-    <section className="py-12 lg:py-20 bg-white overflow-hidden">
+    <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden">
       <div className="main-container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left Side: Image Collage */}
           <div className="relative">
-            <div className="grid grid-cols-12 gap-3 md:gap-4">
+            <div className="grid grid-cols-12 gap-4">
               {/* Top Main Image */}
               <div className="col-span-12 relative h-[250px] md:h-[380px] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden shadow-2xl">
                 <Image
@@ -46,8 +46,8 @@ export default function AboutMission() {
             </div>
 
             {/* Circular Contact Badge */}
-            <div className="hidden md:block absolute top-[48%] left-[50%] -translate-x-1/2 -translate-y-1/2 md:left-[41.6%] md:top-[60%] z-20">
-              <div className="relative w-24 h-24 md:w-40 md:h-40 bg-white rounded-full p-2 shadow-2xl animate-spin-slow">
+            <div className="absolute top-[48%] left-[50%] -translate-x-1/2 -translate-y-1/2 md:left-[41.6%] md:top-[60%] z-20">
+              <div className="relative w-28 h-28 md:w-40 md:h-40 bg-white rounded-full p-2 shadow-2xl animate-spin-slow">
                 <svg viewBox="0 0 100 100" className="w-full h-full">
                   <path
                     id="circlePath"
@@ -60,8 +60,8 @@ export default function AboutMission() {
                     </textPath>
                   </text>
                 </svg>
-                <div className="absolute inset-0 flex items-center justify-center m-5 md:m-6 bg-[#86b86b] rounded-full text-white shadow-inner">
-                  <Leaf className="w-6 h-6 md:w-10 md:h-10" />
+                <div className="absolute inset-0 flex items-center justify-center m-6 md:m-6 bg-[#86b86b] rounded-full text-white shadow-inner">
+                  <Leaf className="w-8 h-8 md:w-10 md:h-10" />
                 </div>
               </div>
             </div>
@@ -76,7 +76,7 @@ export default function AboutMission() {
               </div>
             </div>
 
-            <Heading2 className="text-secondary leading-tight md:leading-[1.2]">
+            <Heading2 className="text-secondary leading-tight md:leading-[1.2] text-3xl md:text-4xl lg:text-5xl">
               Born from love for real food and a desire to do better
             </Heading2>
 

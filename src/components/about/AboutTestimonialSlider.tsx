@@ -109,11 +109,11 @@ const partners = [
 
 export default function AboutTestimonialSlider() {
   return (
-    <section className="py-16 lg:py-24 bg-white overflow-hidden">
+    <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden">
       <div className="main-container mx-auto px-4">
-        <div className="flex flex-col lg:flex-row gap-16 lg:gap-8 items-center mb-20">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center mb-16 md:mb-20">
           {/* Left Content */}
-          <div className="w-full lg:w-5/12 space-y-8">
+          <div className="w-full lg:w-5/12 space-y-6 md:space-y-8">
             <div className="flex items-center gap-2 text-secondary font-semibold">
               <Leaf className="w-5 h-5 fill-current" />
               <span className="text-sm uppercase tracking-wide">
@@ -121,8 +121,8 @@ export default function AboutTestimonialSlider() {
               </span>
             </div>
 
-            <Heading3 className="text-secondary font-bold leading-tight">
-              Why They Believe <br />
+            <Heading3 className="text-secondary font-bold leading-tight text-3xl md:text-4xl lg:text-5xl">
+              Why They Believe <br className="hidden md:block" />
               <span className="inline-flex items-center justify-center w-10 h-10 bg-secondary text-primary rounded-full mx-2 align-middle">
                 <span className="text-xl font-serif">❝</span>
               </span>
@@ -178,7 +178,12 @@ export default function AboutTestimonialSlider() {
                 effect={"creative"}
                 grabCursor={true}
                 centeredSlides={true}
-                slidesPerView={1.2}
+                slidesPerView={1}
+                breakpoints={{
+                  640: {
+                    slidesPerView: 1.2,
+                  },
+                }}
                 modules={[EffectCreative, Autoplay]}
                 className="about-testimonial-swiper"
                 loop={true}

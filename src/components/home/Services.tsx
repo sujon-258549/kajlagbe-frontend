@@ -157,7 +157,7 @@ export default function Services() {
   ];
 
   return (
-    <section className="bg-green-50/30 relative py-20 overflow-hidden">
+    <section className="bg-green-50/30 relative py-10 md:py-16 lg:py-24 overflow-hidden">
       {/* Background Pattern */}
       <div
         className="absolute inset-0 opacity-[0.03]"
@@ -231,7 +231,6 @@ export default function Services() {
           </Button>
         </div>
       </div>
-   
     </section>
   );
 }

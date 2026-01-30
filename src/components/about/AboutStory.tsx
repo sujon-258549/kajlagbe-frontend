@@ -7,13 +7,13 @@ import Heading4 from "@/components/common/Headings/Heading4";
 
 export default function AboutStory() {
   return (
-    <section className="py-12 lg:py-20 overflow-hidden">
+    <section className="py-10 md:py-16 lg:py-24 overflow-hidden">
       <div className="main-container mx-auto px-4">
-        <div className="flex flex-col lg:flex-row items-center gap-6">
+        <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           {/* Image Grid */}
           <div className="w-full lg:w-1/2 relative">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-4 pt-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="space-y-6 md:pt-12">
                 <div className="relative h-64 rounded-2xl overflow-hidden shadow-lg">
                   <div className="absolute inset-0 bg-gray-200" />
                   {/* Placeholder for image 1 */}
@@ -31,7 +31,7 @@ export default function AboutStory() {
                   <p className="text-secondary font-medium">Organic Food</p>
                 </div>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div className="bg-secondary p-6 rounded-2xl text-center text-white">
                   <Check className="w-8 h-8 mx-auto mb-2" />
                   <p className="font-medium">Certified Product</p>

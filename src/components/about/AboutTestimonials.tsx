@@ -1,4 +1,5 @@
 import { Quote } from "lucide-react";
+import Image from "next/image";
 
 const testimonials = [
   {
@@ -26,13 +27,13 @@ const testimonials = [
 
 export default function AboutTestimonials() {
   return (
-    <section className="py-16 lg:py-24 bg-[#f2f9ec]">
+    <section className="py-10 md:py-16 lg:py-24 bg-[#f2f9ec]">
       <div className="main-container mx-auto px-4">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block">
+        <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
+          <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block lowercase">
             TESTIMONIALS
           </span>
-          <h2 className="text-3xl lg:text-4xl font-bold text-secondary">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-secondary leading-tight">
             Trusted by families, loved for flavor, known for quality
           </h2>
         </div>
@@ -56,10 +57,12 @@ export default function AboutTestimonials() {
               <p className="text-slate-600 mb-6 italic">{t.content}</p>
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-slate-200 rounded-full overflow-hidden">
-                  <img
+                <div className="w-10 h-10 bg-slate-200 rounded-full overflow-hidden relative">
+                  <Image
                     src={`https://placehold.co/100x100/154d2e/FFFFFF/png?text=${t.name.charAt(0)}`}
                     alt={t.name}
+                    fill
+                    className="object-cover"
                   />
                 </div>
                 <div>

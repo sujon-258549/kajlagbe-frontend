@@ -46,7 +46,7 @@ const testimonials = [
 
 export default function TestimonialSection() {
   return (
-    <section className="py-12 md:py-16 bg-white overflow-hidden">
+    <section className="py-10 md:py-16 bg-white overflow-hidden">
       <div className="main-container">
         <div className="bg-secondary rounded-2xl md:rounded-2xl overflow-hidden flex flex-col lg:flex-row relative min-h-[600px] lg:h-[700px] shadow-2xl">
           {/* Glossy Spheres (Reference Image Matched) */}

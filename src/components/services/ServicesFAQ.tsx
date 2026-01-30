@@ -29,7 +29,7 @@ const faqs = [
 
 export default function ServicesFAQ() {
   return (
-    <section className="py-20 lg:py-28 bg-secondary">
+    <section className="py-10 md:py-16 lg:py-24 bg-secondary">
       <div className="main-container mx-auto px-4">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-start">
           {/* Image Side */}

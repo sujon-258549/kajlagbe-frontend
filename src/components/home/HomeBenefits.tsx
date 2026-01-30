@@ -49,7 +49,7 @@ const rightBenefits = [
 
 export default function HomeBenefits() {
   return (
-    <section className="py-20 lg:py-28 bg-[#fcfdfa] overflow-hidden">
+    <section className="py-10 md:py-16 lg:py-24 bg-[#fcfdfa] overflow-hidden">
       <div className="main-container mx-auto px-4">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
