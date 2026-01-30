@@ -21,7 +21,7 @@ interface BlogHeroModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  subtitle?: string;
+  subtitle?: string; // Changed from breadcrumb to subtitle
   image: string;
   bgImage?: string;
   onUpdate?: (data: BlogHeroFormData) => void;
@@ -40,17 +40,16 @@ const BlogHeroModal: React.FC<BlogHeroModalProps> = ({
     resolver: zodResolver(blogHeroSchema),
     defaultValues: {
       title: title,
-      subtitle: subtitle || "",
+      breadcrumb: subtitle || "", // Map subtitle to breadcrumb
       image: image,
       bgImage: bgImage || "",
     },
   });
 
-  // Effect to update form values when props change
   useEffect(() => {
     form.reset({
       title: title,
-      subtitle: subtitle || "",
+      breadcrumb: subtitle || "",
       image: image,
       bgImage: bgImage || "",
     });
@@ -109,12 +108,12 @@ const BlogHeroModal: React.FC<BlogHeroModalProps> = ({
 
             <FormField
               control={form.control}
-              name="subtitle"
+              name="breadcrumb"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Hero Subtitle</FormLabel>
+                  <FormLabel>Hero Breadcrumb</FormLabel>
                   <FormControl>
-                    <FormInput placeholder="Enter subtitle" {...field} />
+                    <FormInput placeholder="Enter breadcrumb" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
