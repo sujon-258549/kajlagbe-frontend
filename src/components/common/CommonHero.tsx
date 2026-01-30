@@ -38,7 +38,20 @@ export default function CommonHero({
 
   return (
     <section className="py-10">
-      <div className="main-container mx-auto px-4">
+      <div className="main-container mx-auto px-4 relative">
+        {/* Edit Button - Positioned top-right of container */}
+        {ModalComponent && (
+          <AdminOnly>
+            <button
+              onClick={() => setIsEditModalOpen(true)}
+              className="absolute top-0 right-8 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/30 text-white transition-all border border-white/20 backdrop-blur-md z-50 group shadow-lg"
+              title="Edit Hero"
+            >
+              <Edit className="w-5 h-5" />
+            </button>
+          </AdminOnly>
+        )}
+
         <div className="relative w-full h-[250px] sm:h-[300px] md:h-[400px] rounded-2xl overflow-hidden shadow-xl bg-gray-100 flex">
           {/* Right Side Image (Absolute Layer) */}
           <div className="absolute inset-0 z-0">
@@ -111,19 +124,7 @@ export default function CommonHero({
             </div>
 
             {/* Right Content Half */}
-            <div className="w-full md:w-1/2 h-full hidden md:block relative">
-              {ModalComponent && (
-                <AdminOnly>
-                  <button
-                    onClick={() => setIsEditModalOpen(true)}
-                    className="absolute top-6 right-8 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/30 text-white transition-all border border-white/20 backdrop-blur-md z-40 group shadow-lg"
-                    title="Edit Hero"
-                  >
-                    <Edit className="w-5 h-5" />
-                  </button>
-                </AdminOnly>
-              )}
-            </div>
+            <div className="w-full md:w-1/2 h-full hidden md:block relative"></div>
           </div>
         </div>
       </div>

@@ -15,6 +15,8 @@ export const subscriptionFAQSchema = z.object({
   videoUrl: z.string().min(1, "Video ID or URL is required"),
   videoLabel: z.string().min(1, "Video label is required"),
   videoDescription: z.string().min(1, "Video description is required"),
+  videoButtonText: z.string().optional(),
+  videoButtonLink: z.string().optional(),
 });
 
 export type SubscriptionFAQFormData = z.infer<typeof subscriptionFAQSchema>;

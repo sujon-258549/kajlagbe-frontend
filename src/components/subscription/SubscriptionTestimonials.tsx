@@ -40,23 +40,22 @@ export default function SubscriptionTestimonials() {
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-gray-50 relative overflow-hidden group/section">
-      {/* Edit Button */}
-      <AdminOnly>
-        <button
-          onClick={() => setIsEditModalOpen(true)}
-          className="absolute top-6 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-secondary hover:text-white"
-          title="Edit Testimonials"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-      </AdminOnly>
-
       {/* Decorative Background Blobs */}
       <div className="absolute top-1/4 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px]" />
       <div className="absolute bottom-1/4 right-10 w-80 h-80 bg-blue-400/20 rounded-full blur-[100px]" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg h-full max-h-[500px] bg-purple-300/20 rounded-full blur-[120px]" />
 
       <div className="main-container relative z-10">
+        {/* Edit Button */}
+        <AdminOnly>
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className="absolute top-0 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-secondary hover:text-white"
+            title="Edit Testimonials"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
         <div className="text-center mb-10 md:mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-secondary mb-4">
             {data.title}

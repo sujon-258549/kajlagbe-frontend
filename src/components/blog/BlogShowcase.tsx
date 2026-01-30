@@ -3,8 +3,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import Pagination from "../common/Pagination";
+import { Edit } from "lucide-react";
+import AdminOnly from "../common/auth/AdminOnly";
+import BlogShowcaseModal from "../modal/blog/BlogShowcaseModal";
+import { BlogShowcaseFormData } from "@/schemas/blog/showcase.schema";
 
-const showcaseData = [
+const initialShowcaseData = [
   {
     id: 1,
     number: "01",
@@ -46,157 +50,48 @@ const showcaseData = [
     image:
       "https://images.unsplash.com/photo-1591193686104-fddba4d0e4d8?q=80&w=2671&auto=format&fit=crop",
   },
-  {
-    id: 6,
-    number: "06",
-    title: "Green Energy",
-    description:
-      "Transitioning to renewable energy sources for a cleaner future.",
-    image:
-      "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?q=80&w=2574&auto=format&fit=crop",
-  },
-  {
-    id: 7,
-    number: "07",
-    title: "Ocean Cleanup",
-    description: "Large scale operations to remove plastics from our oceans.",
-    image:
-      "https://images.unsplash.com/photo-1621451537084-482c73073a0f?q=80&w=2574&auto=format&fit=crop",
-  },
-  {
-    id: 8,
-    number: "08",
-    title: "Solar Installation",
-    description: "Installing solar panels to harness the power of the sun.",
-    image:
-      "https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=2672&auto=format&fit=crop",
-  },
-  {
-    id: 9,
-    number: "09",
-    title: "Tree Planting",
-    description: "Reforestation efforts to combat climate change globally.",
-    image:
-      "https://images.unsplash.com/photo-1576085898323-218337e3e43c?q=80&w=2670&auto=format&fit=crop",
-  },
-  {
-    id: 10,
-    number: "10",
-    title: "Sustainable Farming",
-    description: "Promoting organic farming practices for better health.",
-    image:
-      "https://images.unsplash.com/photo-1625246333195-098e47580d19?q=80&w=2670&auto=format&fit=crop",
-  },
-  {
-    id: 11,
-    number: "11",
-    title: "Urban Gardening",
-    description: "Creating green spaces within concrete jungles.",
-    image:
-      "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?q=80&w=2670&auto=format&fit=crop",
-  },
-  {
-    id: 12,
-    number: "12",
-    title: "Water Conservation",
-    description:
-      "Techniques and technologies to save our most precious resource.",
-    image:
-      "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?q=80&w=2670&auto=format&fit=crop",
-  },
-  {
-    id: 13,
-    number: "13",
-    title: "Wind Energy",
-    description: "Harnessing wind power as a sustainable energy alternative.",
-    image:
-      "https://images.unsplash.com/photo-1466611653911-95081537e5b7?q=80&w=2670&auto=format&fit=crop",
-  },
-  {
-    id: 14,
-    number: "14",
-    title: "Wildlife Protection",
-    description: "Preserving habitats for endangered species worldwide.",
-    image:
-      "https://images.unsplash.com/photo-1474511320723-9a56873867b5?q=80&w=2672&auto=format&fit=crop",
-  },
-  {
-    id: 15,
-    number: "15",
-    title: "Composting",
-    description: "Turning organic waste into nutrient-rich soil.",
-    image:
-      "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=2832&auto=format&fit=crop",
-  },
-  {
-    id: 16,
-    number: "16",
-    title: "Beekeeping",
-    description: "Supporting bee populations crucial for our ecosystem.",
-    image:
-      "https://images.unsplash.com/photo-1587049352846-4a222e784d38?q=80&w=2680&auto=format&fit=crop",
-  },
-  {
-    id: 17,
-    number: "17",
-    title: "Electric Vehicles",
-    description: "Promoting the adoption of clean electric transportation.",
-    image:
-      "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?q=80&w=2672&auto=format&fit=crop",
-  },
-  {
-    id: 18,
-    number: "18",
-    title: "Green Architecture",
-    description: "Designing buildings that are environmentally responsible.",
-    image:
-      "https://images.unsplash.com/photo-1518005052357-e9871950f393?q=80&w=2669&auto=format&fit=crop",
-  },
-  {
-    id: 19,
-    number: "19",
-    title: "Plastic Free",
-    description: "Initiatives to reduce single-use plastics in daily life.",
-    image:
-      "https://images.unsplash.com/photo-1618477461853-56e979f58319?q=80&w=2574&auto=format&fit=crop",
-  },
-  {
-    id: 20,
-    number: "20",
-    title: "Climate Action",
-    description: "Advocating for policies that protect our climate.",
-    image:
-      "https://images.unsplash.com/photo-1623851722837-25c276536f34?q=80&w=2670&auto=format&fit=crop",
-  },
 ];
 
 export default function BlogShowcase() {
+  const [data, setData] = useState<BlogShowcaseFormData>({
+    items: initialShowcaseData,
+  });
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
 
-  const totalPages = Math.ceil(showcaseData.length / itemsPerPage);
-  const currentItems = showcaseData.slice(
+  const totalPages = Math.ceil(data.items.length / itemsPerPage);
+  const currentItems = data.items.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    // Optional: Scroll to top of section
-    // document.getElementById("blog-showcase")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <section
       id="blog-showcase"
-      className="py-10 md:py-16 lg:py-24 bg-white font-outfit"
+      className="py-10 md:py-16 lg:py-24 bg-white font-outfit relative group/section"
     >
-      <div className="main-container">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+      <div className="main-container relative">
+        {/* Edit Button */}
+        <AdminOnly>
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className="absolute top-0 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-secondary hover:text-white"
+            title="Edit Showcase"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-12">
           {currentItems.map((item) => (
             <div
               key={item.id}
-              className="group relative h-[300px] md:h-[400px] rounded-3xl overflow-hidden"
+              className="group relative h-[300px] md:h-[400px] rounded-3xl overflow-hidden shadow-lg"
             >
               {/* Background Image */}
               <Image
@@ -232,14 +127,25 @@ export default function BlogShowcase() {
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-center">
-          <Pagination
-            totalPages={totalPages}
-            currentPage={currentPage}
-            onPageChange={handlePageChange}
-          />
-        </div>
+        {totalPages > 1 && (
+          <div className="flex justify-center">
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        )}
       </div>
+
+      <AdminOnly>
+        <BlogShowcaseModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          initialData={data}
+          onUpdate={(newData: BlogShowcaseFormData) => setData(newData)}
+        />
+      </AdminOnly>
     </section>
   );
 }

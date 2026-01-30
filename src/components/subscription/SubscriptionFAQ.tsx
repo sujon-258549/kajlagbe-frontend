@@ -9,6 +9,7 @@ import { Play, X, Edit } from "lucide-react";
 import Image from "next/image";
 import * as Dialog from "@radix-ui/react-dialog";
 import { AnimatePresence, motion } from "motion/react";
+import Link from "next/link";
 import AdminOnly from "@/components/common/auth/AdminOnly";
 import SubscriptionFAQModal from "@/components/modal/subscription/SubscriptionFAQModal";
 import { SubscriptionFAQFormData } from "@/schemas/subscription/faq.schema";
@@ -53,6 +54,8 @@ export default function SubscriptionFAQ() {
     videoLabel: "Watch our walkthrough",
     videoDescription:
       "See how Kajlagbe can transform your farming business in minutes.",
+    videoButtonText: "Explore More Features",
+    videoButtonLink: "/services",
   });
 
   // Helper to ensure we have a clean embed URL
@@ -70,18 +73,18 @@ export default function SubscriptionFAQ() {
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-secondary relative group/section">
-      {/* Edit Button */}
-      <AdminOnly>
-        <button
-          onClick={() => setIsEditModalOpen(true)}
-          className="absolute top-6 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-white hover:text-secondary"
-          title="Edit FAQ & Video"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-      </AdminOnly>
+      <div className="main-container relative">
+        {/* Edit Button */}
+        <AdminOnly>
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className="absolute top-0 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-white hover:text-secondary"
+            title="Edit FAQ & Video"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
 
-      <div className="main-container">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
           {/* FAQ Content Side */}
           <div className="w-full lg:w-1/2">
@@ -121,35 +124,45 @@ export default function SubscriptionFAQ() {
               open={isVideoModalOpen}
               onOpenChange={setIsVideoModalOpen}
             >
-              <Dialog.Trigger asChild>
-                <div className="relative h-[350px] md:h-[500px] lg:h-full min-h-[400px] rounded-3xl overflow-hidden group/video cursor-pointer shadow-2xl">
-                  <Image
-                    src={data.videoThumbnail}
-                    alt="Subscription Benefits Video"
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover/video:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-secondary/20 group-hover/video:bg-secondary/40 transition-colors duration-300" />
+              <div className="relative h-[350px] md:h-[500px] lg:h-full min-h-[400px] rounded-3xl overflow-hidden group/video shadow-2xl">
+                <Dialog.Trigger asChild>
+                  <div className="absolute inset-0 cursor-pointer">
+                    <Image
+                      src={data.videoThumbnail}
+                      alt="Subscription Benefits Video"
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover/video:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-secondary/20 group-hover/video:bg-secondary/40 transition-colors duration-300" />
 
-                  {/* Play Button Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-20 h-20 bg-primary text-white rounded-full flex items-center justify-center relative shadow-lg group-hover/video:scale-110 transition-transform duration-300">
-                      <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-20" />
-                      <Play className="w-8 h-8 fill-current ml-1" />
+                    {/* Play Button Overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-20 h-20 bg-primary text-white rounded-full flex items-center justify-center relative shadow-lg group-hover/video:scale-110 transition-transform duration-300">
+                        <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-20" />
+                        <Play className="w-8 h-8 fill-current ml-1" />
+                      </div>
                     </div>
                   </div>
+                </Dialog.Trigger>
 
-                  {/* Decorative Label */}
-                  <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 text-white">
-                    <h4 className="font-bold text-lg mb-1">
-                      {data.videoLabel}
-                    </h4>
-                    <p className="text-white/70 text-sm">
-                      {data.videoDescription}
-                    </p>
-                  </div>
+                {/* Decorative Label */}
+                <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 text-white pointer-events-none group/label">
+                  <h4 className="font-bold text-lg mb-1">{data.videoLabel}</h4>
+                  <p className="text-white/70 text-sm mb-4">
+                    {data.videoDescription}
+                  </p>
+                  {data.videoButtonText && (
+                    <Link
+                      href={data.videoButtonLink || "#"}
+                      className="pointer-events-auto"
+                    >
+                      <button className="bg-primary text-white text-xs font-bold px-5 py-2.5 rounded-xl hover:bg-white hover:text-secondary transition-all shadow-lg active:scale-95">
+                        {data.videoButtonText}
+                      </button>
+                    </Link>
+                  )}
                 </div>
-              </Dialog.Trigger>
+              </div>
 
               <AnimatePresence>
                 {isVideoModalOpen && (

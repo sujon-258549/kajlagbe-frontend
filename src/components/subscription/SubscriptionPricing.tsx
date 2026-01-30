@@ -59,12 +59,12 @@ export default function SubscriptionPricing() {
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-gray-50 relative group/section">
-      <div className="main-container">
+      <div className="main-container relative">
         {/* Edit Button */}
         <AdminOnly>
           <button
             onClick={() => setIsEditModalOpen(true)}
-            className="absolute top-6 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-secondary hover:text-white"
+            className="absolute top-0 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-secondary hover:text-white"
             title="Edit Pricing"
           >
             <Edit className="w-4 h-4" />

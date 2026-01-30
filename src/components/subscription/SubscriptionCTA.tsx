@@ -25,7 +25,7 @@ export default function SubscriptionCTA() {
           <AdminOnly>
             <button
               onClick={() => setIsEditModalOpen(true)}
-              className="absolute top-6 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-white hover:text-secondary"
+              className="absolute top-0 right-0 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-white hover:text-secondary"
               title="Edit CTA"
             >
               <Edit className="w-4 h-4" />

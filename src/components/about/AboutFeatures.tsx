@@ -46,7 +46,7 @@ export default function AboutFeatures() {
         <AdminOnly>
           <button
             onClick={() => setIsEditModalOpen(true)}
-            className="absolute top-6 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary z-50"
+            className="absolute top-0 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary z-50"
             title="Edit Section"
           >
             <Edit className="w-4 h-4" />

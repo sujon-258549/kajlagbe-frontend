@@ -245,6 +245,35 @@ const SubscriptionFAQModal: React.FC<SubscriptionFAQModalProps> = ({
                     </FormItem>
                   )}
                 />
+
+                <div className="grid grid-cols-2 gap-4 border-t pt-4">
+                  <FormField
+                    control={form.control}
+                    name="videoButtonText"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Button Text (Optional)</FormLabel>
+                        <FormControl>
+                          <FormInput placeholder="e.g. Learn More" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="videoButtonLink"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Button Link (Optional)</FormLabel>
+                        <FormControl>
+                          <FormInput placeholder="e.g. /services" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
             </div>
           </div>

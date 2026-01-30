@@ -57,17 +57,6 @@ export default function SubscriptionBenefits() {
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-secondary relative overflow-hidden group/section">
-      {/* Edit Button */}
-      <AdminOnly>
-        <button
-          onClick={() => setIsEditModalOpen(true)}
-          className="absolute top-6 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-white hover:text-secondary"
-          title="Edit Benefits"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-      </AdminOnly>
-
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <svg
@@ -80,6 +69,16 @@ export default function SubscriptionBenefits() {
       </div>
 
       <div className="main-container relative z-10">
+        {/* Edit Button */}
+        <AdminOnly>
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className="absolute top-0 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-white hover:text-secondary"
+            title="Edit Benefits"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
         <div className="text-center mb-10 md:mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
             {data.title}
