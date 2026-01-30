@@ -7,7 +7,6 @@ import AboutFeatures from "@/components/about/AboutFeatures";
 import AboutStats from "@/components/about/AboutStats";
 import AboutFAQ from "@/components/about/AboutFAQ";
 import AboutTestimonials from "@/components/about/AboutTestimonials";
-import AboutTestimonialSlider from "@/components/about/AboutTestimonialSlider";
 
 export default function AboutPage() {
   return (
@@ -19,7 +18,6 @@ export default function AboutPage() {
       <AboutStats />
       <AboutTestimonials />
       <AboutFAQ />
-      <AboutTestimonialSlider />
     </div>
   );
 }

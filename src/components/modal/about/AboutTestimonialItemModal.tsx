@@ -148,6 +148,23 @@ const AboutTestimonialItemModal: React.FC<AboutTestimonialItemModalProps> = ({
 
           <FormField
             control={form.control}
+            name="videoUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Video URL (Optional)</FormLabel>
+                <FormControl>
+                  <FormInput
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="rating"
             render={({ field }) => (
               <FormItem>
