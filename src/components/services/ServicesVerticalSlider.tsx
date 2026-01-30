@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Edit } from "lucide-react";
+import { ArrowRight, Edit, Plus } from "lucide-react";
 import CustomImage from "../common/CustomImage";
 import Heading3 from "../common/Headings/Heading3";
 import AdminOnly from "../common/auth/AdminOnly";
-import SliderModal from "../modal/services/SliderModal";
-import { ServiceSliderFormData } from "@/schemas/services/slider.schema";
+import ServiceSliderItemModal from "../modal/services/ServiceSliderItemModal";
+import { ServiceSliderItem } from "@/schemas/services/slider.schema";
+import { Button } from "@/components/ui/button";
 
 const initialProjects = [
   {
@@ -36,31 +37,64 @@ const initialProjects = [
 ];
 
 export default function ServicesVerticalSlider() {
-  const [data, setData] = useState<ServiceSliderFormData>({
-    projects: initialProjects,
-  });
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [projects, setProjects] =
+    useState<ServiceSliderItem[]>(initialProjects);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<ServiceSliderItem | undefined>(
+    undefined,
+  );
+
+  const handleAddItem = () => {
+    setEditingItem(undefined);
+    setIsModalOpen(true);
+  };
+
+  const handleEditItem = (item: ServiceSliderItem) => {
+    setEditingItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveItem = (data: ServiceSliderItem) => {
+    if (editingItem) {
+      setProjects((prev) =>
+        prev.map((item) => (item.id === editingItem.id ? data : item)),
+      );
+    } else {
+      setProjects((prev) => [{ ...data, id: Date.now() }, ...prev]);
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteItem = () => {
+    if (editingItem) {
+      setProjects((prev) => prev.filter((item) => item.id !== editingItem.id));
+      setIsModalOpen(false);
+    }
+  };
 
   return (
     <section className="bg-white pt-6 pb-12 md:py-16 lg:pt-6 lg:pb-6 mb-0 group/section relative">
       <div className="main-container px-4 md:px-6 relative">
-        {/* Edit Button */}
-        <AdminOnly>
-          <button
-            onClick={() => setIsEditModalOpen(true)}
-            className="absolute top-0 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-secondary hover:text-white"
-            title="Edit Slider"
-          >
-            <Edit className="w-4 h-4" />
-          </button>
-        </AdminOnly>
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-2xl font-bold text-secondary">
+            Our Latest Projects
+          </h2>
+          <AdminOnly>
+            <Button
+              onClick={handleAddItem}
+              className="bg-secondary hover:bg-secondary/90 text-white gap-2 font-bold"
+            >
+              <Plus className="w-4 h-4" /> Add Project
+            </Button>
+          </AdminOnly>
+        </div>
 
         {/* Sticky Container */}
         <div className="flex flex-col gap-10">
-          {data.projects.map((item, index) => (
+          {projects.map((item, index) => (
             <div
               key={item.id}
-              className="sticky top-20 md:top-32 w-full"
+              className="sticky top-20 md:top-32 w-full group/card"
               style={{ zIndex: index + 1 }}
             >
               <div className="bg-secondary border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-[450px] md:h-[300px] lg:h-[350px] relative shadow-2xl">
@@ -88,6 +122,17 @@ export default function ServicesVerticalSlider() {
                     className="object-cover"
                   />
                 </div>
+
+                {/* Edit Button */}
+                <AdminOnly>
+                  <button
+                    onClick={() => handleEditItem(item)}
+                    className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white opacity-0 group-hover/card:opacity-100 transition-all z-50 hover:bg-white hover:text-secondary"
+                    title="Edit Project"
+                  >
+                    <Edit className="w-5 h-5" />
+                  </button>
+                </AdminOnly>
 
                 {/* Content Section */}
                 <div className="flex-1 md:w-1/2 p-6 md:p-10 flex flex-col justify-center relative z-20">
@@ -117,14 +162,13 @@ export default function ServicesVerticalSlider() {
         </div>
       </div>
 
-      <AdminOnly>
-        <SliderModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          initialData={data}
-          onUpdate={(newData: ServiceSliderFormData) => setData(newData)}
-        />
-      </AdminOnly>
+      <ServiceSliderItemModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        item={editingItem}
+        onSave={handleSaveItem}
+        onDelete={handleDeleteItem}
+      />
     </section>
   );
 }

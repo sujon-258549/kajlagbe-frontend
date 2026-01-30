@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import ImageUpload from "@/components/common/ImageUpload";
@@ -21,7 +21,7 @@ interface BlogHeroModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  breadcrumb: string;
+  subtitle?: string;
   image: string;
   bgImage?: string;
   onUpdate?: (data: BlogHeroFormData) => void;
@@ -31,7 +31,7 @@ const BlogHeroModal: React.FC<BlogHeroModalProps> = ({
   isOpen,
   onClose,
   title,
-  breadcrumb,
+  subtitle,
   image,
   bgImage,
   onUpdate,
@@ -40,11 +40,21 @@ const BlogHeroModal: React.FC<BlogHeroModalProps> = ({
     resolver: zodResolver(blogHeroSchema),
     defaultValues: {
       title: title,
-      breadcrumb: breadcrumb,
+      subtitle: subtitle || "",
       image: image,
       bgImage: bgImage || "",
     },
   });
+
+  // Effect to update form values when props change
+  useEffect(() => {
+    form.reset({
+      title: title,
+      subtitle: subtitle || "",
+      image: image,
+      bgImage: bgImage || "",
+    });
+  }, [title, subtitle, image, bgImage, form, isOpen]);
 
   const onSubmit = (data: BlogHeroFormData) => {
     if (onUpdate) {
@@ -99,12 +109,12 @@ const BlogHeroModal: React.FC<BlogHeroModalProps> = ({
 
             <FormField
               control={form.control}
-              name="breadcrumb"
+              name="subtitle"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Hero Breadcrumb</FormLabel>
+                  <FormLabel>Hero Subtitle</FormLabel>
                   <FormControl>
-                    <FormInput placeholder="Enter breadcrumb" {...field} />
+                    <FormInput placeholder="Enter subtitle" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

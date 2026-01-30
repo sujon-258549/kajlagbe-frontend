@@ -94,17 +94,16 @@ export default function BlogList() {
 
   return (
     <div className="space-y-8 min-h-[600px] relative">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-secondary">Latest Stories</h2>
-        <AdminOnly>
+      <AdminOnly>
+        <div className="flex justify-end items-center mb-6">
           <Button
             onClick={handleAddPost}
             className="bg-secondary hover:bg-secondary/90 text-white gap-2 font-bold"
           >
             <Plus className="w-4 h-4" /> Add Blog Post
           </Button>
-        </AdminOnly>
-      </div>
+        </div>
+      </AdminOnly>
 
       {isLoading ? (
         <BlogGridSkeleton />

@@ -3,10 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import Pagination from "../common/Pagination";
-import { Edit } from "lucide-react";
+import { Edit, Plus } from "lucide-react";
 import AdminOnly from "../common/auth/AdminOnly";
-import BlogShowcaseModal from "../modal/blog/BlogShowcaseModal";
-import { BlogShowcaseFormData } from "@/schemas/blog/showcase.schema";
+import BlogShowcaseItemModal from "../modal/blog/BlogShowcaseItemModal";
+import { BlogShowcaseItem } from "@/schemas/blog/showcase.schema";
+import { Button } from "@/components/ui/button";
 
 const initialShowcaseData = [
   {
@@ -53,15 +54,16 @@ const initialShowcaseData = [
 ];
 
 export default function BlogShowcase() {
-  const [data, setData] = useState<BlogShowcaseFormData>({
-    items: initialShowcaseData,
-  });
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [items, setItems] = useState<BlogShowcaseItem[]>(initialShowcaseData);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<BlogShowcaseItem | undefined>(
+    undefined,
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
 
-  const totalPages = Math.ceil(data.items.length / itemsPerPage);
-  const currentItems = data.items.slice(
+  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const currentItems = items.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
@@ -70,22 +72,53 @@ export default function BlogShowcase() {
     setCurrentPage(page);
   };
 
+  const handleAddItem = () => {
+    setEditingItem(undefined);
+    setIsModalOpen(true);
+  };
+
+  const handleEditItem = (item: BlogShowcaseItem) => {
+    setEditingItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveItem = (data: BlogShowcaseItem) => {
+    if (editingItem) {
+      setItems((prev) =>
+        prev.map((item) => (item.id === editingItem.id ? data : item)),
+      );
+    } else {
+      setItems((prev) => [{ ...data, id: Date.now() }, ...prev]);
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteItem = () => {
+    if (editingItem) {
+      setItems((prev) => prev.filter((item) => item.id !== editingItem.id));
+      setIsModalOpen(false);
+    }
+  };
+
   return (
     <section
       id="blog-showcase"
       className="py-10 md:py-16 lg:py-24 bg-white font-outfit relative group/section"
     >
       <div className="main-container relative">
-        {/* Edit Button */}
-        <AdminOnly>
-          <button
-            onClick={() => setIsEditModalOpen(true)}
-            className="absolute top-0 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all z-50 hover:bg-secondary hover:text-white"
-            title="Edit Showcase"
-          >
-            <Edit className="w-4 h-4" />
-          </button>
-        </AdminOnly>
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-2xl font-bold text-secondary">
+            Our Impact Gallery
+          </h2>
+          <AdminOnly>
+            <Button
+              onClick={handleAddItem}
+              className="bg-secondary hover:bg-secondary/90 text-white gap-2 font-bold"
+            >
+              <Plus className="w-4 h-4" /> Add Item
+            </Button>
+          </AdminOnly>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-12">
           {currentItems.map((item) => (
@@ -105,11 +138,22 @@ export default function BlogShowcase() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
 
               {/* Number Badge */}
-              <div className="absolute top-6 right-6">
+              <div className="absolute top-6 right-6 z-10">
                 <span className="inline-block px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-sm font-bold">
                   No - {item.number}
                 </span>
               </div>
+
+              {/* Edit Button */}
+              <AdminOnly>
+                <button
+                  onClick={() => handleEditItem(item)}
+                  className="absolute top-6 left-6 w-8 h-8 flex items-center justify-center rounded-full bg-secondary/80 text-white opacity-0 group-hover:opacity-100 transition-all z-20 hover:bg-secondary shadow-lg border border-white/20"
+                  title="Edit Item"
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
+              </AdminOnly>
 
               {/* Content Box */}
               <div className="absolute bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-auto md:max-w-md">
@@ -138,14 +182,13 @@ export default function BlogShowcase() {
         )}
       </div>
 
-      <AdminOnly>
-        <BlogShowcaseModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          initialData={data}
-          onUpdate={(newData: BlogShowcaseFormData) => setData(newData)}
-        />
-      </AdminOnly>
+      <BlogShowcaseItemModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        item={editingItem}
+        onSave={handleSaveItem}
+        onDelete={handleDeleteItem}
+      />
     </section>
   );
 }

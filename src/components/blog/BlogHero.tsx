@@ -37,7 +37,7 @@ export default function BlogHero({
   return (
     <section className="py-10 group/section relative">
       <div className="main-container mx-auto px-4">
-        <div className="relative w-full h-[350px] md:h-[500px] rounded-3xl overflow-hidden shadow-2xl bg-[#0B3D2E] flex">
+        <div className="relative w-full h-[300px] md:h-[400px] rounded-3xl overflow-hidden shadow-2xl bg-[#0B3D2E] flex">
           {/* Edit Button */}
           {!isDetails && (
             <AdminOnly>
@@ -103,7 +103,7 @@ export default function BlogHero({
                   )}
                 </div>
 
-                <Heading1 className="text-white text-3xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
+                <Heading1 className="text-white  font-black leading-tight tracking-tight">
                   {data.title}
                 </Heading1>
 
