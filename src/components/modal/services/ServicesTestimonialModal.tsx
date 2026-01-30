@@ -74,7 +74,6 @@ const ServicesTestimonialModal: React.FC<ServicesTestimonialModalProps> = ({
       description={
         item ? "Edit the testimonial details." : "Add a new testimonial."
       }
-      showBackground={false}
       maxWidth="lg"
     >
       <Form {...form}>

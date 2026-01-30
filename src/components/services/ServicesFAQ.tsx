@@ -41,6 +41,12 @@ export default function ServicesFAQ() {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [faqData, setFaqData] = useState<FAQFormData>({
+    subtitle: "FAQ",
+    title: "Frequently Asked Questions",
+    videoUrl: "https://www.youtube.com/embed/S4L8T2kFFn4?autoplay=1",
+    videoTitle: "Our Organic Promise",
+    videoDescription:
+      "Watch how we maintain the highest standards in every harvest.",
     faqs: initialFaqs.map((f) => ({ id: f.q, q: f.q, a: f.a })),
   });
 
@@ -77,11 +83,10 @@ export default function ServicesFAQ() {
                   {/* Decorative Label */}
                   <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 text-white">
                     <h4 className="font-bold text-lg mb-1">
-                      Our Organic Promise
+                      {faqData.videoTitle}
                     </h4>
                     <p className="text-white/70 text-sm">
-                      Watch how we maintain the highest standards in every
-                      harvest.
+                      {faqData.videoDescription}
                     </p>
                   </div>
                 </div>
@@ -108,7 +113,7 @@ export default function ServicesFAQ() {
                         }}
                         animate={{ opacity: 1, scale: 1, x: "-50%", y: "-50%" }}
                         exit={{ opacity: 0, scale: 0.9, x: "-50%", y: "-30%" }}
-                        className="fixed top-1/2 left-1/2 z-[100] w-[calc(100%-2rem)] max-w-5xl aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl outline-none"
+                        className="fixed top-1/2 left-1/2 z-100 w-[calc(100%-2rem)] max-w-5xl aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl outline-none"
                       >
                         <Dialog.Close asChild>
                           <button className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-colors z-10 outline-none">
@@ -118,7 +123,7 @@ export default function ServicesFAQ() {
                         <iframe
                           width="100%"
                           height="100%"
-                          src="https://www.youtube.com/embed/S4L8T2kFFn4?autoplay=1"
+                          src={faqData.videoUrl}
                           title="YouTube video player"
                           frameBorder="0"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -138,7 +143,7 @@ export default function ServicesFAQ() {
             <AdminOnly>
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="absolute top-0 right-0 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:scale-110 hover:bg-white hover:text-secondary"
+                className="absolute top-0 right-0 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-white hover:scale-110 transition-transform"
                 title="Edit FAQ"
               >
                 <Edit className="w-5 h-5" />
@@ -147,11 +152,9 @@ export default function ServicesFAQ() {
 
             <div className="text-left mb-8 md:mb-10">
               <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block">
-                FAQ
+                {faqData.subtitle}
               </span>
-              <Heading2 className="text-white">
-                Frequently Asked Questions
-              </Heading2>
+              <Heading2 className="text-white">{faqData.title}</Heading2>
             </div>
 
             <Accordion

@@ -132,7 +132,7 @@ export default function ServicesBlog() {
               <AdminOnly>
                 <button
                   onClick={() => handleEditItem(item)}
-                  className="absolute top-4 left-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/90 text-secondary opacity-0 group-hover/card:opacity-100 transition-all z-20 hover:bg-white shadow-md"
+                  className="absolute top-4 left-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/90 text-secondary transition-all z-20 hover:bg-white shadow-md hover:scale-110"
                   title="Edit Post"
                 >
                   <Edit className="w-5 h-5" />
