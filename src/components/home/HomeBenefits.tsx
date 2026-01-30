@@ -9,7 +9,6 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import Heading4 from "../common/Headings/Heading4";
 import Heading2 from "../common/Headings/Heading2";
 
 const leftBenefits = [
@@ -88,8 +87,8 @@ export default function HomeBenefits() {
           </div>
 
           {/* Center Column: Images */}
-          <div className="w-full lg:w-1/3 relative h-[400px] md:h-[500px] order-1 lg:order-2 flex items-center justify-center">
-            <div className="relative w-full h-full transform scale-110">
+          <div className="w-full lg:w-1/3 relative h-[300px] md:h-[500px] order-1 lg:order-2 flex items-center justify-center">
+            <div className="relative w-full h-full transform scale-100 md:scale-110">
               <Image
                 src="/images/home/benefits_packets.png"
                 alt="Organic Food Packets"

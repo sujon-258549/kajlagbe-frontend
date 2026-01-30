@@ -59,7 +59,7 @@ export default function ServicesPricing() {
               key={idx}
               className={`relative rounded-xl p-8 transition-all duration-300 bg-white ${
                 plan.recommended
-                  ? "border border-[#86b86b] scale-105 z-10"
+                  ? "border border-[#86b86b] lg:scale-105 z-10"
                   : "border border-gray-100"
               }`}
             >

@@ -65,7 +65,7 @@ export default function Hero() {
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-secondary/70 mix-blend-multiply"></div>
-              <div className="absolute inset-0 bg-gradient-to-r from-secondary/80 via-secondary/40 to-transparent"></div>
+              <div className="absolute inset-0 bg-linear-to-r from-secondary/80 via-secondary/40 to-transparent"></div>
             </div>
 
             {/* Content main-container */}
