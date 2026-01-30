@@ -1,11 +1,17 @@
 "use client";
 
-import { ArrowRight, User, Tag, Lightbulb } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, User, Tag, Lightbulb, Edit, Plus } from "lucide-react";
 import CustomImage from "../common/CustomImage";
 import Heading2 from "../common/Headings/Heading2";
 import Heading5 from "../common/Headings/Heading5";
+import AdminOnly from "../common/auth/AdminOnly";
+import { Button } from "@/components/ui/button";
+import ServicesBlogModal, {
+  BlogItem,
+} from "../modal/services/ServicesBlogModal";
 
-const blogs = [
+const initialBlogs = [
   {
     id: 1,
     date: "24",
@@ -39,9 +45,54 @@ const blogs = [
 ];
 
 export default function ServicesBlog() {
+  const [blogs, setBlogs] = useState<BlogItem[]>(initialBlogs);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<BlogItem | undefined>(
+    undefined,
+  );
+
+  const handleAddItem = () => {
+    setEditingItem(undefined);
+    setIsModalOpen(true);
+  };
+
+  const handleEditItem = (item: BlogItem) => {
+    setEditingItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveItem = (data: BlogItem) => {
+    if (editingItem) {
+      setBlogs((prev) =>
+        prev.map((item) => (item.id === editingItem.id ? data : item)),
+      );
+    } else {
+      setBlogs((prev) => [{ ...data, id: Date.now() }, ...prev]);
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteItem = () => {
+    if (editingItem) {
+      setBlogs((prev) => prev.filter((item) => item.id !== editingItem.id));
+      setIsModalOpen(false);
+    }
+  };
+
   return (
-    <section className="py-20 bg-white">
-      <div className="main-container">
+    <section className="py-20 bg-white relative group/section">
+      <div className="main-container relative">
+        <div className="absolute top-0 right-0 z-50">
+          <AdminOnly>
+            <Button
+              onClick={handleAddItem}
+              className="bg-secondary hover:bg-secondary/90 text-white gap-2 font-bold mb-8 w-full md:w-auto"
+            >
+              <Plus className="w-4 h-4" /> Add Post
+            </Button>
+          </AdminOnly>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-2 text-[#fbbf24] font-medium mb-3">
@@ -58,7 +109,7 @@ export default function ServicesBlog() {
           {blogs.map((item) => (
             <div
               key={item.id}
-              className="group rounded-2xl overflow-hidden bg-secondary border border-white/10 hover:border-primary/50 hover:-translate-y-2 transition-all duration-300"
+              className="group rounded-2xl overflow-hidden bg-secondary border border-white/10 hover:border-primary/50 hover:-translate-y-2 transition-all duration-300 relative group/card"
             >
               {/* Image Section */}
               <div className="relative h-64 overflow-hidden">
@@ -77,6 +128,16 @@ export default function ServicesBlog() {
                   </span>
                 </div>
               </div>
+
+              <AdminOnly>
+                <button
+                  onClick={() => handleEditItem(item)}
+                  className="absolute top-4 left-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/90 text-secondary opacity-0 group-hover/card:opacity-100 transition-all z-20 hover:bg-white shadow-md"
+                  title="Edit Post"
+                >
+                  <Edit className="w-5 h-5" />
+                </button>
+              </AdminOnly>
 
               {/* Content Section */}
               <div className="p-8">
@@ -107,6 +168,13 @@ export default function ServicesBlog() {
           ))}
         </div>
       </div>
+      <ServicesBlogModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        item={editingItem}
+        onSave={handleSaveItem}
+        onDelete={handleDeleteItem}
+      />
     </section>
   );
 }

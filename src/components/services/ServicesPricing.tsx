@@ -1,8 +1,13 @@
-import { Check } from "lucide-react";
+import { useState } from "react";
+import { Check, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Heading2 from "@/components/common/Headings/Heading2";
+import AdminOnly from "../common/auth/AdminOnly";
+import ServicesPricingModal, {
+  PricingFormData,
+} from "../modal/services/ServicesPricingModal";
 
-const plans = [
+const initialPlans = [
   {
     name: "Standard",
     price: "49",
@@ -38,13 +43,33 @@ const plans = [
     ],
     recommended: false,
   },
+  // Map helper to ensure consistent shape if needed, but schema matches
 ];
 
 export default function ServicesPricing() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pricingData, setPricingData] = useState<PricingFormData>({
+    plans: initialPlans,
+  });
+
+  const handleUpdate = (data: PricingFormData) => {
+    setPricingData(data);
+  };
+
   return (
-    <section className="py-10 md:py-16 lg:py-24 bg-secondary">
+    <section className="py-10 md:py-16 lg:py-24 bg-secondary relative group/section">
       <div className="main-container">
-        <div className="text-center max-w-2xl mx-auto mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-16 relative">
+          <AdminOnly>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="absolute top-0 right-0 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:scale-110 hover:bg-white hover:text-secondary"
+              title="Edit Pricing"
+            >
+              <Edit className="w-5 h-5" />
+            </button>
+          </AdminOnly>
+
           <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block">
             PRICING PLANS
           </span>
@@ -54,7 +79,7 @@ export default function ServicesPricing() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {plans.map((plan, idx) => (
+          {pricingData.plans.map((plan, idx) => (
             <div
               key={idx}
               className={`relative rounded-xl p-8 transition-all duration-300 bg-white ${
@@ -115,6 +140,12 @@ export default function ServicesPricing() {
           ))}
         </div>
       </div>
+      <ServicesPricingModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialData={pricingData}
+        onUpdate={handleUpdate}
+      />
     </section>
   );
 }

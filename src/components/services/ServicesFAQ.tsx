@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Play, X } from "lucide-react";
+import { Play, X, Edit } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { AnimatePresence, motion } from "motion/react";
 
@@ -13,8 +13,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import Heading2 from "@/components/common/Headings/Heading2";
+import AdminOnly from "../common/auth/AdminOnly";
+import ServicesFAQModal, {
+  FAQFormData,
+} from "../modal/services/ServicesFAQModal";
 
-const faqs = [
+const initialFaqs = [
   {
     q: "Do you offer organic farming solutions?",
     a: "Yes, we specialize in 100% organic farming methods that avoid synthetic pesticides and fertilizers.",
@@ -35,9 +39,17 @@ const faqs = [
 
 export default function ServicesFAQ() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [faqData, setFaqData] = useState<FAQFormData>({
+    faqs: initialFaqs.map((f) => ({ id: f.q, q: f.q, a: f.a })),
+  });
+
+  const handleUpdate = (data: FAQFormData) => {
+    setFaqData(data);
+  };
 
   return (
-    <section className="py-10 md:py-16 lg:py-24 bg-secondary">
+    <section className="py-10 md:py-16 lg:py-24 bg-secondary relative group/section">
       <div className="main-container">
         <div className="flex flex-col lg:flex-row gap-6 md:gap-8 lg:gap-10 items-stretch">
           {/* Image/Video Side */}
@@ -122,7 +134,17 @@ export default function ServicesFAQ() {
           </div>
 
           {/* FAQ Content */}
-          <div className="w-full lg:w-1/2 flex flex-col justify-center">
+          <div className="w-full lg:w-1/2 flex flex-col justify-center relative">
+            <AdminOnly>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="absolute top-0 right-0 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:scale-110 hover:bg-white hover:text-secondary"
+                title="Edit FAQ"
+              >
+                <Edit className="w-5 h-5" />
+              </button>
+            </AdminOnly>
+
             <div className="text-left mb-8 md:mb-10">
               <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block">
                 FAQ
@@ -138,7 +160,7 @@ export default function ServicesFAQ() {
               defaultValue="item-0"
               className="w-full space-y-4"
             >
-              {faqs.map((faq, idx) => (
+              {faqData.faqs.map((faq, idx) => (
                 <AccordionItem
                   key={idx}
                   value={`item-${idx}`}
@@ -156,6 +178,12 @@ export default function ServicesFAQ() {
           </div>
         </div>
       </div>
+      <ServicesFAQModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialData={faqData}
+        onUpdate={handleUpdate}
+      />
     </section>
   );
 }
