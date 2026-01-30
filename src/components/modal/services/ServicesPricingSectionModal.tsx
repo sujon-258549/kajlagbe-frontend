@@ -54,7 +54,6 @@ const ServicesPricingSectionModal: React.FC<
       onClose={onClose}
       title="Edit Pricing Section"
       description="Update the section title and tagline."
-      showBackground={false}
       maxWidth="lg"
     >
       <Form {...form}>

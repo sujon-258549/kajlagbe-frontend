@@ -41,7 +41,7 @@ const ServicesPricingCardModal: React.FC<ServicesPricingCardModalProps> = ({
   onUpdate,
 }) => {
   const form = useForm<PricingCardFormData>({
-    resolver: zodResolver(pricingCardSchema),
+    resolver: zodResolver(pricingCardSchema) as any,
     defaultValues: initialData,
   });
 
@@ -80,7 +80,6 @@ const ServicesPricingCardModal: React.FC<ServicesPricingCardModalProps> = ({
       onClose={onClose}
       title="Edit Pricing Card"
       description="Update individual pricing plan details."
-      showBackground={false}
       maxWidth="lg"
     >
       <Form {...form}>
