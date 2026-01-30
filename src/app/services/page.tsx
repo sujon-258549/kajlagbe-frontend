@@ -12,6 +12,8 @@ import ServicesPricing from "@/components/services/ServicesPricing";
 import ServicesFAQ from "@/components/services/ServicesFAQ";
 import ServicesCTA from "@/components/services/ServicesCTA";
 
+import ServicesHeroModal from "@/components/modal/services/ServicesHeroModal";
+
 export default function ServicesPage() {
   return (
     <div className="min-h-screen bg-white">
@@ -19,6 +21,7 @@ export default function ServicesPage() {
         title="Our Services"
         breadcrumb="Services"
         image="https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg"
+        ModalComponent={ServicesHeroModal}
       />
 
       <div className="pb-6 md:pb-16">

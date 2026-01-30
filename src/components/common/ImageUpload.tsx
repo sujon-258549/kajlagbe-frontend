@@ -21,6 +21,7 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
       containerClassName,
       register,
       onChange,
+      value,
       isSingle = true,
       ...props
     },
@@ -29,16 +30,28 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
     const [previews, setPreviews] = useState<string[]>([]);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+    // Update previews if value is passed (e.g. from react-hook-form defaultValues)
+    React.useEffect(() => {
+      const isValidSrc = (src: unknown): src is string =>
+        typeof src === "string" &&
+        (src.startsWith("http") ||
+          src.startsWith("https") ||
+          src.startsWith("data:"));
+
+      if (isValidSrc(value)) {
+        setPreviews([value as string]);
+      } else if (Array.isArray(value)) {
+        setPreviews(value.filter(isValidSrc));
+      }
+    }, [value]);
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = e.target.files;
       if (files && files.length > 0) {
         const newPreviews: string[] = [];
-
-        // Convert to array
         const fileList = Array.from(files);
 
         if (isSingle) {
-          // Single mode: only take the first one
           const file = fileList[0];
           const reader = new FileReader();
           reader.onloadend = () => {
@@ -46,7 +59,6 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
           };
           reader.readAsDataURL(file);
         } else {
-          // Multiple mode
           let processed = 0;
           fileList.forEach((file) => {
             const reader = new FileReader();
@@ -54,24 +66,18 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
               newPreviews.push(reader.result as string);
               processed++;
               if (processed === fileList.length) {
-                // If appending is desired: setPreviews(prev => [...prev, ...newPreviews]);
-                // Standard input behavior is replace, so we replace:
                 setPreviews(newPreviews);
               }
             };
             reader.readAsDataURL(file);
           });
         }
-      } else {
-        // No files selected (cancel), keep previous or clear?
-        // Usually standard checks don't trigger change if cancel is clicked, unless value was cleared.
       }
 
-      // Call the original onChange from react-hook-form if it exists
+      // Call original handlers
       if (register && register.onChange) {
         register.onChange(e);
       }
-      // Call prop onChange if exists
       if (onChange) {
         onChange(e);
       }
@@ -87,10 +93,7 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
           fileInputRef.current.value = "";
         }
       } else {
-        // Multiple mode: Remove item from preview
         setPreviews((prev) => prev.filter((_, i) => i !== index));
-
-        // Attempt to update file input (modern browsers)
         if (fileInputRef.current && fileInputRef.current.files) {
           const dt = new DataTransfer();
           const files = fileInputRef.current.files;
@@ -100,15 +103,12 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
             }
           }
           fileInputRef.current.files = dt.files;
-
-          // Trigger change event manually so RHF knows
           const event = new Event("change", { bubbles: true });
           fileInputRef.current.dispatchEvent(event);
         }
       }
     };
 
-    // Merge refs: react-hook-form's ref + internal ref
     const setRefs = (element: HTMLInputElement | null) => {
       fileInputRef.current = element;
       if (typeof ref === "function") {
@@ -117,7 +117,6 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
         (ref as React.MutableRefObject<HTMLInputElement | null>).current =
           element;
       }
-      // Also attach register ref if provided
       if (register) {
         register.ref(element);
       }
@@ -134,7 +133,7 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
         <div
           onClick={() => fileInputRef.current?.click()}
           className={cn(
-            "relative group cursor-pointer flex flex-col items-center justify-center rounded-xl border-2 border-dashed transition-all duration-200 bg-slate-50 hover:bg-slate-100",
+            "relative group cursor-pointer flex flex-col items-center justify-center rounded-lg border-2 border-dashed transition-all duration-200 bg-slate-50 hover:bg-slate-100",
             isSingle ? "aspect-square w-40" : "w-full min-h-[160px]",
             error
               ? "border-red-300 bg-red-50"
@@ -147,7 +146,6 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
         >
           {previews.length > 0 ? (
             isSingle ? (
-              // Single Image View
               <div className="relative w-full h-full rounded-lg overflow-hidden">
                 <Image
                   src={previews[0]}
@@ -167,8 +165,7 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
                 </button>
               </div>
             ) : (
-              // Multiple Grid View
-              <div className="grid grid-cols-3 gap-2 w-full">
+              <div className="grid grid-cols-3 gap-2 w-full p-2">
                 {previews.map((src, idx) => (
                   <div
                     key={idx}
@@ -189,7 +186,6 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
                     </button>
                   </div>
                 ))}
-                {/* Optional: Add placeholder to add more if we supported appending */}
               </div>
             )
           ) : (
@@ -197,8 +193,8 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
               <div className="p-2 rounded-full bg-slate-100 group-hover:bg-primary/10 mb-2 transition-colors">
                 <ImageIcon className="w-6 h-6" />
               </div>
-              <p className="text-xs font-medium text-center">
-                {isSingle ? "Click to upload image" : "Click to upload images"}
+              <p className="text-xs font-medium text-center px-2">
+                {isSingle ? "Upload Image" : "Upload Images"}
               </p>
             </div>
           )}
@@ -210,7 +206,7 @@ const ImageUpload = React.forwardRef<HTMLInputElement, ImageUploadProps>(
             onChange={handleFileChange}
             type="file"
             accept="image/*"
-            multiple={!isSingle} // Enable multiple attribute
+            multiple={!isSingle}
             className="hidden"
           />
         </div>

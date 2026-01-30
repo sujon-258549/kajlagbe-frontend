@@ -16,6 +16,9 @@ const MarqueeItem = ({ text }: { text: string }) => (
   </div>
 );
 
+import ContactHeroModal from "@/components/modal/contact/ContactHeroModal";
+
+// Reusing the marquee style from the reference if possible, otherwise creating a custom simple one here
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-white">
@@ -24,6 +27,7 @@ export default function ContactPage() {
         title="Contact Us"
         breadcrumb="Contact"
         image="https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg"
+        ModalComponent={ContactHeroModal}
       />
 
       {/* 2. Ticker/Marquee Section (Simulated based on image) */}

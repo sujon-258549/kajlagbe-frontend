@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
-  aboutHeroSchema,
-  AboutHeroFormData,
-} from "@/schemas/about/hero.schema";
+  servicesHeroSchema,
+  ServicesHeroFormData,
+} from "@/schemas/services/hero.schema";
 import {
   Form,
   FormControl,
@@ -20,7 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-interface AboutHeroModalProps {
+interface ServicesHeroModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
@@ -29,7 +29,7 @@ interface AboutHeroModalProps {
   bgImage?: string;
 }
 
-const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
+const ServicesHeroModal: React.FC<ServicesHeroModalProps> = ({
   isOpen,
   onClose,
   title,
@@ -37,8 +37,8 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
   image,
   bgImage,
 }) => {
-  const form = useForm<AboutHeroFormData>({
-    resolver: zodResolver(aboutHeroSchema),
+  const form = useForm<ServicesHeroFormData>({
+    resolver: zodResolver(servicesHeroSchema),
     defaultValues: {
       title: title,
       subtitle: subtitle || "",
@@ -46,8 +46,9 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
       bgImage: bgImage || "",
     },
   });
-  const onSubmit = (data: AboutHeroFormData) => {
-    console.log("Hero Section Updated Data (Validated):", data);
+
+  const onSubmit = (data: ServicesHeroFormData) => {
+    console.log("Services Hero Updated Data:", data);
     onClose();
   };
 
@@ -55,8 +56,8 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
     <CommonModal
       isOpen={isOpen}
       onClose={onClose}
-      title="Edit About Hero"
-      description="Update your about page hero content and images instantly."
+      title="Edit Services Hero"
+      description="Update your services page hero content instantly."
       showBackground={true}
       maxWidth="2xl"
       footer={
@@ -66,7 +67,7 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
           </Button>
           <Button
             type="submit"
-            form="hero-edit-form"
+            form="services-hero-form"
             className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
           >
             Update Hero
@@ -76,7 +77,7 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
     >
       <Form {...form}>
         <form
-          id="hero-edit-form"
+          id="services-hero-form"
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-6"
         >
@@ -88,11 +89,7 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
                 <FormItem>
                   <FormLabel>Hero Title</FormLabel>
                   <FormControl>
-                    <FormInput
-                      placeholder="Enter hero title"
-                      error={form.formState.errors.title}
-                      {...field}
-                    />
+                    <FormInput placeholder="Enter hero title" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -106,11 +103,7 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
                 <FormItem>
                   <FormLabel>Hero Subtitle</FormLabel>
                   <FormControl>
-                    <FormInput
-                      placeholder="Enter hero subtitle (optional)"
-                      error={form.formState.errors.subtitle}
-                      {...field}
-                    />
+                    <FormInput placeholder="Enter subtitle" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -125,17 +118,8 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
                   <FormItem>
                     <FormLabel>Main Hero Image</FormLabel>
                     <FormControl>
-                      <ImageUpload
-                        className="bg-slate-50 border-slate-200"
-                        error={form.formState.errors.image}
-                        {...field}
-                      />
+                      <ImageUpload {...field} />
                     </FormControl>
-                    {image && (
-                      <div className="mt-2 text-[10px] text-slate-400 truncate">
-                        Current: {image}
-                      </div>
-                    )}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -148,17 +132,8 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
                   <FormItem>
                     <FormLabel>Background Image</FormLabel>
                     <FormControl>
-                      <ImageUpload
-                        className="bg-slate-50 border-slate-200"
-                        error={form.formState.errors.bgImage}
-                        {...field}
-                      />
+                      <ImageUpload {...field} />
                     </FormControl>
-                    {bgImage && (
-                      <div className="mt-2 text-[10px] text-slate-400 truncate">
-                        Current: {bgImage}
-                      </div>
-                    )}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -171,4 +146,4 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
   );
 };
 
-export default AboutHeroModal;
+export default ServicesHeroModal;

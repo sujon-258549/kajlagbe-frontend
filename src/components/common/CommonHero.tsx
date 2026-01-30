@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Play, ArrowRight, Edit } from "lucide-react";
-import Heading1 from "./Headings/Heading1";
-import AboutHeroModal from "@/components/modal/about/AboutHeroModal";
+import Heading1 from "@/components/common/Headings/Heading1";
+import AdminOnly from "@/components/common/auth/AdminOnly";
 
 interface CommonHeroProps {
   title?: string;
@@ -13,6 +13,14 @@ interface CommonHeroProps {
   image?: string;
   bgImage?: string;
   breadcrumb?: string;
+  ModalComponent?: React.ComponentType<{
+    isOpen: boolean;
+    onClose: () => void;
+    title: string;
+    subtitle?: string;
+    image: string;
+    bgImage?: string;
+  }>;
 }
 
 export default function CommonHero({
@@ -21,6 +29,7 @@ export default function CommonHero({
   image = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2664&auto=format&fit=crop",
   bgImage = "https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=2670&auto=format&fit=crop",
   breadcrumb,
+  ModalComponent,
 }: CommonHeroProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -69,7 +78,7 @@ export default function CommonHero({
 
           {/* Double Slanted Dividers */}
           <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-[15px] -translate-x-[150%] bg-white z-50 origin-center -skew-x-12" />
-          <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-[15px] -translate-x-[50%] bg-primary z-50 origin-center -skew-x-12 shadow-[-2px_0_10px_rgba(0,0,0,0.14)]" />
+          <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-[15px] -translate-x-[50%] bg-primary z-50 origin-center -skew-x-12 shadow-[-2px_0_10_rgba(0,0,0,0.14)]" />
 
           {/* Content Layer */}
           <div className="relative z-30 w-full h-full flex flex-col md:flex-row">
@@ -100,26 +109,33 @@ export default function CommonHero({
 
             {/* Right Content Half */}
             <div className="w-full md:w-1/2 h-full hidden md:block relative">
-              {/* Edit Icon - Top Right of Hero Content Area */}
-              <button
-                onClick={() => setIsEditModalOpen(true)}
-                className="absolute top-3 right-3 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/30 text-white transition-all border border-white/20 backdrop-blur-md z-40 group shadow-lg"
-                title="Edit Hero"
-              >
-                <Edit className="w-5 h-5 transition-transform group-hover:rotate-12" />
-              </button>
+              {ModalComponent && (
+                <AdminOnly>
+                  <button
+                    onClick={() => setIsEditModalOpen(true)}
+                    className="absolute top-3 right-3 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/30 text-white transition-all border border-white/20 backdrop-blur-md z-40 group shadow-lg"
+                    title="Edit Hero"
+                  >
+                    <Edit className="w-5 h-5" />
+                  </button>
+                </AdminOnly>
+              )}
             </div>
           </div>
         </div>
       </div>
-      <AboutHeroModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        title={title}
-        subtitle={subtitle}
-        image={image}
-        bgImage={bgImage}
-      />
+      {ModalComponent && (
+        <AdminOnly>
+          <ModalComponent
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            title={title}
+            subtitle={subtitle}
+            image={image}
+            bgImage={bgImage}
+          />
+        </AdminOnly>
+      )}
     </section>
   );
 }

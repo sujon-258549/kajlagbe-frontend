@@ -9,6 +9,8 @@ import AboutFAQ from "@/components/about/AboutFAQ";
 import AboutTestimonials from "@/components/about/AboutTestimonials";
 import AboutTestimonialSlider from "@/components/about/AboutTestimonialSlider";
 
+import AboutHeroModal from "@/components/modal/about/AboutHeroModal";
+
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white">
@@ -16,6 +18,7 @@ export default function AboutPage() {
         title="About Us"
         breadcrumb="About Us"
         image="https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg"
+        ModalComponent={AboutHeroModal}
       />
       <AboutStory />
       <AboutMission />
