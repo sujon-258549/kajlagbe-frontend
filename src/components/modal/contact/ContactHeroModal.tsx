@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import ImageUpload from "@/components/common/ImageUpload";
@@ -27,6 +27,7 @@ interface ContactHeroModalProps {
   subtitle?: string;
   image: string;
   bgImage?: string;
+  onUpdate?: (data: ContactHeroFormData) => void;
 }
 
 const ContactHeroModal: React.FC<ContactHeroModalProps> = ({
@@ -36,6 +37,7 @@ const ContactHeroModal: React.FC<ContactHeroModalProps> = ({
   subtitle,
   image,
   bgImage,
+  onUpdate,
 }) => {
   const form = useForm<ContactHeroFormData>({
     resolver: zodResolver(contactHeroSchema),
@@ -47,8 +49,19 @@ const ContactHeroModal: React.FC<ContactHeroModalProps> = ({
     },
   });
 
+  useEffect(() => {
+    form.reset({
+      title: title,
+      subtitle: subtitle || "",
+      image: image,
+      bgImage: bgImage || "",
+    });
+  }, [title, subtitle, image, bgImage, form, isOpen]);
+
   const onSubmit = (data: ContactHeroFormData) => {
-    console.log("Contact Hero Updated Data:", data);
+    if (onUpdate) {
+      onUpdate(data);
+    }
     onClose();
   };
 

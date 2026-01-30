@@ -7,19 +7,14 @@ import { Textarea } from "@/components/ui/textarea";
 
 import ContactMarquee from "@/components/contact/ContactMarquee";
 import ContactInfo from "@/components/contact/ContactInfo";
-import ContactHeroModal from "@/components/modal/contact/ContactHeroModal";
+import ContactHero from "@/components/contact/ContactHero";
 
 // Reusing the marquee style from the reference if possible, otherwise creating a custom simple one here
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* 1. Header Section */}
-      <CommonHero
-        title="Contact Us"
-        breadcrumb="Contact"
-        image="https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg"
-        ModalComponent={ContactHeroModal}
-      />
+      <ContactHero />
 
       <ContactMarquee />
 
