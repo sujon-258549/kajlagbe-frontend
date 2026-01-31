@@ -11,14 +11,14 @@ export default function ContactMarquee() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [data, setData] = useState<ContactMarqueeFormData>({
     items: [
-      "Everyday Nourishment",
-      "Wholesome Goodness",
-      "Farm Fresh Finds",
-      "Flavors You Love",
-      "Everyday Nourishment",
-      "Wholesome Goodness",
-      "Farm Fresh Finds",
-      "Flavors You Love",
+      { text: "Everyday Nourishment" },
+      { text: "Wholesome Goodness" },
+      { text: "Farm Fresh Finds" },
+      { text: "Flavors You Love" },
+      { text: "Everyday Nourishment" },
+      { text: "Wholesome Goodness" },
+      { text: "Farm Fresh Finds" },
+      { text: "Flavors You Love" },
     ],
   });
 
@@ -38,11 +38,11 @@ export default function ContactMarquee() {
       </div>
 
       <Marquee gradient={false} speed={50} pauseOnHover>
-        {data.items.map((text, i) => (
+        {data.items.map((item, i) => (
           <div key={i} className="flex items-center mx-12 gap-3">
             <span className="text-xl">⛑</span>
             <span className="font-bold uppercase tracking-widest text-sm md:text-base">
-              {text}
+              {item.text}
             </span>
           </div>
         ))}

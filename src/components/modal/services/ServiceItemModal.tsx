@@ -18,14 +18,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import * as Icons from "lucide-react";
 
 interface ServiceItemModalProps {
   isOpen: boolean;
@@ -33,34 +25,6 @@ interface ServiceItemModalProps {
   item?: ServiceItem;
   onSave: (data: ServiceItem) => void;
 }
-
-// List of common icons to choose from
-const ICON_OPTIONS = [
-  "Wrench",
-  "Sparkles",
-  "Hammer",
-  "Axe",
-  "Droplets",
-  "Zap",
-  "Palette",
-  "Leaf",
-  "Bug",
-  "Settings",
-  "Thermometer",
-  "Home",
-  "Square",
-  "Shield",
-  "Cpu",
-  "Truck",
-  "Trash2",
-  "Eye",
-  "Activity",
-  "Anchor",
-  "Archive",
-  "Award",
-  "Briefcase",
-  "Camera",
-];
 
 const ServiceItemModal: React.FC<ServiceItemModalProps> = ({
   isOpen,
@@ -137,30 +101,25 @@ const ServiceItemModal: React.FC<ServiceItemModalProps> = ({
             name="iconName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Icon</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select an icon" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="max-h-[200px]">
-                    {ICON_OPTIONS.map((iconName) => {
-                      const IconComp = (Icons as any)[iconName];
-                      return (
-                        <SelectItem key={iconName} value={iconName}>
-                          <div className="flex items-center gap-2">
-                            {IconComp && <IconComp className="w-4 h-4" />}
-                            <span>{iconName}</span>
-                          </div>
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
+                <FormLabel>Font Awesome Icon Class</FormLabel>
+                <FormControl>
+                  <FormInput
+                    placeholder="e.g. fa-solid fa-screwdriver-wrench"
+                    {...field}
+                  />
+                </FormControl>
+                <p className="text-[10px] text-muted-foreground mt-1">
+                  Use Font Awesome class names (e.g., fa-solid fa-wrench). See{" "}
+                  <a
+                    href="https://fontawesome.com/search?o=r&m=free"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-primary underline"
+                  >
+                    Font Awesome Free Icons
+                  </a>{" "}
+                  for options.
+                </p>
                 <FormMessage />
               </FormItem>
             )}

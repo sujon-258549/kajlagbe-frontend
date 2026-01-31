@@ -1,10 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Edit, Wrench } from "lucide-react";
-import * as Icons from "lucide-react";
+import { ArrowRight, Edit } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import Heading1 from "@/components/common/Headings/Heading1";
 import Heading5 from "../common/Headings/Heading5";
 import AdminOnly from "../common/auth/AdminOnly";
@@ -19,92 +17,92 @@ const initialServices = [
   {
     title: "Home Repair & Maintenance",
     slug: "home-repair-maintenance",
-    iconName: "Wrench",
+    iconName: "fa-solid fa-screwdriver-wrench",
   },
   {
     title: "Cleaning & Hygiene",
     slug: "cleaning-hygiene",
-    iconName: "Sparkles",
+    iconName: "fa-solid fa-broom",
   },
   {
     title: "Construction & Renovation",
     slug: "construction-renovation",
-    iconName: "Hammer",
+    iconName: "fa-solid fa-helmet-safety",
   },
   {
     title: "Carpentry, Glass & Metal",
     slug: "carpentry-glass-metal",
-    iconName: "Axe",
+    iconName: "fa-solid fa-axe",
   },
   {
     title: "Plumbing Services",
     slug: "plumbing-services",
-    iconName: "Droplets",
+    iconName: "fa-solid fa-faucet-drip",
   },
   {
     title: "Electrical Services",
     slug: "electrical-services",
-    iconName: "Zap",
+    iconName: "fa-solid fa-bolt",
   },
   {
     title: "Painting & Decorating",
     slug: "painting-decorating",
-    iconName: "Palette",
+    iconName: "fa-solid fa-palette",
   },
   {
     title: "Gardening & Landscaping",
     slug: "gardening-landscaping",
-    iconName: "Leaf",
+    iconName: "fa-solid fa-leaf",
   },
   {
     title: "Pest Control",
     slug: "pest-control",
-    iconName: "Bug",
+    iconName: "fa-solid fa-bug",
   },
   {
     title: "Appliance Repair",
     slug: "appliance-repair",
-    iconName: "Settings",
+    iconName: "fa-solid fa-microchip",
   },
   {
     title: "HVAC Services",
     slug: "hvac-services",
-    iconName: "Thermometer",
+    iconName: "fa-solid fa-temperature-half",
   },
   {
     title: "Roofing & Gutters",
     slug: "roofing-gutters",
-    iconName: "Home",
+    iconName: "fa-solid fa-house",
   },
   {
     title: "Flooring Installation",
     slug: "flooring-installation",
-    iconName: "Square",
+    iconName: "fa-solid fa-square",
   },
   {
     title: "Home Security",
     slug: "home-security",
-    iconName: "Shield",
+    iconName: "fa-solid fa-shield-halved",
   },
   {
     title: "Smart Home Installation",
     slug: "smart-home-installation",
-    iconName: "Cpu",
+    iconName: "fa-solid fa-cpu",
   },
   {
     title: "Moving Services",
     slug: "moving-services",
-    iconName: "Truck",
+    iconName: "fa-solid fa-truck-moving",
   },
   {
     title: "Junk Removal",
     slug: "junk-removal",
-    iconName: "Trash2",
+    iconName: "fa-solid fa-trash-can",
   },
   {
     title: "Window Cleaning",
     slug: "window-cleaning",
-    iconName: "Eye",
+    iconName: "fa-solid fa-wind",
   },
 ];
 
@@ -145,10 +143,6 @@ export default function Services() {
     setIsItemModalOpen(false);
     setEditingIndex(null);
     setEditingItem(undefined);
-  };
-
-  const getIconComponent = (iconName: string) => {
-    return (Icons as any)[iconName] || Wrench;
   };
 
   return (
@@ -200,58 +194,55 @@ export default function Services() {
 
         {/* Services Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-          {servicesData.services.map((service, index) => {
-            const IconComp = getIconComponent(service.iconName);
-            return (
-              <Link
-                key={index} // Changed index as key to avoid issues if slug changes temporarily (though slug is preferred if stable)
-                href={`/services/${service.slug}`}
-                className="group relative h-[180px] w-full overflow-hidden rounded-xl bg-secondary border border-white/10 transition-colors"
-              >
-                {/* Edit Button for Item */}
-                <div className="absolute top-3 right-3 z-30 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <AdminOnly>
-                    <button
-                      onClick={(e) => handleEditItem(e, index)}
-                      className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white text-white hover:text-secondary backdrop-blur-md transition-all shadow-lg"
-                      title="Edit Service"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                  </AdminOnly>
-                </div>
+          {servicesData.services.map((service, index) => (
+            <Link
+              key={index} // Changed index as key to avoid issues if slug changes temporarily (though slug is preferred if stable)
+              href={`/services/${service.slug}`}
+              className="group relative h-[180px] w-full overflow-hidden rounded-xl bg-secondary border border-white/10 transition-colors"
+            >
+              {/* Edit Button for Item */}
+              <div className="absolute top-3 right-3 z-30 opacity-0 group-hover:opacity-100 transition-opacity">
+                <AdminOnly>
+                  <button
+                    onClick={(e) => handleEditItem(e, index)}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white text-white hover:text-secondary backdrop-blur-md transition-all shadow-lg"
+                    title="Edit Service"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </button>
+                </AdminOnly>
+              </div>
 
-                {/* Background Image with Gradient Overlay */}
-                <div className="absolute inset-0">
-                  <div className="absolute inset-0 z-0 bg-secondary" />
-                  <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent z-10" />
-                </div>
+              {/* Background Image with Gradient Overlay */}
+              <div className="absolute inset-0">
+                <div className="absolute inset-0 z-0 bg-secondary" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent z-10" />
+              </div>
 
-                {/* Top Bar: Icon Left */}
-                <div className="absolute top-3 left-3 z-20">
-                  <div className="h-8 w-8 rounded-xl bg-white/90 backdrop-blur-sm flex items-center justify-center text-primary">
-                    <IconComp className="h-5 w-5" />
+              {/* Top Bar: Icon Left */}
+              <div className="absolute top-3 left-3 z-20">
+                <div className="h-8 w-8 rounded-xl bg-white/90 backdrop-blur-sm flex items-center justify-center text-primary">
+                  <i className={`${service.iconName} text-lg`} />
+                </div>
+              </div>
+
+              {/* Bottom Content: Title & CTA */}
+              <div className="absolute inset-x-0 bottom-0 z-20 p-3 flex flex-col gap-2">
+                <Heading5 className="text-white text-base font-bold leading-tight line-clamp-2">
+                  {service.title}
+                </Heading5>
+
+                <div className="w-full h-px bg-white/20" />
+
+                <div className="flex items-center justify-between text-xs font-medium text-white/90">
+                  <span>Explore</span>
+                  <div className="h-6 w-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary transition-colors">
+                    <ArrowRight className="h-3 w-3" />
                   </div>
                 </div>
-
-                {/* Bottom Content: Title & CTA */}
-                <div className="absolute inset-x-0 bottom-0 z-20 p-3 flex flex-col gap-2">
-                  <Heading5 className="text-white text-base font-bold leading-tight line-clamp-2">
-                    {service.title}
-                  </Heading5>
-
-                  <div className="w-full h-px bg-white/20" />
-
-                  <div className="flex items-center justify-between text-xs font-medium text-white/90">
-                    <span>Explore</span>
-                    <div className="h-6 w-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary transition-colors">
-                      <ArrowRight className="h-3 w-3" />
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
       <ServicesModal

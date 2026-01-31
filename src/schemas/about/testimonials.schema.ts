@@ -1,4 +1,4 @@
-import * as z from "zod";
+import { z } from "zod";
 import { aboutTestimonialItemSchema } from "./testimonial.schema";
 
 export const aboutTestimonialsSchema = z.object({

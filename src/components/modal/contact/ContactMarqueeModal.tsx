@@ -40,7 +40,7 @@ const ContactMarqueeModal: React.FC<ContactMarqueeModalProps> = ({
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "items" as any,
+    name: "items",
   });
 
   const onSubmit = (data: ContactMarqueeFormData) => {
@@ -87,7 +87,7 @@ const ContactMarqueeModal: React.FC<ContactMarqueeModalProps> = ({
                 variant="outline"
                 size="sm"
                 className="gap-2"
-                onClick={() => append("")}
+                onClick={() => append({ text: "" })}
               >
                 <Plus className="w-4 h-4" /> Add Item
               </Button>
@@ -99,7 +99,7 @@ const ContactMarqueeModal: React.FC<ContactMarqueeModalProps> = ({
                   <div className="flex-1">
                     <FormField
                       control={form.control}
-                      name={`items.${index}`}
+                      name={`items.${index}.text`}
                       render={({ field }) => (
                         <FormItem className="space-y-0">
                           <FormControl>
