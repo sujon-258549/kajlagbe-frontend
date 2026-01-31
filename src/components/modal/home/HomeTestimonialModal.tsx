@@ -7,6 +7,7 @@ import { Plus, Trash2 } from "lucide-react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import FormTextarea from "@/components/common/FormTextarea";
+import ImageUpload from "@/components/common/ImageUpload";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -110,9 +111,13 @@ const HomeTestimonialModal: React.FC<HomeTestimonialModalProps> = ({
               name="mainImage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Side Image URL</FormLabel>
+                  <FormLabel>Side Image</FormLabel>
                   <FormControl>
-                    <FormInput {...field} />
+                    <ImageUpload
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      className="aspect-square w-32"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -172,9 +177,13 @@ const HomeTestimonialModal: React.FC<HomeTestimonialModalProps> = ({
                   name={`testimonials.${index}.image`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>User Image URL</FormLabel>
+                      <FormLabel>User Image</FormLabel>
                       <FormControl>
-                        <FormInput size="sm" {...field} />
+                        <ImageUpload
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          className="aspect-square w-24"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
