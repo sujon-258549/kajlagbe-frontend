@@ -10,6 +10,9 @@ import type { Swiper as SwiperType } from "swiper";
 import AdminOnly from "../common/auth/AdminOnly";
 import { Edit } from "lucide-react";
 import ServiceBannerModal from "../modal/home/ServiceBannerModal";
+import ServiceBannerItemModal, {
+  ServiceBannerItem,
+} from "../modal/home/ServiceBannerItemModal";
 import { ServiceBannerFormData } from "@/schemas/home/serviceBanner.schema";
 
 const initialServices = [
@@ -120,9 +123,28 @@ const initialServices = [
 export default function ServiceBanner() {
   const swiperRef = useRef<SwiperType>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [data, setData] = useState<ServiceBannerFormData>({
     services: initialServices,
   });
+
+  const handleEditItem = (e: React.MouseEvent, index: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setEditingIndex(index);
+    setIsItemModalOpen(true);
+  };
+
+  const handleSaveItem = (updatedItem: ServiceBannerItem) => {
+    if (editingIndex !== null) {
+      const updatedServices = [...data.services];
+      updatedServices[editingIndex] = updatedItem;
+      setData({ services: updatedServices });
+    }
+    setIsItemModalOpen(false);
+    setEditingIndex(null);
+  };
 
   return (
     <section className="py-12 bg-[#F9F8F3] overflow-hidden group/section relative">
@@ -177,14 +199,25 @@ export default function ServiceBanner() {
             >
               {data.services.map((service, i) => (
                 <SwiperSlide key={i}>
-                  <div className="flex items-center gap-4 group">
+                  <div className="flex items-center gap-4 group/card relative">
+                    {/* Edit Button */}
+                    <AdminOnly>
+                      <button
+                        onClick={(e) => handleEditItem(e, i)}
+                        className="absolute top-0 right-0 z-20 w-7 h-7 flex items-center justify-center rounded-full bg-white border border-secondary/20 text-secondary opacity-0 group-hover/card:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-md"
+                        title="Edit Service"
+                      >
+                        <Edit className="w-3.5 h-3.5" />
+                      </button>
+                    </AdminOnly>
+
                     {/* Square Image */}
                     <div className="w-24 h-24 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0 border border-slate-100">
                       <CustomImage
                         src={service.image}
                         alt={service.title}
                         fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="object-cover group-hover/card:scale-110 transition-transform duration-500"
                       />
                     </div>
 
@@ -218,6 +251,13 @@ export default function ServiceBanner() {
         onClose={() => setIsModalOpen(false)}
         initialData={data}
         onUpdate={(newData: ServiceBannerFormData) => setData(newData)}
+      />
+
+      <ServiceBannerItemModal
+        isOpen={isItemModalOpen}
+        onClose={() => setIsItemModalOpen(false)}
+        item={editingIndex !== null ? data.services[editingIndex] : undefined}
+        onSave={handleSaveItem}
       />
     </section>
   );
