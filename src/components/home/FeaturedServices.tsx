@@ -72,9 +72,9 @@ export default function FeaturedServices() {
             <Edit className="w-3.5 h-3.5" />
           </button>
         </AdminOnly>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-fr">
           {/* Slot 1 */}
-          <div className="relative group h-[250px] md:h-full rounded-2xl overflow-hidden border border-slate-200">
+          <div className="relative group h-[250px] md:h-[300px] lg:h-[350px] rounded-2xl overflow-hidden border border-slate-200">
             <CustomImage
               src={data.showcase[0].image}
               alt={data.showcase[0].title}
@@ -97,7 +97,7 @@ export default function FeaturedServices() {
           </div>
 
           {/* Slot 2 */}
-          <div className="relative group h-[250px] md:h-full rounded-2xl overflow-hidden border border-slate-200">
+          <div className="relative group h-[250px] md:h-[300px] lg:h-[350px] rounded-2xl overflow-hidden border border-slate-200">
             <CustomImage
               src={data.showcase[1].image}
               alt={data.showcase[1].title}
@@ -120,7 +120,7 @@ export default function FeaturedServices() {
           </div>
 
           {/* Slot 3-4 Header Block */}
-          <div className="md:col-span-2 bg-[#fdfdfd] rounded-2xl p-8 lg:p-12 flex flex-col justify-center space-y-6 border-2 border-dashed border-secondary">
+          <div className="md:col-span-2 bg-[#fdfdfd] rounded-2xl p-8 lg:p-12 flex flex-col justify-center space-y-6 border-2 border-dashed border-secondary min-h-[250px]">
             <span className="text-[#ff4d1c] font-serif italic text-2xl">
               {data.tagline}
             </span>
@@ -141,7 +141,7 @@ export default function FeaturedServices() {
           {data.showcase.slice(2).map((service, index) => (
             <div
               key={index}
-              className="relative group h-[250px] md:h-[350px] lg:h-full rounded-2xl overflow-hidden border border-slate-200"
+              className="relative group h-[250px] md:h-[300px] lg:h-[350px] rounded-2xl overflow-hidden border border-slate-200"
             >
               <CustomImage
                 src={service.image}
