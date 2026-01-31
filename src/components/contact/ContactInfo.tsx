@@ -59,7 +59,7 @@ export default function ContactInfo() {
               <h3 className="font-bold text-xl text-secondary">{card.title}</h3>
               <div className="space-y-1 text-left w-full">
                 {card.lines.map((line, i) => (
-                  <p key={i} className="text-gray-500 text-sm break-words">
+                  <p key={i} className="text-gray-500 text-sm wrap-break-word">
                     {line}
                   </p>
                 ))}
