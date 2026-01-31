@@ -136,18 +136,18 @@ export default function ServicesTestimonial() {
       </div>
 
       <div className="main-container relative z-10">
+        <AdminOnly>
+          <button
+            onClick={() => setIsSectionModalOpen(true)}
+            className="absolute top-0 right-4 md:right-6 z-100 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
+            title="Edit Section"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
+
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-8 md:mb-12 gap-6 text-center md:text-left">
-          <AdminOnly>
-            <button
-              onClick={() => setIsSectionModalOpen(true)}
-              className="absolute top-0 right-5 z-100 w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-white hover:scale-110 transition-transform"
-              title="Edit Section"
-            >
-              <Edit className="w-5 h-5" />
-            </button>
-          </AdminOnly>
-
           <div className="text-white">
             <span className="uppercase tracking-widest text-xs font-semibold mb-2 block text-white/80">
               {sectionData.subtitle}
@@ -165,7 +165,6 @@ export default function ServicesTestimonial() {
                 <Plus className="w-4 h-4 mr-2" /> Add Review
               </Button>
             </AdminOnly>
-           
           </div>
         </div>
 

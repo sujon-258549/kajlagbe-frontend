@@ -96,7 +96,7 @@ export default function ServicesEngineers() {
         <AdminOnly>
           <button
             onClick={() => setIsSectionModalOpen(true)}
-            className="absolute top-0 left-10 bg-secondary z-50 w-8 h-8 flex items-center justify-center rounded-full text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white"
+            className="absolute top-0 right-4 md:right-6 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
             title="Edit Section Details"
           >
             <Edit className="w-4 h-4" />

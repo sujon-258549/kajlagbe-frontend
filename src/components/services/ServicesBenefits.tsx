@@ -50,18 +50,18 @@ export default function ServicesBenefits() {
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-white relative group/section">
-      <div className="main-container">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-          <AdminOnly>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="absolute top-0 right-0 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-white opacity-0 group-hover/section:opacity-100 transition-all hover:scale-110"
-              title="Edit Benefits"
-            >
-              <Edit className="w-5 h-5" />
-            </button>
-          </AdminOnly>
+      <div className="main-container relative">
+        <AdminOnly>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-0 right-4 md:right-6 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
+            title="Edit Benefits"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
           <div className="lg:col-span-4 mb-8 text-center md:text-left">
             <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block">
               {benefitsData.sectionTitle}

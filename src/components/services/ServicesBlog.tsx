@@ -1,15 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, User, Tag, Lightbulb, Edit, Plus } from "lucide-react";
+import { ArrowRight, User, Tag, Lightbulb, Edit } from "lucide-react";
 import CustomImage from "../common/CustomImage";
 import Heading2 from "../common/Headings/Heading2";
 import Heading5 from "../common/Headings/Heading5";
 import AdminOnly from "../common/auth/AdminOnly";
 import { Button } from "@/components/ui/button";
-import ServicesBlogModal, {
-  BlogItem,
-} from "../modal/services/ServicesBlogModal";
+import ServicesBlogModal from "../modal/services/ServicesBlogModal";
+import ServicesBlogHeaderModal from "../modal/services/ServicesBlogHeaderModal";
+import {
+  ServicesBlogItem,
+  ServicesBlogFormData,
+  ServicesBlogHeaderFormData,
+} from "@/schemas/services/blog.schema";
 
 const initialBlogs = [
   {
@@ -45,68 +49,76 @@ const initialBlogs = [
 ];
 
 export default function ServicesBlog() {
-  const [blogs, setBlogs] = useState<BlogItem[]>(initialBlogs);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<BlogItem | undefined>(
+  const [data, setData] = useState<ServicesBlogFormData>({
+    tagline: "News & Blog",
+    title: "Our Daily Update",
+    blogs: initialBlogs,
+  });
+
+  const [isHeaderModalOpen, setIsHeaderModalOpen] = useState(false);
+  const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<ServicesBlogItem | undefined>(
     undefined,
   );
 
-  const handleAddItem = () => {
-    setEditingItem(undefined);
-    setIsModalOpen(true);
-  };
-
-  const handleEditItem = (item: BlogItem) => {
+  const handleEditItem = (item: ServicesBlogItem) => {
     setEditingItem(item);
-    setIsModalOpen(true);
+    setIsItemModalOpen(true);
   };
 
-  const handleSaveItem = (data: BlogItem) => {
+  const handleSaveItem = (updatedItem: ServicesBlogItem) => {
     if (editingItem) {
-      setBlogs((prev) =>
-        prev.map((item) => (item.id === editingItem.id ? data : item)),
-      );
-    } else {
-      setBlogs((prev) => [{ ...data, id: Date.now() }, ...prev]);
+      setData((prev) => ({
+        ...prev,
+        blogs: prev.blogs.map((item) =>
+          item.id === editingItem.id ? updatedItem : item,
+        ),
+      }));
     }
-    setIsModalOpen(false);
+    setIsItemModalOpen(false);
   };
 
   const handleDeleteItem = () => {
     if (editingItem) {
-      setBlogs((prev) => prev.filter((item) => item.id !== editingItem.id));
-      setIsModalOpen(false);
+      setData((prev) => ({
+        ...prev,
+        blogs: prev.blogs.filter((item) => item.id !== editingItem.id),
+      }));
+      setIsItemModalOpen(false);
     }
+  };
+
+  const handleUpdateHeader = (headerData: ServicesBlogHeaderFormData) => {
+    setData((prev) => ({ ...prev, ...headerData }));
   };
 
   return (
     <section className="py-20 bg-white relative group/section">
       <div className="main-container relative">
-        <div className="absolute top-0 right-0 z-50">
-          <AdminOnly>
-            <Button
-              onClick={handleAddItem}
-              className="bg-secondary hover:bg-secondary/90 text-white gap-2 font-bold mb-8 w-full md:w-auto"
-            >
-              <Plus className="w-4 h-4" /> Add Post
-            </Button>
-          </AdminOnly>
-        </div>
+        <AdminOnly>
+          <button
+            onClick={() => setIsHeaderModalOpen(true)}
+            className="absolute top-0 right-4 md:right-6 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
+            title="Edit Section Header"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
 
         {/* Header */}
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-2 text-[#fbbf24] font-medium mb-3">
             <Lightbulb className="w-5 h-5" />
             <span className="uppercase tracking-wider text-sm text-slate-500">
-              News & Blog
+              {data.tagline}
             </span>
           </div>
-          <Heading2 className="text-secondary">Our Daily Update</Heading2>
+          <Heading2 className="text-secondary">{data.title}</Heading2>
         </div>
 
         {/* Blog Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogs.map((item) => (
+          {data.blogs.map((item) => (
             <div
               key={item.id}
               className="group rounded-2xl overflow-hidden bg-secondary border border-white/10 hover:border-primary/50 hover:-translate-y-2 transition-all duration-300 relative group/card"
@@ -132,7 +144,7 @@ export default function ServicesBlog() {
               <AdminOnly>
                 <button
                   onClick={() => handleEditItem(item)}
-                  className="absolute top-4 left-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/90 text-secondary transition-all z-20 hover:bg-white shadow-md hover:scale-110"
+                  className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/90 text-secondary transition-all z-20 hover:bg-white shadow-md hover:scale-110"
                   title="Edit Post"
                 >
                   <Edit className="w-5 h-5" />
@@ -168,9 +180,17 @@ export default function ServicesBlog() {
           ))}
         </div>
       </div>
+
+      <ServicesBlogHeaderModal
+        isOpen={isHeaderModalOpen}
+        onClose={() => setIsHeaderModalOpen(false)}
+        initialData={{ tagline: data.tagline, title: data.title }}
+        onUpdate={handleUpdateHeader}
+      />
+
       <ServicesBlogModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isItemModalOpen}
+        onClose={() => setIsItemModalOpen(false)}
         item={editingItem}
         onSave={handleSaveItem}
         onDelete={handleDeleteItem}

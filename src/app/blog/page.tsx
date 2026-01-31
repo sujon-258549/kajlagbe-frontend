@@ -20,8 +20,10 @@ export default function BlogPage() {
         </div>
       </section>
 
-      <ServicesVerticalSlider />
+        <ServicesVerticalSlider />
+      <div className="-mt-10 md:-mt-24">
       <BlogShowcase />
+      </div>
     </main>
   );
 }

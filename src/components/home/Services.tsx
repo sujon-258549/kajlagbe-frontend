@@ -6,11 +6,12 @@ import Link from "next/link";
 import Heading1 from "@/components/common/Headings/Heading1";
 import Heading5 from "../common/Headings/Heading5";
 import AdminOnly from "../common/auth/AdminOnly";
-import ServicesModal from "../modal/services/ServicesModal";
+import ServicesHeaderModal from "../modal/services/ServicesHeaderModal";
 import ServiceItemModal from "../modal/services/ServiceItemModal";
 import {
   ServicesFormData,
   ServiceItem,
+  ServicesHeaderFormData,
 } from "@/schemas/services/services.schema";
 
 const initialServices = [
@@ -107,7 +108,7 @@ const initialServices = [
 ];
 
 export default function Services() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHeaderModalOpen, setIsHeaderModalOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingItem, setEditingItem] = useState<ServiceItem | undefined>(
@@ -122,8 +123,8 @@ export default function Services() {
     services: initialServices,
   });
 
-  const handleUpdate = (data: ServicesFormData) => {
-    setServicesData(data);
+  const handleUpdateHeader = (data: ServicesHeaderFormData) => {
+    setServicesData((prev) => ({ ...prev, ...data }));
   };
 
   const handleEditItem = (e: React.MouseEvent, index: number) => {
@@ -160,7 +161,6 @@ export default function Services() {
       {/* Optional Section Background Image Only if provided */}
       {servicesData.sectionBackgroundImage && (
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
-          {/* Note: In a real app we might use Next.js Image here, keeping it as a styled div for simplicity if it's a raw URL */}
           <img
             src={servicesData.sectionBackgroundImage}
             alt=""
@@ -173,7 +173,7 @@ export default function Services() {
         <div className="absolute top-0 right-6 z-50">
           <AdminOnly>
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => setIsHeaderModalOpen(true)}
               className="w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-white opacity-0 group-hover/section:opacity-100 transition-all hover:scale-110 hover:bg-primary shadow-lg"
               title="Edit Section"
             >
@@ -196,7 +196,7 @@ export default function Services() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
           {servicesData.services.map((service, index) => (
             <Link
-              key={index} // Changed index as key to avoid issues if slug changes temporarily (though slug is preferred if stable)
+              key={index}
               href={`/services/${service.slug}`}
               className="group relative h-[180px] w-full overflow-hidden rounded-xl bg-secondary border border-white/10 transition-colors"
             >
@@ -245,11 +245,15 @@ export default function Services() {
           ))}
         </div>
       </div>
-      <ServicesModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        initialData={servicesData}
-        onUpdate={handleUpdate}
+      <ServicesHeaderModal
+        isOpen={isHeaderModalOpen}
+        onClose={() => setIsHeaderModalOpen(false)}
+        initialData={{
+          sectionTitle: servicesData.sectionTitle,
+          sectionDescription: servicesData.sectionDescription,
+          sectionBackgroundImage: servicesData.sectionBackgroundImage,
+        }}
+        onUpdate={handleUpdateHeader}
       />
 
       <ServiceItemModal

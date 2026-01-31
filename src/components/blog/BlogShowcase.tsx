@@ -172,7 +172,7 @@ export default function BlogShowcase() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center">
+          <div className="flex -mt-10 md:-mt-1 justify-center">
             <Pagination
               totalPages={totalPages}
               currentPage={currentPage}

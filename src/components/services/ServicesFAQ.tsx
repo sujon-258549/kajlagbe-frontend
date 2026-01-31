@@ -56,7 +56,16 @@ export default function ServicesFAQ() {
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-secondary relative group/section">
-      <div className="main-container">
+      <div className="main-container relative">
+        <AdminOnly>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-0 right-4 md:right-6 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
+            title="Edit FAQ"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
         <div className="flex flex-col lg:flex-row gap-6 md:gap-8 lg:gap-10 items-stretch">
           {/* Image/Video Side */}
           <div className="w-full lg:w-1/2">
@@ -140,16 +149,6 @@ export default function ServicesFAQ() {
 
           {/* FAQ Content */}
           <div className="w-full lg:w-1/2 flex flex-col justify-center relative">
-            <AdminOnly>
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="absolute top-0 right-0 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-white hover:scale-110 transition-transform"
-                title="Edit FAQ"
-              >
-                <Edit className="w-5 h-5" />
-              </button>
-            </AdminOnly>
-
             <div className="text-left mb-8 md:mb-10">
               <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block">
                 {faqData.subtitle}

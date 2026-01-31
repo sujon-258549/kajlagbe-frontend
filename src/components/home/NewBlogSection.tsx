@@ -7,8 +7,13 @@ import { ArrowRight, User, Bookmark, Leaf, Edit } from "lucide-react";
 import Heading3 from "../common/Headings/Heading3";
 import { Button } from "../ui/button";
 import AdminOnly from "../common/auth/AdminOnly";
-import HomeBlogModal from "../modal/home/HomeBlogModal";
-import { HomeBlogFormData } from "@/schemas/home/blog.schema";
+import HomeBlogHeaderModal from "../modal/home/HomeBlogHeaderModal";
+import HomeBlogPostModal from "../modal/home/HomeBlogPostModal";
+import {
+  HomeBlogFormData,
+  HomeBlogItemFormData,
+  HomeBlogHeaderFormData,
+} from "@/schemas/home/blog.schema";
 
 const initialBlogPosts = [
   {
@@ -44,7 +49,10 @@ const initialBlogPosts = [
 ];
 
 export default function NewBlogSection() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHeaderModalOpen, setIsHeaderModalOpen] = useState(false);
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
   const [data, setData] = useState<HomeBlogFormData>({
     badge: "News & Blog",
     title: "Check Latest Blog Post",
@@ -52,18 +60,48 @@ export default function NewBlogSection() {
     posts: initialBlogPosts,
   });
 
+  const handleUpdateHeader = (headerData: HomeBlogHeaderFormData) => {
+    setData((prev) => ({ ...prev, ...headerData }));
+  };
+
+  const handleUpdatePost = (postData: HomeBlogItemFormData) => {
+    if (editingIndex !== null) {
+      // Edit existing
+      const updatedPosts = [...data.posts];
+      updatedPosts[editingIndex] = postData;
+      setData((prev) => ({ ...prev, posts: updatedPosts }));
+    }
+    setIsPostModalOpen(false);
+    setEditingIndex(null);
+  };
+
+  const handleDeletePost = () => {
+    if (editingIndex !== null) {
+      const updatedPosts = data.posts.filter((_, i) => i !== editingIndex);
+      setData((prev) => ({ ...prev, posts: updatedPosts }));
+      setIsPostModalOpen(false);
+      setEditingIndex(null);
+    }
+  };
+
+  const openEditPost = (index: number) => {
+    setEditingIndex(index);
+    setIsPostModalOpen(true);
+  };
+
   return (
     <section className="md:py-20 py-12 relative group/section">
       <div className="main-container relative">
         <AdminOnly>
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setIsHeaderModalOpen(true)}
             className="absolute top-0 right-4 md:right-6 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
-            title="Edit Blog"
+            title="Edit Blog Header"
           >
             <Edit className="w-4 h-4" />
           </button>
         </AdminOnly>
+
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
           <div className="space-y-3">
@@ -89,8 +127,18 @@ export default function NewBlogSection() {
           {data.posts.map((post, index) => (
             <div
               key={index}
-              className="group bg-[#FDFBF7]  rounded-xl p-4 hover:shadow-[0_0_10px_0_rgba(0,0,0,0.1)] transition-all duration-300 border border-gray-200 hover:border-gray-400"
+              className="group bg-[#FDFBF7] rounded-xl p-4 hover:shadow-[0_0_10px_0_rgba(0,0,0,0.1)] transition-all duration-300 border border-gray-200 hover:border-gray-400 relative"
             >
+              <AdminOnly>
+                <button
+                  onClick={() => openEditPost(index)}
+                  className="absolute top-6 right-6 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 border border-slate-200 text-secondary opacity-0 group-hover:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-md"
+                  title="Edit Post"
+                >
+                  <Edit className="w-3 h-3" />
+                </button>
+              </AdminOnly>
+
               {/* Image container */}
               <div className="relative rounded-2xl overflow-hidden aspect-4/3 mb-6">
                 <Image
@@ -150,11 +198,29 @@ export default function NewBlogSection() {
         </div>
       </div>
 
-      <HomeBlogModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        initialData={data}
-        onUpdate={(newData: HomeBlogFormData) => setData(newData)}
+      <HomeBlogHeaderModal
+        isOpen={isHeaderModalOpen}
+        onClose={() => setIsHeaderModalOpen(false)}
+        initialData={{
+          badge: data.badge,
+          title: data.title,
+          buttonText: data.buttonText,
+        }}
+        onUpdate={handleUpdateHeader}
+      />
+
+      <HomeBlogPostModal
+        isOpen={isPostModalOpen}
+        onClose={() => {
+          setIsPostModalOpen(false);
+          setEditingIndex(null);
+        }}
+        initialData={
+          editingIndex !== null ? data.posts[editingIndex] : undefined
+        }
+        onUpdate={handleUpdatePost}
+        onDelete={handleDeletePost}
+        isNew={false}
       />
     </section>
   );

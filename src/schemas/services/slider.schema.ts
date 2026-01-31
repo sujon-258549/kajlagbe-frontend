@@ -8,9 +8,16 @@ export const serviceSliderItemSchema = z.object({
   number: z.string().min(1, "Number is required"),
 });
 
-export const serviceSliderSchema = z.object({
+export const serviceSliderHeaderSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+});
+
+export const serviceSliderSchema = serviceSliderHeaderSchema.extend({
   projects: z.array(serviceSliderItemSchema),
 });
 
 export type ServiceSliderFormData = z.infer<typeof serviceSliderSchema>;
+export type ServiceSliderHeaderFormData = z.infer<
+  typeof serviceSliderHeaderSchema
+>;
 export type ServiceSliderItem = z.infer<typeof serviceSliderItemSchema>;
