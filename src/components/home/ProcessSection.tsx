@@ -1,21 +1,17 @@
-"use client";
-
+import { useState } from "react";
 import { motion } from "motion/react";
-import {
-  MessageSquare,
-  Target,
-  Cpu,
-  CheckCircle2,
-  ArrowRight,
-} from "lucide-react";
+import { ArrowRight, Edit } from "lucide-react";
 import Heading2 from "../common/Headings/Heading2";
 import Heading5 from "../common/Headings/Heading5";
+import AdminOnly from "../common/auth/AdminOnly";
+import ProcessModal from "../modal/home/ProcessModal";
+import { ProcessFormData } from "@/schemas/home/process.schema";
 
-const steps = [
+const initialSteps = [
   {
     number: "01",
     title: "Book Your Service",
-    icon: <MessageSquare className="w-6 h-6" />,
+    iconName: "fa-solid fa-comments",
     description:
       "Select your needed service and schedule a time that works best for you through our simple booking form.",
     color: "from-secondary to-green-600",
@@ -23,7 +19,7 @@ const steps = [
   {
     number: "02",
     title: "Expert Assignment",
-    icon: <Target className="w-6 h-6" />,
+    iconName: "fa-solid fa-bullseye",
     description:
       "Our system instantly matches you with a background-verified and highly-rated professional in your area.",
     color: "from-primary to-orange-600",
@@ -31,7 +27,7 @@ const steps = [
   {
     number: "03",
     title: "Quality Delivery",
-    icon: <Cpu className="w-6 h-6" />,
+    iconName: "fa-solid fa-microchip",
     description:
       "Our expert arrives at your doorstep and provides top-tier service using specialized tools and professional care.",
     color: "from-secondary to-green-600",
@@ -39,7 +35,7 @@ const steps = [
   {
     number: "04",
     title: "Check & Warranty",
-    icon: <CheckCircle2 className="w-6 h-6" />,
+    iconName: "fa-solid fa-circle-check",
     description:
       "Review the completed work, make a secure payment, and enjoy our 7-day post-service quality guarantee.",
     color: "from-primary to-orange-600",
@@ -47,8 +43,26 @@ const steps = [
 ];
 
 export default function ProcessSection() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [data, setData] = useState<ProcessFormData>({
+    badge: "Our Workflow",
+    title: "Our Simplified Service Workflow",
+    description: "A transparent and proven methodology designed for success.",
+    steps: initialSteps,
+  });
+
   return (
-    <section className=" py-12 md:py-24 bg-white relative overflow-hidden">
+    <section className=" py-12 md:py-24 bg-white relative overflow-hidden group/section">
+      <AdminOnly>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
+          title="Edit Process"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+      </AdminOnly>
+
       {/* Decorative background elements */}
       <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50/50 -skew-x-12 z-0"></div>
 
@@ -60,14 +74,15 @@ export default function ProcessSection() {
             viewport={{ once: true }}
             className="text-secondary font-bold tracking-[0.3em] uppercase text-xs block"
           >
-            Our Workflow
+            {data.badge}
           </motion.span>
           <Heading2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
-            Our Simplified <span className="text-primary italic">Service</span>{" "}
-            Workflow
+            {data.title.split("Service")[0]}
+            <span className="text-primary italic">Service</span>{" "}
+            {data.title.split("Service")[1]}
           </Heading2>
           <p className="text-lg text-slate-500 font-medium pt-2">
-            A transparent and proven methodology designed for success.
+            {data.description}
           </p>
         </div>
 
@@ -77,7 +92,7 @@ export default function ProcessSection() {
             <div className="w-full h-full border-t-2 border-dashed border-slate-200"></div>
           </div>
 
-          {steps.map((step, index) => (
+          {data.steps.map((step, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 30 }}
@@ -91,7 +106,7 @@ export default function ProcessSection() {
                 <div
                   className={`w-20 h-20 rounded-full bg-white border-2 border-slate-100 flex items-center justify-center text-slate-900 shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:border-transparent group-hover:bg-linear-to-br ${step.color} group-hover:text-white`}
                 >
-                  {step.icon}
+                  <i className={`${step.iconName} text-2xl`} />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-white shadow-md border border-slate-50 flex items-center justify-center text-xs font-bold text-slate-400 group-hover:text-primary transition-colors">
                   {step.number}
@@ -116,6 +131,13 @@ export default function ProcessSection() {
           ))}
         </div>
       </div>
+
+      <ProcessModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialData={data}
+        onUpdate={(newData: ProcessFormData) => setData(newData)}
+      />
     </section>
   );
 }
