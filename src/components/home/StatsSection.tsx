@@ -1,39 +1,33 @@
-"use client";
-
+import { useState } from "react";
 import { motion } from "motion/react";
-import {
-  Users,
-  Briefcase,
-  Award,
-  Clock,
-  Star,
-  Zap,
-  Shield,
-} from "lucide-react";
+import { Star, Zap, Shield, Edit } from "lucide-react";
 import Heading2 from "../common/Headings/Heading2";
 import CustomImage from "../common/CustomImage";
+import AdminOnly from "../common/auth/AdminOnly";
+import StatsModal from "../modal/home/StatsModal";
+import { StatsFormData } from "@/schemas/home/stats.schema";
 
-const stats = [
+const initialStats = [
   {
-    icon: <Users className="w-9 h-9" />,
+    iconName: "fa-solid fa-users",
     value: "10k+",
     label: "Happy Clients",
     color: "from-secondary to-green-600",
   },
   {
-    icon: <Briefcase className="w-9 h-9" />,
+    iconName: "fa-solid fa-briefcase",
     value: "5k+",
     label: "Projects Done",
     color: "from-primary to-orange-600",
   },
   {
-    icon: <Award className="w-9 h-9" />,
+    iconName: "fa-solid fa-award",
     value: "25+",
     label: "Awards Win",
     color: "from-secondary to-green-600",
   },
   {
-    icon: <Clock className="w-9 h-9" />,
+    iconName: "fa-solid fa-clock",
     value: "10+",
     label: "Years Experience",
     color: "from-primary to-orange-600",
@@ -41,12 +35,29 @@ const stats = [
 ];
 
 export default function StatsSection() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [data, setData] = useState<StatsFormData>({
+    stats: initialStats,
+    backgroundImage:
+      "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80",
+  });
+
   return (
-    <section className="py-10 md:py-16 lg:py-24 relative overflow-hidden bg-secondary text-white">
+    <section className="py-10 md:py-16 lg:py-24 relative overflow-hidden bg-secondary text-white group/section">
+      <AdminOnly>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
+          title="Edit Stats"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+      </AdminOnly>
+
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <CustomImage
-          src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80"
+          src={data.backgroundImage || ""}
           alt="Background"
           fill
           unoptimized={true}
@@ -85,7 +96,7 @@ export default function StatsSection() {
 
       <div className="main-container mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {stats.map((stat, index) => (
+          {data.stats.map((stat, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 30 }}
@@ -102,21 +113,15 @@ export default function StatsSection() {
                 <div
                   className={`relative w-20 h-20 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shadow-sm transition-all duration-500 group-hover:scale-110 group-hover:-translate-y-2 group-hover:shadow-2xl group-hover:border-transparent group-hover:bg-linear-to-br ${stat.color}`}
                 >
-                  {stat.icon}
+                  <i className={`${stat.iconName} text-3xl`} />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <div className="relative inline-block">
-                  <Heading2 className="text-4xl lg:text-6xl font-bold text-white tracking-tighter">
+                  <Heading2 className="text-4xl lg:text-5xl font-bold text-white tracking-tighter">
                     {stat.value}
                   </Heading2>
-                  {/* <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: "100%" }}
-                    transition={{ delay: 0.5 + index * 0.1, duration: 0.8 }}
-                    className={`h-1.5 absolute -bottom-1 left-0 bg-linear-to-r ${stat.color} rounded-full opacity-60`}
-                  ></motion.div> */}
                 </div>
                 <div className="text-xs sm:text-sm font-bold text-white/70 uppercase tracking-[0.2em] pt-1">
                   {stat.label}
@@ -126,6 +131,13 @@ export default function StatsSection() {
           ))}
         </div>
       </div>
+
+      <StatsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialData={data}
+        onUpdate={(newData: StatsFormData) => setData(newData)}
+      />
     </section>
   );
 }
