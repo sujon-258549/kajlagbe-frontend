@@ -61,21 +61,21 @@ export default function FAQSection() {
 
   return (
     <section className=" md:py-24 py-10 bg-slate-50/50 relative overflow-hidden group/section">
-      <AdminOnly>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
-          title="Edit FAQs"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-      </AdminOnly>
-
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[500px] h-[500px] bg-primary/5 rounded-2xl blur-3xl opacity-60" />
       <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-secondary/5 rounded-2xl blur-3xl opacity-60" />
 
       <div className="main-container mx-auto px-6 relative z-10">
+        <AdminOnly>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-0 right-4 md:right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
+            title="Edit FAQs"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
+
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
           {/* Header Side */}
           <motion.div

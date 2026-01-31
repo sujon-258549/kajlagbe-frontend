@@ -47,16 +47,17 @@ export default function Hero() {
 
   return (
     <section className="relative w-full h-[450px] md:h-[500px] lg:h-[600px] overflow-hidden bg-secondary group/section">
-      {/* Admin Edit Button */}
-      <AdminOnly>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="absolute top-24 right-8 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
-          title="Edit Hero"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-      </AdminOnly>
+      <div className="main-container mx-auto relative z-50">
+        <AdminOnly>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-24 right-4 md:right-6 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
+            title="Edit Hero"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
+      </div>
 
       <Swiper
         modules={[Navigation, Autoplay, EffectFade]}
