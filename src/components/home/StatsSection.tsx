@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Star, Zap, Shield, Edit } from "lucide-react";
