@@ -62,17 +62,16 @@ export default function FeaturedServices() {
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-white group/section relative">
-      <AdminOnly>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white"
-          title="Edit Featured"
-        >
-          <Edit className="w-3.5 h-3.5" />
-        </button>
-      </AdminOnly>
-
-      <div className="main-container mx-auto px-4 md:px-6">
+      <div className="main-container mx-auto px-4 md:px-6 relative">
+        <AdminOnly>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-0 right-4 md:right-6 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white"
+            title="Edit Featured"
+          >
+            <Edit className="w-3.5 h-3.5" />
+          </button>
+        </AdminOnly>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           {/* Slot 1 */}
           <div className="relative group h-[250px] md:h-full rounded-2xl overflow-hidden border border-slate-200">

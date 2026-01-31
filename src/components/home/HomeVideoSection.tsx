@@ -31,16 +31,18 @@ export default function HomeVideoSection() {
   }, [data.videoUrl]);
 
   return (
-    <section className="relative h-[400px] md:h-[600px] w-full overflow-hidden group/section">
-      <AdminOnly>
-        <button
-          onClick={() => setIsEditModalOpen(true)}
-          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
-          title="Edit Video Settings"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-      </AdminOnly>
+    <section className="relative w-full h-[300px] md:h-[450px] lg:h-[600px] overflow-hidden group/section">
+      <div className="main-container mx-auto relative z-50">
+        <AdminOnly>
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className="absolute top-8 right-4 md:right-8 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-black shadow-lg backdrop-blur-md"
+            title="Edit Video Settings"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
+      </div>
 
       {/* Background Video/Image */}
       <div className="absolute inset-0">

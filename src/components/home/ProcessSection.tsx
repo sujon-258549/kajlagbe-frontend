@@ -55,20 +55,19 @@ export default function ProcessSection() {
 
   return (
     <section className=" py-12 md:py-24 bg-white relative overflow-hidden group/section">
-      <AdminOnly>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
-          title="Edit Process"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-      </AdminOnly>
-
       {/* Decorative background elements */}
       <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50/50 -skew-x-12 z-0"></div>
 
       <div className="main-container mx-auto px-6 relative z-10">
+        <AdminOnly>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-0 right-4 md:right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
+            title="Edit Process"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
         <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
           <motion.span
             initial={{ opacity: 0, y: 10 }}

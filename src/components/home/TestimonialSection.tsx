@@ -57,18 +57,17 @@ export default function TestimonialSection() {
   });
 
   return (
-    <section className="py-10 md:py-16 bg-white overflow-hidden group/section relative">
-      <AdminOnly>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
-          title="Edit Testimonials"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-      </AdminOnly>
-
-      <div className="main-container">
+    <section className="md:py-24 py-12 relative group/section overflow-hidden">
+      <div className="main-container relative">
+        <AdminOnly>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-4 right-4 md:right-8 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
+            title="Edit Testimonials"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
         <div className="bg-secondary rounded-2xl md:rounded-2xl overflow-hidden flex flex-col lg:flex-row relative min-h-[500px] lg:h-[700px] shadow-2xl">
           {/* Glossy Spheres */}
           <div className="absolute top-[8%] left-[40%] w-24 h-24 rounded-full z-0 opacity-40 bg-radial-[at_30%_30%,rgba(255,255,255,0.4)_0%,rgba(255,255,255,0)_70%] border border-white/10 backdrop-blur-sm animate-pulse"></div>

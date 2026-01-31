@@ -57,17 +57,16 @@ export default function HomeBenefits() {
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-[#fcfdfa] overflow-hidden group/section relative">
-      <AdminOnly>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
-          title="Edit Benefits"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-      </AdminOnly>
-
-      <div className="main-container mx-auto px-4">
+      <div className="main-container mx-auto px-6 relative z-10">
+        <AdminOnly>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-0 right-4 md:right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
+            title="Edit Benefits"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f0f9eb] rounded-full text-secondary text-sm font-semibold border border-[#dcf0d1] mb-6">

@@ -54,17 +54,16 @@ export default function NewBlogSection() {
 
   return (
     <section className="md:py-20 py-12 relative group/section">
-      <AdminOnly>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
-          title="Edit Blog"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-      </AdminOnly>
-
-      <div className="main-container">
+      <div className="main-container relative">
+        <AdminOnly>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-0 right-4 md:right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
+            title="Edit Blog"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
           <div className="space-y-3">

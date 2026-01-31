@@ -46,16 +46,6 @@ export default function StatsSection() {
 
   return (
     <section className="py-10 md:py-16 lg:py-24 relative overflow-hidden bg-secondary text-white group/section">
-      <AdminOnly>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
-          title="Edit Stats"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-      </AdminOnly>
-
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <CustomImage
@@ -97,6 +87,15 @@ export default function StatsSection() {
       </div>
 
       <div className="main-container mx-auto px-6 relative z-10">
+        <AdminOnly>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-0 right-4 md:right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
+            title="Edit Stats"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {data.stats.map((stat, index) => (
             <motion.div

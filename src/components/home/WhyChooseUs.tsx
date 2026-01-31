@@ -41,17 +41,17 @@ export default function WhyChooseUs() {
 
   return (
     <section className=" md:py-20 pt-16 pb-10 relative group/section">
-      <AdminOnly>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
-          title="Edit Section"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-      </AdminOnly>
-
-      <div className="main-container mx-auto px-4 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <div className="main-container mx-auto px-4 relative">
+        <AdminOnly>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-0 right-4 md:right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
+            title="Edit Section"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         <div className="relative">
           <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
             <CustomImage

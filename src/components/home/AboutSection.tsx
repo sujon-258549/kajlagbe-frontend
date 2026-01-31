@@ -32,17 +32,16 @@ export default function AboutSection() {
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden group/section relative">
-      <AdminOnly>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
-          title="Edit About Section"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-      </AdminOnly>
-
-      <div className="main-container mx-auto px-6">
+      <div className="main-container mx-auto px-6 relative">
+        <AdminOnly>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-0 right-4 md:right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
+            title="Edit About Section"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           {/* Image Side */}
           <div className="lg:w-1/2 relative">
