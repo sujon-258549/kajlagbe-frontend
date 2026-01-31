@@ -3,16 +3,16 @@
 import CustomImage from "../common/CustomImage";
 import Heading5 from "../common/Headings/Heading5";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
+import AdminOnly from "../common/auth/AdminOnly";
+import { Edit } from "lucide-react";
+import ServiceBannerModal from "../modal/home/ServiceBannerModal";
+import { ServiceBannerFormData } from "@/schemas/home/serviceBanner.schema";
 
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/navigation";
-
-export const services = [
+const initialServices = [
   {
     title: "Home Repair & Maintenance",
     slug: "home-repair-maintenance",
@@ -119,9 +119,22 @@ export const services = [
 
 export default function ServiceBanner() {
   const swiperRef = useRef<SwiperType>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [data, setData] = useState<ServiceBannerFormData>({
+    services: initialServices,
+  });
 
   return (
-    <section className="py-12 bg-[#F9F8F3] overflow-hidden">
+    <section className="py-12 bg-[#F9F8F3] overflow-hidden group/section relative">
+      <AdminOnly>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white"
+          title="Edit Banner"
+        >
+          <Edit className="w-3.5 h-3.5" />
+        </button>
+      </AdminOnly>
       <div className="main-container mx-auto px-6">
         <div className="relative flex items-center justify-center gap-2 lg:gap-2">
           {/* Controls - Left */}
@@ -162,11 +175,11 @@ export default function ServiceBanner() {
               }}
               className="w-full"
             >
-              {services.map((service, i) => (
+              {data.services.map((service, i) => (
                 <SwiperSlide key={i}>
                   <div className="flex items-center gap-4 group">
                     {/* Square Image */}
-                    <div className="w-24 h-24 md:w-24 md:h-24 rounded-xl overflow-hidden flex-shrink-0 border border-slate-100">
+                    <div className="w-24 h-24 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0 border border-slate-100">
                       <CustomImage
                         src={service.image}
                         alt={service.title}
@@ -184,9 +197,6 @@ export default function ServiceBanner() {
                         Book Now →
                       </span>
                     </div>
-
-                    {/* Vertical Divider (Desktop only, hidden for Swiper) */}
-                    {/* In Swiper, dividers are tricky between slides. We can handle it with border-right on the slide main-container if needed, but spaceBetween usually suffices. */}
                   </div>
                 </SwiperSlide>
               ))}
@@ -196,12 +206,19 @@ export default function ServiceBanner() {
           {/* Controls - Right */}
           <button
             onClick={() => swiperRef.current?.slideNext()}
-            className="hidden md:flex w-12 h-12 rounded-full border border-secondary/20 items-center justify-center text-secondary hover:bg-primary hover:text-white hover:border-primary transition-all flex-shrink-0 z-10 bg-white/50 backdrop-blur-sm"
+            className="hidden md:flex w-12 h-12 rounded-full border border-secondary/20 items-center justify-center text-secondary hover:bg-primary hover:text-white hover:border-primary transition-all shrink-0 z-10 bg-white/50 backdrop-blur-sm"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
         </div>
       </div>
+
+      <ServiceBannerModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialData={data}
+        onUpdate={(newData: ServiceBannerFormData) => setData(newData)}
+      />
     </section>
   );
 }

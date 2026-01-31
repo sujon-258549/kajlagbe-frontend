@@ -13,8 +13,12 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/effect-fade";
 import Heading1 from "../common/Headings/Heading1";
+import AdminOnly from "../common/auth/AdminOnly";
+import HeroModal from "../modal/home/HeroModal";
+import { HeroFormData } from "@/schemas/home/hero.schema";
+import { Edit } from "lucide-react";
 
-const heroSlides = [
+const initialSlides = [
   {
     title: "END-TO-END DEVELOPMENT",
     description:
@@ -36,9 +40,24 @@ const heroSlides = [
 export default function Hero() {
   const swiperRef = useRef<SwiperType>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [data, setData] = useState<HeroFormData>({
+    slides: initialSlides,
+  });
 
   return (
-    <section className="relative w-full h-[450px] md:h-[500px] lg:h-[600px] overflow-hidden bg-secondary">
+    <section className="relative w-full h-[450px] md:h-[500px] lg:h-[600px] overflow-hidden bg-secondary group/section">
+      {/* Admin Edit Button */}
+      <AdminOnly>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="absolute top-24 right-8 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
+          title="Edit Hero"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+      </AdminOnly>
+
       <Swiper
         modules={[Navigation, Autoplay, EffectFade]}
         effect="fade"
@@ -53,7 +72,7 @@ export default function Hero() {
         }}
         className="w-full h-full"
       >
-        {heroSlides.map((slide, index) => (
+        {data.slides.map((slide, index) => (
           <SwiperSlide key={index} className="relative w-full h-full">
             {/* Background Image with Dark Overlay */}
             <div className="absolute inset-0">
@@ -109,7 +128,7 @@ export default function Hero() {
               <div className="flex items-center gap-1 tabular-nums">
                 <span>0{activeIndex + 1}</span>
                 <span className="opacity-40">/</span>
-                <span className="opacity-40">0{heroSlides.length}</span>
+                <span className="opacity-40">0{data.slides.length}</span>
               </div>
 
               <button
@@ -123,6 +142,13 @@ export default function Hero() {
           </div>
         </div>
       </Swiper>
+
+      <HeroModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialData={data}
+        onUpdate={(newData) => setData(newData)}
+      />
     </section>
   );
 }
