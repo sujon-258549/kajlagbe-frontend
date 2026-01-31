@@ -39,13 +39,7 @@ const AboutSectionModal: React.FC<AboutSectionModalProps> = ({
     defaultValues: initialData,
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "points" as any, // Cast to any to handle array of strings with useFieldArray which usually expects array of objects
-  });
-
-  // Since points is array of strings, useFieldArray might be tricky.
-  // Let's use standard map and form.watch/setValue instead for simpler array of strings.
+  // Using standard map and form.watch/setValue instead for simpler array of strings.
 
   const points = form.watch("points");
 
