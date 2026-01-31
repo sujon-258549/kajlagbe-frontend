@@ -7,6 +7,7 @@ import { Plus, Trash2 } from "lucide-react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import FormTextarea from "@/components/common/FormTextarea";
+import ImageUpload from "@/components/common/ImageUpload";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -115,9 +116,13 @@ const HeroModal: React.FC<HeroModalProps> = ({
                     name={`slides.${index}.image`}
                     render={({ field }) => (
                       <FormItem className="md:col-span-2">
-                        <FormLabel>Image URL</FormLabel>
+                        <FormLabel>Slide Image</FormLabel>
                         <FormControl>
-                          <FormInput placeholder="https://..." {...field} />
+                          <ImageUpload
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            className="aspect-video w-full"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
