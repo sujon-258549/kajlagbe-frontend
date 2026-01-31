@@ -1,4 +1,4 @@
-import * as z from "zod";
+import { z } from "zod";
 
 export const contactInfoSchema = z.object({
   cards: z
@@ -8,7 +8,7 @@ export const contactInfoSchema = z.object({
         lines: z
           .array(z.string().min(1, "Line content is required"))
           .min(1, "At least one line is required"),
-        iconType: z.enum(["phone", "mail", "map", "clock"]),
+        iconType: z.string().min(1, "Icon is required"),
       }),
     )
     .min(1, "At least one info card is required"),

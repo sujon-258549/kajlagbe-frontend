@@ -26,6 +26,7 @@ export const benefitsSchema = z.object({
       id: z.string().optional(),
       title: z.string().min(1, "Title is required"),
       desc: z.string().min(1, "Description is required"),
+      icon: z.string().min(1, "Icon is required"), // Added icon field
     }),
   ),
 });
@@ -115,7 +116,7 @@ const ServicesBenefitsModal: React.FC<ServicesBenefitsModalProps> = ({
                   </FormLabel>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name={`items.${index}.title`}
@@ -131,14 +132,13 @@ const ServicesBenefitsModal: React.FC<ServicesBenefitsModalProps> = ({
                   />
                   <FormField
                     control={form.control}
-                    name={`items.${index}.desc`}
+                    name={`items.${index}.icon`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description</FormLabel>
+                        <FormLabel>Font Awesome Icon Class</FormLabel>
                         <FormControl>
-                          <FormTextarea
-                            placeholder="Description"
-                            rows={3}
+                          <FormInput
+                            placeholder="e.g. fa-solid fa-star"
                             {...field}
                           />
                         </FormControl>
@@ -147,6 +147,23 @@ const ServicesBenefitsModal: React.FC<ServicesBenefitsModalProps> = ({
                     )}
                   />
                 </div>
+                <FormField
+                  control={form.control}
+                  name={`items.${index}.desc`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <FormTextarea
+                          placeholder="Description"
+                          rows={3}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             ))}
           </div>

@@ -16,13 +16,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   contactInfoSchema,
   ContactInfoFormData,
 } from "@/schemas/contact/info.schema";
@@ -142,23 +135,13 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
                       name={`cards.${index}.iconType`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Icon Type</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select icon" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="phone">Phone</SelectItem>
-                              <SelectItem value="mail">Email</SelectItem>
-                              <SelectItem value="map">Map/Address</SelectItem>
-                              <SelectItem value="clock">Clock/Hours</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <FormLabel>Font Awesome Icon Class</FormLabel>
+                          <FormControl>
+                            <FormInput
+                              placeholder="e.g. fa-solid fa-phone"
+                              {...field}
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}

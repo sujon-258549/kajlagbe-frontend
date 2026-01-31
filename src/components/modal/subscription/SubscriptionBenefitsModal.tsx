@@ -3,16 +3,7 @@
 import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Plus,
-  X,
-  Leaf,
-  ShieldCheck,
-  Zap,
-  Headphones,
-  Star,
-  Heart,
-} from "lucide-react";
+import { Plus, X } from "lucide-react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import { Button } from "@/components/ui/button";
@@ -24,13 +15,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   subscriptionBenefitsSchema,
   SubscriptionBenefitsFormData,
@@ -183,27 +167,13 @@ const SubscriptionBenefitsModal: React.FC<SubscriptionBenefitsModalProps> = ({
                       name={`benefits.${index}.iconType`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Icon</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select icon" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="leaf">Leaf</SelectItem>
-                              <SelectItem value="shield">Shield</SelectItem>
-                              <SelectItem value="zap">Zap (Speed)</SelectItem>
-                              <SelectItem value="headphones">
-                                Headphones (Support)
-                              </SelectItem>
-                              <SelectItem value="star">Star</SelectItem>
-                              <SelectItem value="heart">Heart</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <FormLabel>Font Awesome Icon Class</FormLabel>
+                          <FormControl>
+                            <FormInput
+                              placeholder="e.g. fa-solid fa-leaf"
+                              {...field}
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}

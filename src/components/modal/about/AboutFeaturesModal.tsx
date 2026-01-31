@@ -136,7 +136,7 @@ const AboutFeaturesModal: React.FC<AboutFeaturesModalProps> = ({
                   key={field.id}
                   className="p-4 rounded-lg border border-slate-200 bg-white relative group"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name={`items.${index}.title`}
@@ -149,6 +149,25 @@ const AboutFeaturesModal: React.FC<AboutFeaturesModalProps> = ({
                             <FormInput
                               size="sm"
                               placeholder="Item title"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-[10px]" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`items.${index}.iconName`}
+                      render={({ field }) => (
+                        <FormItem className="space-y-1">
+                          <FormLabel className="text-xs font-semibold text-slate-500">
+                            Icon (Font Awesome)
+                          </FormLabel>
+                          <FormControl>
+                            <FormInput
+                              size="sm"
+                              placeholder="e.g. fa-solid fa-leaf"
                               {...field}
                             />
                           </FormControl>
@@ -197,7 +216,9 @@ const AboutFeaturesModal: React.FC<AboutFeaturesModalProps> = ({
               type="button"
               variant="outline"
               className="w-full border-dashed border"
-              onClick={() => append({ title: "", description: "" })}
+              onClick={() =>
+                append({ title: "", description: "", iconName: "" })
+              }
             >
               <Plus className="w-4 h-4" />
               Add New Item

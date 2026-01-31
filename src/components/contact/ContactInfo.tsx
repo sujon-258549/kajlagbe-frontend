@@ -1,39 +1,32 @@
 "use client";
 
 import React, { useState } from "react";
-import { Phone, Mail, MapPin, Clock, Edit } from "lucide-react";
+import { Edit } from "lucide-react";
 import AdminOnly from "@/components/common/auth/AdminOnly";
 import ContactInfoModal from "@/components/modal/contact/ContactInfoModal";
 import { ContactInfoFormData } from "@/schemas/contact/info.schema";
-
-const ICON_MAP: Record<string, any> = {
-  phone: Phone,
-  mail: Mail,
-  map: MapPin,
-  clock: Clock,
-};
 
 export default function ContactInfo() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [data, setData] = useState<ContactInfoFormData>({
     cards: [
       {
-        iconType: "phone",
+        iconType: "fa-solid fa-phone",
         title: "Contact Us",
         lines: ["+ (123) 456-789", "+ (978) 645-132"],
       },
       {
-        iconType: "mail",
+        iconType: "fa-solid fa-envelope",
         title: "E - mail",
         lines: ["info@domainname.com", "support@domain.com"],
       },
       {
-        iconType: "map",
+        iconType: "fa-solid fa-location-dot",
         title: "Address",
         lines: ["1234 Maple Avenue, Suite 567", "United States"],
       },
       {
-        iconType: "clock",
+        iconType: "fa-solid fa-clock",
         title: "Working hours",
         lines: ["Mon-Sat : 10am to 07pm", "Sunday: Closed"],
       },
@@ -55,29 +48,24 @@ export default function ContactInfo() {
         </AdminOnly>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {data.cards.map((card, idx) => {
-            const Icon = ICON_MAP[card.iconType] || Phone;
-            return (
-              <div
-                key={idx}
-                className="bg-white p-8 rounded-xl border border-gray-200 flex flex-col items-start space-y-4 hover:-translate-y-1 transition-all duration-300 shadow-sm"
-              >
-                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
-                  <Icon className="w-7 h-7" strokeWidth={1.5} />
-                </div>
-                <h3 className="font-bold text-xl text-secondary">
-                  {card.title}
-                </h3>
-                <div className="space-y-1 text-left w-full">
-                  {card.lines.map((line, i) => (
-                    <p key={i} className="text-gray-500 text-sm break-words">
-                      {line}
-                    </p>
-                  ))}
-                </div>
+          {data.cards.map((card, idx) => (
+            <div
+              key={idx}
+              className="bg-white p-8 rounded-xl border border-gray-200 flex flex-col items-start space-y-4 hover:-translate-y-1 transition-all duration-300 shadow-sm"
+            >
+              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
+                <i className={`${card.iconType} text-xl`} />
               </div>
-            );
-          })}
+              <h3 className="font-bold text-xl text-secondary">{card.title}</h3>
+              <div className="space-y-1 text-left w-full">
+                {card.lines.map((line, i) => (
+                  <p key={i} className="text-gray-500 text-sm break-words">
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

@@ -1,25 +1,8 @@
 import React, { useState } from "react";
-import {
-  Leaf,
-  ShieldCheck,
-  Zap,
-  Headphones,
-  Star,
-  Heart,
-  Edit,
-} from "lucide-react";
+import { Edit } from "lucide-react";
 import AdminOnly from "@/components/common/auth/AdminOnly";
 import SubscriptionBenefitsModal from "@/components/modal/subscription/SubscriptionBenefitsModal";
 import { SubscriptionBenefitsFormData } from "@/schemas/subscription/benefits.schema";
-
-const ICON_MAP: Record<string, any> = {
-  leaf: Leaf,
-  shield: ShieldCheck,
-  zap: Zap,
-  headphones: Headphones,
-  star: Star,
-  heart: Heart,
-};
 
 export default function SubscriptionBenefits() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -29,25 +12,25 @@ export default function SubscriptionBenefits() {
       "Unlock exclusive benefits designed to accelerate your growth and simplify your workflow.",
     benefits: [
       {
-        iconType: "leaf",
+        iconType: "fa-solid fa-leaf",
         title: "Eco-Friendly Solutions",
         description:
           "Our services are designed with the environment in mind, ensuring sustainable practices.",
       },
       {
-        iconType: "shield",
+        iconType: "fa-solid fa-shield-halved",
         title: "Secure & Reliable",
         description:
           "We prioritize your data security and guarantee 99.9% uptime for all our services.",
       },
       {
-        iconType: "zap",
+        iconType: "fa-solid fa-bolt",
         title: "Lightning Fast",
         description:
           "Optimized for performance to ensure you get what you need instantly.",
       },
       {
-        iconType: "headphones",
+        iconType: "fa-solid fa-headset",
         title: "24/7 Premium Support",
         description:
           "Our dedicated team is always available to assist you with any questions or issues.",
@@ -87,25 +70,22 @@ export default function SubscriptionBenefits() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {data.benefits.map((benefit, index) => {
-            const Icon = ICON_MAP[benefit.iconType] || Zap;
-            return (
-              <div
-                key={index}
-                className="group bg-white/5 border border-white/10 backdrop-blur-sm p-8 rounded-xl hover:bg-primary transition-all duration-300"
-              >
-                <div className="w-14 h-14 rounded-2xl bg-primary group-hover:bg-white/20 flex items-center justify-center mb-6 transition-colors duration-300">
-                  <Icon className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">
-                  {benefit.title}
-                </h3>
-                <p className="text-white/70 text-sm leading-relaxed">
-                  {benefit.description}
-                </p>
+          {data.benefits.map((benefit, index) => (
+            <div
+              key={index}
+              className="group bg-white/5 border border-white/10 backdrop-blur-sm p-8 rounded-xl hover:bg-primary transition-all duration-300"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-primary group-hover:bg-white/20 flex items-center justify-center mb-6 transition-colors duration-300">
+                <i className={`${benefit.iconType} text-2xl text-white`} />
               </div>
-            );
-          })}
+              <h3 className="text-xl font-bold text-white mb-3">
+                {benefit.title}
+              </h3>
+              <p className="text-white/70 text-sm leading-relaxed">
+                {benefit.description}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
 

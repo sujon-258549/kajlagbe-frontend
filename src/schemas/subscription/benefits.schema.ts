@@ -1,4 +1,4 @@
-import * as z from "zod";
+import { z } from "zod";
 
 export const subscriptionBenefitsSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -6,14 +6,7 @@ export const subscriptionBenefitsSchema = z.object({
   benefits: z
     .array(
       z.object({
-        iconType: z.enum([
-          "leaf",
-          "shield",
-          "zap",
-          "headphones",
-          "star",
-          "heart",
-        ]),
+        iconType: z.string().min(1, "Icon is required"),
         title: z.string().min(1, "Benefit title is required"),
         description: z.string().min(1, "Benefit description is required"),
       }),

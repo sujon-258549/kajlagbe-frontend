@@ -18,14 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import * as Icons from "lucide-react";
+import { Settings, List, Trash2 } from "lucide-react";
 
 interface ServicesModalProps {
   isOpen: boolean;
@@ -33,34 +26,6 @@ interface ServicesModalProps {
   initialData: ServicesFormData;
   onUpdate: (data: ServicesFormData) => void;
 }
-
-// List of common icons to choose from
-const ICON_OPTIONS = [
-  "Wrench",
-  "Sparkles",
-  "Hammer",
-  "Axe",
-  "Droplets",
-  "Zap",
-  "Palette",
-  "Leaf",
-  "Bug",
-  "Settings",
-  "Thermometer",
-  "Home",
-  "Square",
-  "Shield",
-  "Cpu",
-  "Truck",
-  "Trash2",
-  "Eye",
-  "Activity",
-  "Anchor",
-  "Archive",
-  "Award",
-  "Briefcase",
-  "Camera",
-];
 
 const ServicesModal: React.FC<ServicesModalProps> = ({
   isOpen,
@@ -112,7 +77,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({
           <div className="bg-gray-50/50 p-4 rounded-lg space-y-4 border border-gray-100">
             <div className="flex items-center gap-2 mb-2">
               <div className="bg-secondary/10 p-2 rounded-full">
-                <Icons.Settings className="w-4 h-4 text-secondary" />
+                <Settings className="w-4 h-4 text-secondary" />
               </div>
               <h3 className="font-semibold text-gray-800">Section Settings</h3>
             </div>
@@ -174,7 +139,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="bg-secondary/10 p-2 rounded-full">
-                  <Icons.List className="w-4 h-4 text-secondary" />
+                  <List className="w-4 h-4 text-secondary" />
                 </div>
                 <h3 className="font-semibold text-gray-800">Services List</h3>
               </div>
@@ -231,31 +196,13 @@ const ServicesModal: React.FC<ServicesModalProps> = ({
                         name={`services.${index}.iconName`}
                         render={({ field }) => (
                           <FormItem>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger className="h-9">
-                                  <SelectValue placeholder="Icon" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent className="max-h-[200px]">
-                                {ICON_OPTIONS.map((iconName) => {
-                                  const IconComp = (Icons as any)[iconName];
-                                  return (
-                                    <SelectItem key={iconName} value={iconName}>
-                                      <div className="flex items-center gap-2">
-                                        {IconComp && (
-                                          <IconComp className="w-4 h-4" />
-                                        )}
-                                        <span>{iconName}</span>
-                                      </div>
-                                    </SelectItem>
-                                  );
-                                })}
-                              </SelectContent>
-                            </Select>
+                            <FormControl>
+                              <FormInput
+                                placeholder="Icon (e.g. fa-solid fa-wrench)"
+                                className="h-9"
+                                {...field}
+                              />
+                            </FormControl>
                           </FormItem>
                         )}
                       />
@@ -267,7 +214,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({
                       className="text-red-500 hover:text-red-700 hover:bg-red-50"
                       onClick={() => removeService(index)}
                     >
-                      <Icons.Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
