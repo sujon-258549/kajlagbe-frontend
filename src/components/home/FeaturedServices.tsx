@@ -120,20 +120,18 @@ export default function FeaturedServices() {
           </div>
 
           {/* Slot 3-4 Header Block */}
-          <div className="md:col-span-2 bg-[#fdfdfd] rounded-2xl p-8 lg:p-12 flex flex-col justify-center space-y-6 border-2 border-dashed border-secondary min-h-[250px]">
-            <span className="text-[#ff4d1c] font-serif italic text-2xl">
+          <div className="md:col-span-2 bg-[#fdfdfd] rounded-2xl p-6 lg:p-8 flex flex-col justify-center space-y-4 border-2 border-dashed border-secondary h-[250px] md:h-[300px] lg:h-[350px]">
+            <span className="text-[#ff4d1c] font-serif italic text-xl lg:text-2xl">
               {data.tagline}
             </span>
-            <Heading3 className=" font-bold  leading-[1.1] text-2xl md:text-4xl lg:text-5xl">
+            <Heading3 className=" font-bold  leading-[1.1] text-xl md:text-3xl lg:text-4xl">
               {data.mainTitle}
             </Heading3>
-            <p className="text-gray-500 text-sm leading-relaxed max-w-md">
+            <p className="text-gray-500 text-xs md:text-sm leading-relaxed max-w-md">
               {data.mainDescription}
             </p>
             <div>
-              <Button className="rounded-md shadow-lg shadow-primary/20">
-                {data.buttonText}
-              </Button>
+              <Button className="rounded-md">{data.buttonText}</Button>
             </div>
           </div>
 
