@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { motion } from "motion/react";
 import { ArrowRight, Edit } from "lucide-react";
