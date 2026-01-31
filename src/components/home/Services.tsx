@@ -170,7 +170,7 @@ export default function Services() {
       )}
 
       <div className="main-container mx-auto px-6 relative z-10">
-        <div className="absolute top-0 right-8 z-50">
+        <div className="absolute top-0 right-6 z-50">
           <AdminOnly>
             <button
               onClick={() => setIsModalOpen(true)}
