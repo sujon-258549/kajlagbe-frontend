@@ -1,14 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { Leaf, Sprout, Sun, Heart, Edit } from "lucide-react";
+import { Edit } from "lucide-react";
 import Heading2 from "@/components/common/Headings/Heading2";
 import Heading3 from "@/components/common/Headings/Heading3";
 import AdminOnly from "@/components/common/auth/AdminOnly";
 import AboutFeaturesModal from "@/components/modal/about/AboutFeaturesModal";
 import { AboutFeaturesFormData } from "@/schemas/about/features.schema";
-
-const ICON_MAP = [Leaf, Sprout, Sun, Heart];
 
 export default function AboutFeatures() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -19,20 +17,24 @@ export default function AboutFeatures() {
       "Every product tells a story of care, quality, and dedication to purity.",
     items: [
       {
+        iconName: "fa-solid fa-leaf",
         title: "100% Organic",
         description:
           "Certified organic farming practices without harmful chemicals.",
       },
       {
+        iconName: "fa-solid fa-seedling",
         title: "Fresh Harvest",
         description:
           "Harvested at peak ripeness for maximum flavor and nutrition.",
       },
       {
+        iconName: "fa-solid fa-sun",
         title: "Eco-Friendly",
         description: "Sustainable farming that respects and preserves nature.",
       },
       {
+        iconName: "fa-solid fa-heart",
         title: "Made with Love",
         description: "Grown and packed with care for your family's health.",
       },
@@ -62,25 +64,22 @@ export default function AboutFeatures() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {data.items.map((feature, idx) => {
-            const Icon = ICON_MAP[idx % ICON_MAP.length] || Leaf;
-            return (
-              <div
-                key={idx}
-                className="bg-white p-8 rounded-2xl border border-white/10 hover:translate-y-[-5px] transition-all duration-300 group"
-              >
-                <div className="w-16 h-16 mx-auto bg-[#f8fdf4] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Icon className="w-8 h-8 text-secondary" />
-                </div>
-                <Heading3 className="font-bold text-xl text-secondary mb-3">
-                  {feature.title}
-                </Heading3>
-                <p className="text-slate-500 text-sm leading-relaxed">
-                  {feature.description}
-                </p>
+          {data.items.map((feature, idx) => (
+            <div
+              key={idx}
+              className="bg-white p-8 rounded-2xl border border-white/10 hover:translate-y-[-5px] transition-all duration-300 group"
+            >
+              <div className="w-16 h-16 mx-auto bg-[#f8fdf4] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <i className={`${feature.iconName} text-2xl text-secondary`} />
               </div>
-            );
-          })}
+              <Heading3 className="font-bold text-xl text-secondary mb-3">
+                {feature.title}
+              </Heading3>
+              <p className="text-slate-500 text-sm leading-relaxed">
+                {feature.description}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
       <AdminOnly>
