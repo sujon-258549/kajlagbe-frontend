@@ -34,7 +34,7 @@ const AboutTestimonialsModal: React.FC<AboutTestimonialsModalProps> = ({
   onUpdate,
 }) => {
   const form = useForm<AboutTestimonialsFormData>({
-    resolver: zodResolver(aboutTestimonialsSchema) as any,
+    resolver: zodResolver(aboutTestimonialsSchema),
     defaultValues: initialData,
   });
 

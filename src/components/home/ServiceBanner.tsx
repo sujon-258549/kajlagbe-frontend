@@ -189,7 +189,7 @@ export default function ServiceBanner() {
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 min-w-[300px] shrink-0">
+                    <div className="flex flex-col gap-1">
                       <Heading5 className="text-lg md:text-xl font-bold text-secondary leading-tight line-clamp-2">
                         {service.title}
                       </Heading5>

@@ -34,7 +34,7 @@ const ContactMarqueeModal: React.FC<ContactMarqueeModalProps> = ({
   onUpdate,
 }) => {
   const form = useForm<ContactMarqueeFormData>({
-    resolver: zodResolver(contactMarqueeSchema) as any,
+    resolver: zodResolver(contactMarqueeSchema),
     defaultValues: initialData,
   });
 

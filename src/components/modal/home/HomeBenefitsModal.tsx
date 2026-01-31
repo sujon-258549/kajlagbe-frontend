@@ -54,7 +54,12 @@ const HomeBenefitsModal: React.FC<HomeBenefitsModalProps> = ({
   };
 
   const renderBenefitFields = (
-    array: any,
+    array: ReturnType<
+      typeof useFieldArray<
+        HomeBenefitsFormData,
+        "leftBenefits" | "rightBenefits"
+      >
+    >,
     name: "leftBenefits" | "rightBenefits",
   ) => (
     <div className="space-y-4">
@@ -73,7 +78,7 @@ const HomeBenefitsModal: React.FC<HomeBenefitsModalProps> = ({
           <Plus className="w-4 h-4 mr-1" /> Add
         </Button>
       </div>
-      {array.fields.map((field: any, index: number) => (
+      {array.fields.map((field, index) => (
         <div
           key={field.id}
           className="p-3 border rounded-lg bg-slate-50 space-y-2 relative"
