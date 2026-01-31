@@ -1,47 +1,62 @@
-"use client";
-
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { Play, X } from "lucide-react";
+import { Play, X, Edit } from "lucide-react";
+import AdminOnly from "../common/auth/AdminOnly";
+import HomeVideoModal from "../modal/home/HomeVideoModal";
+import { HomeVideoFormData } from "@/schemas/home/homeVideo.schema";
 
 export default function HomeVideoSection() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [data, setData] = useState<HomeVideoFormData>({
+    videoUrl:
+      "https://assets.mixkit.co/videos/preview/mixkit-fresh-vegetables-in-a-market-12821-large.mp4",
+    posterImage: "/images/home/video_bg.png",
+    youtubeEmbedUrl:
+      "https://www.youtube.com/embed/CVHj7Wxhvdo?autoplay=1&rel=0",
+    buttonText: "Watch Video",
+  });
+
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.playbackRate = 0.8; // Optional: Slow motion for cinematic feel
+      videoRef.current.playbackRate = 0.8;
       videoRef.current.play().catch((error) => {
         console.log("Video autoplay failed:", error);
       });
     }
-  }, []);
+  }, [data.videoUrl]);
 
   return (
-    <section className="relative h-[400px] md:h-[600px] w-full overflow-hidden">
+    <section className="relative h-[400px] md:h-[600px] w-full overflow-hidden group/section">
+      <AdminOnly>
+        <button
+          onClick={() => setIsEditModalOpen(true)}
+          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
+          title="Edit Video Settings"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+      </AdminOnly>
+
       {/* Background Video/Image */}
       <div className="absolute inset-0">
         <video
+          key={data.videoUrl}
           ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
           className="w-full h-full object-cover"
-          poster="/images/home/video_bg.png"
+          poster={data.posterImage}
         >
-          <source
-            src="https://assets.mixkit.co/videos/preview/mixkit-fresh-vegetables-in-a-market-12821-large.mp4"
-            type="video/mp4"
-          />
-          <source
-            src="https://v1.covered.ly/video/6b177d70-3d7c-4740-9b63-d08316c02a7b"
-            type="video/mp4"
-          />
+          <source src={data.videoUrl} type="video/mp4" />
           {/* Fallback Image */}
           <Image
-            src="/images/home/video_bg.png"
-            alt="Cinematic Food background"
+            src={data.posterImage}
+            alt="Cinematic background"
             fill
             className="object-cover"
           />
@@ -54,7 +69,7 @@ export default function HomeVideoSection() {
       <div className="relative h-full flex items-center justify-center">
         <div className="text-center">
           <button
-            onClick={() => setIsOpen(true)}
+            onClick={() => setIsVideoModalOpen(true)}
             className="group relative flex flex-col items-center gap-4 transition-transform duration-300 hover:scale-110"
           >
             {/* Play Button Outer Ring */}
@@ -66,17 +81,17 @@ export default function HomeVideoSection() {
             </div>
 
             <span className="text-white font-bold text-sm md:text-base tracking-widest uppercase bg-black/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10">
-              Watch Video
+              {data.buttonText}
             </span>
           </button>
         </div>
       </div>
 
       {/* Video Modal Overlay */}
-      {isOpen && (
+      {isVideoModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 md:p-10">
           <button
-            onClick={() => setIsOpen(false)}
+            onClick={() => setIsVideoModalOpen(false)}
             className="absolute top-6 right-6 text-white hover:text-[#86b86b] transition-colors z-50"
           >
             <X className="w-10 h-10" />
@@ -85,7 +100,7 @@ export default function HomeVideoSection() {
           <div className="relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden shadow-2xl border border-white/10">
             <iframe
               className="w-full h-full"
-              src="https://www.youtube.com/embed/CVHj7Wxhvdo?autoplay=1&rel=0"
+              src={data.youtubeEmbedUrl}
               title="KajLagbe Video"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -94,10 +109,17 @@ export default function HomeVideoSection() {
         </div>
       )}
 
-      {/* Decorative Wave (Optional, matching common food site aesthetics) */}
+      {/* Decorative Wave */}
       <div className="absolute bottom-0 left-0 w-full h-12 bg-white flex flex-col justify-end">
         <div className="w-full h-full bg-[#fcfdfa] clip-path-wave"></div>
       </div>
+
+      <HomeVideoModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        initialData={data}
+        onUpdate={(newData: HomeVideoFormData) => setData(newData)}
+      />
 
       <style jsx>{`
         .animate-pulse-slow {
