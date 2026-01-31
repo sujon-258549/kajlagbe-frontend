@@ -52,43 +52,46 @@ export default function WhyChooseUs() {
           </button>
         </AdminOnly>
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-        <div className="relative">
-          <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
-            <CustomImage
-              src={data.mainImage}
-              alt="Highlight"
-              fill
-              wrapperClassName="w-full h-[350px] lg:h-[600px]"
-              className="object-cover hover:scale-105 transition-transform duration-700"
-            />
+          <div className="relative">
+            <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
+              <CustomImage
+                src={data.mainImage}
+                alt="Highlight"
+                fill
+                wrapperClassName="w-full h-[350px] lg:h-[600px]"
+                className="object-cover hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+            {/* Decorative Elements */}
+            <div className="absolute -bottom-6 -left-6 w-64 h-64 bg-primary/10 rounded-full blur-3xl z-0"></div>
+            <div className="absolute -top-6 -right-6 w-32 h-32 bg-secondary/10 rounded-full blur-2xl z-0"></div>
           </div>
-          {/* Decorative Elements */}
-          <div className="absolute -bottom-6 -left-6 w-64 h-64 bg-primary/10 rounded-full blur-3xl z-0"></div>
-          <div className="absolute -top-6 -right-6 w-32 h-32 bg-secondary/10 rounded-full blur-2xl z-0"></div>
-        </div>
-        <div className="space-y-6 md:space-y-8">
-          <div className="space-y-4">
-            <span className="text-primary font-bold text-sm uppercase tracking-widest">
-              {data.badge}
-            </span>
-            <Heading2 className="text-3xl lg:text-4xl font-bold text-secondary leading-tight">
-              {data.title}
-            </Heading2>
-          </div>
-          <p className="text-slate-600 leading-relaxed">{data.description}</p>
+          <div className="space-y-6 md:space-y-8">
+            <div className="space-y-4">
+              <span className="text-primary font-bold text-sm uppercase tracking-widest">
+                {data.badge}
+              </span>
+              <Heading2 className="text-3xl lg:text-4xl font-bold text-secondary leading-tight">
+                {data.title}
+              </Heading2>
+            </div>
+            <p className="text-slate-600 leading-relaxed">{data.description}</p>
 
-          <div className="space-y-4">
-            {data.points.map((point, index) => (
-              <div key={index} className="flex items-start gap-4">
-                <CheckCircle2 className="h-6 w-6 text-primary shrink-0" />
-                <div>
-                  <Heading4 className="font-bold text-secondary text-lg">
-                    {point.title}
-                  </Heading4>
-                  <p className="text-slate-600 text-sm">{point.description}</p>
+            <div className="space-y-4">
+              {data.points.map((point, index) => (
+                <div key={index} className="flex items-start gap-4">
+                  <CheckCircle2 className="h-6 w-6 text-primary shrink-0" />
+                  <div>
+                    <Heading4 className="font-bold text-secondary text-lg">
+                      {point.title}
+                    </Heading4>
+                    <p className="text-slate-600 text-sm">
+                      {point.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>

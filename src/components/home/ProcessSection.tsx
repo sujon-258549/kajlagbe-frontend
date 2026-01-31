@@ -62,7 +62,7 @@ export default function ProcessSection() {
         <AdminOnly>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="absolute top-0 right-4 md:right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
+            className="absolute top-0 right-4 md:right-6 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
             title="Edit Process"
           >
             <Edit className="w-4 h-4" />

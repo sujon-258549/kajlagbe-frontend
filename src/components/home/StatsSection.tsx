@@ -90,7 +90,7 @@ export default function StatsSection() {
         <AdminOnly>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="absolute top-0 right-4 md:right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
+            className="absolute top-0 right-4 md:right-6 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
             title="Edit Stats"
           >
             <Edit className="w-4 h-4" />
