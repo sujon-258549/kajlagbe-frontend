@@ -140,7 +140,7 @@ export default function ServiceBanner() {
           {/* Controls - Left */}
           <button
             onClick={() => swiperRef.current?.slidePrev()}
-            className="hidden md:flex w-12 h-12 rounded-full border border-secondary/20 items-center justify-center text-secondary hover:bg-primary hover:text-white hover:border-primary transition-all flex-shrink-0 z-10 bg-white/50 backdrop-blur-sm"
+            className="hidden md:flex w-12 h-12 rounded-full border border-secondary/20 items-center justify-center text-secondary hover:bg-primary hover:text-white hover:border-primary transition-all shrink-0 z-10 bg-white/50 backdrop-blur-sm"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
@@ -189,7 +189,7 @@ export default function ServiceBanner() {
                     </div>
 
                     {/* Content */}
-                    <div className="flex flex-col gap-1">
+                    <div className="flex-1 min-w-[300px] shrink-0">
                       <Heading5 className="text-lg md:text-xl font-bold text-secondary leading-tight line-clamp-2">
                         {service.title}
                       </Heading5>
