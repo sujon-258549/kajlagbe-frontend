@@ -1,49 +1,40 @@
-"use client";
-
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, User, Bookmark, Leaf } from "lucide-react";
-import Heading2 from "../common/Headings/Heading2";
+import { ArrowRight, User, Bookmark, Leaf, Edit } from "lucide-react";
 import Heading3 from "../common/Headings/Heading3";
 import { Button } from "../ui/button";
+import AdminOnly from "../common/auth/AdminOnly";
+import HomeBlogModal from "../modal/home/HomeBlogModal";
+import { HomeBlogFormData } from "@/schemas/home/blog.schema";
 
-interface BlogPost {
-  id: number;
-  title: string;
-  image: string;
-  date: { day: string; month: string };
-  author: string;
-  category: string;
-  slug: string;
-}
-
-const blogPosts: BlogPost[] = [
+const initialBlogPosts = [
   {
-    id: 1,
     title: "The Power of One: How Individual Actions Save the Planet",
     image:
       "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&q=80&w=800",
-    date: { day: "09", month: "Jan" },
+    day: "09",
+    month: "Jan",
     author: "Admin",
     category: "Plastic",
     slug: "power-of-one",
   },
   {
-    id: 2,
     title: "Sustainable Energy for All: Why Your Donation Matters",
     image:
       "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800",
-    date: { day: "20", month: "Feb" },
+    day: "20",
+    month: "Feb",
     author: "Admin",
     category: "Cupboard",
     slug: "sustainable-energy",
   },
   {
-    id: 3,
     title: "Water Conservation: Small Changes, Big Impact",
     image:
       "https://images.unsplash.com/photo-1621451537084-482c73073a0f?auto=format&fit=crop&q=80&w=800",
-    date: { day: "14", month: "Jan" },
+    day: "14",
+    month: "Jan",
     author: "Admin",
     category: "Glass",
     slug: "water-conservation",
@@ -51,25 +42,40 @@ const blogPosts: BlogPost[] = [
 ];
 
 export default function NewBlogSection() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [data, setData] = useState<HomeBlogFormData>({
+    badge: "News & Blog",
+    title: "Check Latest Blog Post",
+    buttonText: "Read All Posts",
+    posts: initialBlogPosts,
+  });
+
   return (
-    <section className="md:py-20 py-12">
+    <section className="md:py-20 py-12 relative group/section">
+      <AdminOnly>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
+          title="Edit Blog"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+      </AdminOnly>
+
       <div className="main-container">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-secondary font-bold text-sm tracking-wide uppercase">
               <Leaf className="w-4 h-4" />
-              <span>News & Blog</span>
+              <span>{data.badge}</span>
             </div>
-            <Heading3 className="text-[#002A3A]">
-              Check Latest Blog Post
-            </Heading3>
+            <Heading3 className="text-[#002A3A]">{data.title}</Heading3>
           </div>
 
           <Link href="/blog" className="">
             <Button>
-              {" "}
-              Read All Posts
+              {data.buttonText}
               <div className="bg-[#002A3A] rounded-full p-1">
                 <ArrowRight className="w-3 h-3 text-white" />
               </div>
@@ -79,12 +85,12 @@ export default function NewBlogSection() {
 
         {/* Blog Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {blogPosts.map((post) => (
+          {data.posts.map((post, index) => (
             <div
-              key={post.id}
+              key={index}
               className="group bg-[#FDFBF7]  rounded-xl p-4 hover:shadow-[0_0_10px_0_rgba(0,0,0,0.1)] transition-all duration-300 border border-gray-200 hover:border-gray-400"
             >
-              {/* Image main-container */}
+              {/* Image container */}
               <div className="relative rounded-2xl overflow-hidden aspect-4/3 mb-6">
                 <Image
                   src={post.image}
@@ -96,10 +102,10 @@ export default function NewBlogSection() {
                 {/* Date Badge */}
                 <div className="absolute bottom-4 right-4 bg-[#004D40] text-white rounded-xl p-2 text-center min-w-[60px] shadow-lg">
                   <span className="block text-2xl font-bold leading-none">
-                    {post.date.day}
+                    {post.day}
                   </span>
                   <span className="block text-xs font-medium opacity-80">
-                    {post.date.month}
+                    {post.month}
                   </span>
                 </div>
               </div>
@@ -142,6 +148,13 @@ export default function NewBlogSection() {
           ))}
         </div>
       </div>
+
+      <HomeBlogModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialData={data}
+        onUpdate={(newData: HomeBlogFormData) => setData(newData)}
+      />
     </section>
   );
 }

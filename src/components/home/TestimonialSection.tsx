@@ -1,6 +1,5 @@
-"use client";
-
-import { Star, Quote } from "lucide-react";
+import { useState } from "react";
+import { Star, Quote, Edit } from "lucide-react";
 import Image from "next/image";
 import CustomImage from "../common/CustomImage";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -10,10 +9,12 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import Heading3 from "../common/Headings/Heading3";
+import AdminOnly from "../common/auth/AdminOnly";
+import HomeTestimonialModal from "../modal/home/HomeTestimonialModal";
+import { HomeTestimonialFormData } from "@/schemas/home/testimonial.schema";
 
-const testimonials = [
+const initialTestimonials = [
   {
-    id: 1,
     name: "Pete Goldner",
     role: "Client",
     content:
@@ -23,7 +24,6 @@ const testimonials = [
     rating: 4.7,
   },
   {
-    id: 2,
     name: "Rebecca Hawland",
     role: "Client",
     content:
@@ -33,7 +33,6 @@ const testimonials = [
     rating: 5,
   },
   {
-    id: 3,
     name: "John Doe",
     role: "Home Owner",
     content:
@@ -45,11 +44,31 @@ const testimonials = [
 ];
 
 export default function TestimonialSection() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [data, setData] = useState<HomeTestimonialFormData>({
+    badge: "Testimonials",
+    title: "What Our Clients Think",
+    googleRating: "4.7",
+    mainImage:
+      "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg",
+    testimonials: initialTestimonials,
+  });
+
   return (
-    <section className="py-10 md:py-16 bg-white overflow-hidden">
+    <section className="py-10 md:py-16 bg-white overflow-hidden group/section relative">
+      <AdminOnly>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
+          title="Edit Testimonials"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+      </AdminOnly>
+
       <div className="main-container">
         <div className="bg-secondary rounded-2xl md:rounded-2xl overflow-hidden flex flex-col lg:flex-row relative min-h-[500px] lg:h-[700px] shadow-2xl">
-          {/* Glossy Spheres (Reference Image Matched) */}
+          {/* Glossy Spheres */}
           <div className="absolute top-[8%] left-[40%] w-24 h-24 rounded-full z-0 opacity-40 bg-radial-[at_30%_30%,rgba(255,255,255,0.4)_0%,rgba(255,255,255,0)_70%] border border-white/10 backdrop-blur-sm animate-pulse"></div>
           <div className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full z-0 opacity-30 bg-radial-[at_30%_30%,rgba(255,255,255,0.3)_0%,rgba(255,255,255,0)_70%] border border-white/5 backdrop-blur-md"></div>
           <div className="absolute top-[10%] left-[5%] w-12 h-12 bg-white/5 rounded-full blur-[2px]"></div>
@@ -58,9 +77,9 @@ export default function TestimonialSection() {
           <div className="w-full lg:w-1/2 p-10 md:p-16 lg:p-20 flex flex-col justify-center space-y-10 z-10 relative">
             <div className="space-y-4">
               <span className="text-white/90 font-medium italic text-xl md:text-2xl block font-serif tracking-tight">
-                Testimonials
+                {data.badge}
               </span>
-              <Heading3 className="text-white">What Our Clients Think</Heading3>
+              <Heading3 className="text-white">{data.title}</Heading3>
 
               {/* Google Rating Badge */}
               <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full w-fit">
@@ -88,11 +107,13 @@ export default function TestimonialSection() {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-3 h-3 ${i < 5 ? "fill-[#FBBC05] text-[#FBBC05]" : "text-white/30"}`}
+                      className={`w-3 h-3 ${i < Math.floor(parseFloat(data.googleRating)) ? "fill-[#FBBC05] text-[#FBBC05]" : "text-white/30"}`}
                     />
                   ))}
                 </div>
-                <span className="text-white font-bold text-xs">4.7</span>
+                <span className="text-white font-bold text-xs">
+                  {data.googleRating}
+                </span>
               </div>
             </div>
 
@@ -102,7 +123,7 @@ export default function TestimonialSection() {
                 modules={[Autoplay, Pagination]}
                 spaceBetween={20}
                 slidesPerView={1.2}
-                loop={true}
+                loop={data.testimonials.length > 1}
                 autoplay={{
                   delay: 4000,
                   disableOnInteraction: false,
@@ -119,8 +140,8 @@ export default function TestimonialSection() {
                 }}
                 className="testimonial-swiper overflow-visible!"
               >
-                {testimonials.map((testimonial) => (
-                  <SwiperSlide key={testimonial.id}>
+                {data.testimonials.map((testimonial, idx) => (
+                  <SwiperSlide key={idx}>
                     <div className="bg-[#F8FBF8] rounded-[2rem] p-8 md:p-10 space-y-6 shadow-xl h-full border border-white/50">
                       <Quote className="w-8 h-8 text-[#FF9800] fill-[#FF9800]" />
 
@@ -158,7 +179,7 @@ export default function TestimonialSection() {
             <div className="absolute inset-5 rounded-[3rem] overflow-hidden group">
               <div className="absolute inset-0 bg-secondary/5 z-10 transition-colors duration-500 group-hover:bg-transparent"></div>
               <Image
-                src="https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg"
+                src={data.mainImage}
                 alt="Happy customer using service"
                 fill
                 priority
@@ -168,6 +189,13 @@ export default function TestimonialSection() {
           </div>
         </div>
       </div>
+
+      <HomeTestimonialModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialData={data}
+        onUpdate={(newData: HomeTestimonialFormData) => setData(newData)}
+      />
 
       <style jsx global>{`
         .testimonial-swiper {

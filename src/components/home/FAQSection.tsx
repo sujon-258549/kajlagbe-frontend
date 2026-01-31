@@ -1,12 +1,20 @@
-"use client";
-
 import { useState } from "react";
-import { Plus, Minus, HelpCircle, MessageSquare, Phone } from "lucide-react";
+import {
+  Plus,
+  Minus,
+  HelpCircle,
+  MessageSquare,
+  Phone,
+  Edit,
+} from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import Heading5 from "../common/Headings/Heading5";
 import Heading4 from "../common/Headings/Heading4";
+import AdminOnly from "../common/auth/AdminOnly";
+import HomeFaqModal from "../modal/home/HomeFaqModal";
+import { HomeFaqFormData } from "@/schemas/home/faq.schema";
 
-const faqs = [
+const initialFaqs = [
   {
     question: "What makes KajLagbe unique compared to other services?",
     answer:
@@ -36,9 +44,31 @@ const faqs = [
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [data, setData] = useState<HomeFaqFormData>({
+    badge: "Support Center",
+    title: "Frequently Asked Questions",
+    description:
+      "Find answers to the most common questions about our platform, services, and policies.",
+    ctaTitle: "Still have questions?",
+    ctaDescription:
+      "Can't find the answer you're looking for? Our dedicated team is available 24/7 to help.",
+    ctaButtonText: "Contact Now",
+    faqs: initialFaqs,
+  });
 
   return (
-    <section className=" md:py-24 py-10 bg-slate-50/50 relative overflow-hidden">
+    <section className=" md:py-24 py-10 bg-slate-50/50 relative overflow-hidden group/section">
+      <AdminOnly>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="absolute top-4 right-8 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-lg"
+          title="Edit FAQs"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+      </AdminOnly>
+
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[500px] h-[500px] bg-primary/5 rounded-2xl blur-3xl opacity-60" />
       <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-secondary/5 rounded-2xl blur-3xl opacity-60" />
@@ -60,17 +90,16 @@ export default function FAQSection() {
                 className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-sm border border-slate-200 text-primary font-bold tracking-wider uppercase text-xs"
               >
                 <span className="w-2 h-2 rounded-lg bg-primary animate-pulse" />
-                Support Center
+                {data.badge}
               </motion.span>
               <Heading4 className="text-4xl md:text-5xl lg:text-5xl font-bold text-slate-900 leading-tight tracking-tight">
-                Frequently Asked <br />
+                {data.title.split("Questions")[0]}
                 <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-orange-600">
                   Questions
                 </span>
               </Heading4>
               <p className="text-lg text-slate-600 leading-relaxed font-medium">
-                Find answers to the most common questions about our platform,
-                services, and policies.
+                {data.description}
               </p>
             </div>
 
@@ -82,21 +111,20 @@ export default function FAQSection() {
                 <MessageSquare className="w-6 h-6 text-secondary group-hover:scale-110 transition-transform" />
               </div>
               <Heading5 className="font-bold text-slate-900 text-xl mb-3">
-                Still have questions?
+                {data.ctaTitle}
               </Heading5>
               <p className="text-slate-500 text-sm mb-5 leading-relaxed">
-                Can&apos;t find the answer you&apos;re looking for? Our
-                dedicated team is available 24/7 to help.
+                {data.ctaDescription}
               </p>
               <button className="flex items-center gap-3 px-6 py-3 bg-secondary text-white font-bold rounded-xl hover:bg-secondary/90 transition-all shadow-lg shadow-secondary/25 cursor-pointer">
-                Contact Now <Phone className="w-4 h-4" />
+                {data.ctaButtonText} <Phone className="w-4 h-4" />
               </button>
             </motion.div>
           </motion.div>
 
           {/* Accordion Side */}
           <div className="lg:w-3/5 space-y-3">
-            {faqs.map((faq, index) => (
+            {data.faqs.map((faq, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -172,6 +200,13 @@ export default function FAQSection() {
           </div>
         </div>
       </div>
+
+      <HomeFaqModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialData={data}
+        onUpdate={(newData: HomeFaqFormData) => setData(newData)}
+      />
     </section>
   );
 }
