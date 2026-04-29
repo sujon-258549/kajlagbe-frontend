@@ -158,15 +158,15 @@ export default function Footer() {
             <p className="text-[15px]">
               Subscribe to our newsletter for the latest updates and offers.
             </p>
-            <div className="relative">
+            <div className="relative rounded-lg">
               <Input
                 type="email"
                 placeholder="Enter your email"
-                className="bg-secondary/40 border-primary/20 text-primary-foreground placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-primary h-12 pr-12 rounded-none"
+                className="bg-secondary/40 border-primary/20 text-primary-foreground placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-primary h-12 pr-12 rounded-lg"
               />
               <Button
                 size="icon"
-                className="absolute right-0 top-0 h-12 w-12 bg-primary hover:bg-primary/90 text-primary-foreground rounded-none"
+                className="absolute right-0 top-0 h-12 w-12 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg"
               >
                 <Send className="h-5 w-5" />
               </Button>

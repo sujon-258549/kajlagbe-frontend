@@ -45,7 +45,7 @@ export default function AboutSection() {
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           {/* Image Side */}
           <div className="lg:w-1/2 relative">
-            <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative z-10 rounded-xl overflow-hidden ">
               <CustomImage
                 src={data.image}
                 alt="About Us"

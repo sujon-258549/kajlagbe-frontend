@@ -12,6 +12,7 @@ import {
   LogOut,
   Search,
   PenTool,
+  FileImage,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Heading6 from "../common/Headings/Heading6";
@@ -25,6 +26,7 @@ const menuItems = [
   { name: "Add Blog", href: "/dashboard/add-blog", icon: PenTool },
   { name: "My Posted Works", href: "/dashboard/my-works", icon: Briefcase },
   { name: "My Bids", href: "/dashboard/my-bids", icon: Gavel },
+  { name: "Media Library", href: "/dashboard/media", icon: FileImage },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 

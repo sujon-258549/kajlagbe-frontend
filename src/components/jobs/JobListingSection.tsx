@@ -11,18 +11,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
 import { jobs } from "@/data/jobsData";
+import { useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import Pagination from "@/components/common/Pagination";
 import JobCard from "./JobCard";
 import JobFilters, { FilterState } from "./JobFilters";
-
-const ITEMS_PER_PAGE = 10;
 
 // Helper to check if date is within range
 const isPostedWithin = (posted: string, range: string) => {
@@ -48,6 +42,7 @@ const isPostedWithin = (posted: string, range: string) => {
 
 export default function JobListingSection() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [filters, setFilters] = useState<FilterState>({
     search: "",
     location: "all",
@@ -73,6 +68,28 @@ export default function JobListingSection() {
     lunchFacility: "all",
     skills: "",
   });
+
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
+
+  // Close filter when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        filterRef.current &&
+        !filterRef.current.contains(event.target as Node)
+      ) {
+        setIsFilterOpen(false);
+      }
+    }
+
+    if (isFilterOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isFilterOpen]);
 
   // Extract unique values for dropdowns
   const uniqueLocations = useMemo(
@@ -199,17 +216,20 @@ export default function JobListingSection() {
     setCurrentPage(1);
   };
 
-  const totalPages = Math.ceil(filteredJobs.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
   const displayedJobs = filteredJobs.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE,
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
   );
 
   return (
     <section className="bg-slate-50 min-h-screen py-4">
       <div className="main-container">
         {/* Header & Controls Container */}
-        <div className="bg-white p-4 rounded-lg border border-gray-200 mb-4">
+        <div
+          className="bg-white p-4 rounded-lg border border-gray-300 mb-4"
+          ref={filterRef}
+        >
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             {/* 1. Search Bar */}
             <div className="relative w-full md:flex-1">
@@ -246,44 +266,51 @@ export default function JobListingSection() {
                 </Select>
               </div>
 
-              {/* 3. Filter Icon Button (Triggers Dropdown) */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="h-11 px-4 bg-slate-50 hover:bg-slate-100 text-slate-700 min-w-[100px] rounded-lg border-t border-b-0 border-x-0 border-gray-200"
-                  >
-                    <Filter className="w-4 h-4 mr-2" />
-                    Filters
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="w-[92vw] max-w-[1067px] p-0 shadow-none border-b border-t-0 border-x-0 border-gray-200 -mr-4 mt-3"
-                >
-                  <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-                    <h4 className="font-semibold text-lg">Filter Jobs</h4>
-                  </div>
-                  <div className="max-h-[80vh] overflow-y-auto">
-                    <JobFilters
-                      filters={filters}
-                      setFilters={handleFilterChange}
-                      uniqueLocations={uniqueLocations}
-                      uniqueCategories={uniqueCategories}
-                      uniqueIndustries={uniqueIndustries}
-                      uniqueCompanies={uniqueCompanies}
-                      className="border-none shadow-none p-6"
-                    />
-                  </div>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {/* 3. Filter Icon Button (Triggers Accordion) */}
+              <Button
+                variant="outline"
+                className={`h-11 px-4 text-slate-700 min-w-[100px] rounded-lg border-gray-300 cursor-pointer transition-colors ${
+                  isFilterOpen
+                    ? "bg-secondary text-white border-secondary hover:bg-secondary/90"
+                    : "bg-slate-50 hover:bg-slate-100"
+                }`}
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+              >
+                <Filter className="w-4 h-4 mr-2" />
+                Filters
+              </Button>
             </div>
           </div>
+
+          {/* Accordion content */}
+          <AnimatePresence>
+            {isFilterOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <div className="pt-6 mt-6 border-t border-gray-100">
+                  <JobFilters
+                    filters={filters}
+                    setFilters={handleFilterChange}
+                    uniqueLocations={uniqueLocations}
+                    uniqueCategories={uniqueCategories}
+                    uniqueIndustries={uniqueIndustries}
+                    uniqueCompanies={uniqueCompanies}
+                    className="border-transparent border-0 shadow-none p-0"
+                  />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Job List */}
         <div className="w-full">
-          <div className="space-y-0 border border-gray-200 rounded-lg overflow-hidden shadow-none bg-white">
+          <div className="space-y-0">
             {displayedJobs.length > 0 ? (
               displayedJobs.map((job, idx) => (
                 <JobCard
@@ -340,12 +367,17 @@ export default function JobListingSection() {
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
+          {(totalPages > 1 || filteredJobs.length > 5) && (
             <div className="mt-4 md:mt-6 mb-10 md:mb-20 flex justify-center">
               <Pagination
                 totalPages={totalPages}
                 currentPage={currentPage}
                 onPageChange={setCurrentPage}
+                limit={itemsPerPage}
+                onLimitChange={(newLimit) => {
+                  setItemsPerPage(newLimit);
+                  setCurrentPage(1); // Reset to first page when limit changes
+                }}
               />
             </div>
           )}

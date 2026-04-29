@@ -347,3 +347,16 @@
   color: #154d2e;
   font-weight: 700;
 }
+
+
+/* //================shadow use this  */
+
+.box_shadow {
+  box-shadow:1px 1px 18px rgb(0, 0, 0, 0.08);
+  border: 1px solid gray;
+}
+
+.box_shadow:hover {
+  box-shadow: 0 8px 30px rgb(0, 0, 0, 0.15);
+  border: 1px solid #154d2e;
+}
