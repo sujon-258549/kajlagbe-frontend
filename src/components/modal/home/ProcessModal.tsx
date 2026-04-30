@@ -26,6 +26,7 @@ interface ProcessModalProps {
   onClose: () => void;
   initialData: ProcessFormData;
   onUpdate: (data: ProcessFormData) => void;
+  isLoading?: boolean;
 }
 
 const ProcessModal: React.FC<ProcessModalProps> = ({
@@ -33,6 +34,7 @@ const ProcessModal: React.FC<ProcessModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<ProcessFormData>({
     resolver: zodResolver(processSectionSchema),
@@ -225,8 +227,12 @@ const ProcessModal: React.FC<ProcessModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white px-8">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

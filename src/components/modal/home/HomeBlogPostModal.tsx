@@ -27,6 +27,7 @@ interface HomeBlogPostModalProps {
   onUpdate: (data: HomeBlogItemFormData) => void;
   onDelete?: () => void;
   isNew?: boolean;
+  isLoading?: boolean;
 }
 
 const HomeBlogPostModal: React.FC<HomeBlogPostModalProps> = ({
@@ -36,6 +37,7 @@ const HomeBlogPostModal: React.FC<HomeBlogPostModalProps> = ({
   onUpdate,
   onDelete,
   isNew = false,
+  isLoading = false,
 }) => {
   const form = useForm<HomeBlogItemFormData>({
     resolver: zodResolver(homeBlogItemSchema),
@@ -204,8 +206,12 @@ const HomeBlogPostModal: React.FC<HomeBlogPostModalProps> = ({
               <Button variant="outline" onClick={onClose} type="button">
                 Cancel
               </Button>
-              <Button type="submit" className="bg-secondary text-white px-8">
-                {isNew ? "Add Post" : "Save Changes"}
+              <Button 
+                type="submit" 
+                className="bg-secondary text-white px-8"
+                disabled={isLoading}
+              >
+                {isLoading ? (isNew ? "Adding..." : "Saving...") : (isNew ? "Add Post" : "Save Changes")}
               </Button>
             </div>
           </div>

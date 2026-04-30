@@ -8,6 +8,8 @@ import Heading4 from "../common/Headings/Heading4";
 import AdminOnly from "../common/auth/AdminOnly";
 import HomeWhyModal from "../modal/home/HomeWhyModal";
 import { HomeWhyFormData } from "@/schemas/home/why.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { useEffect } from "react";
 
 const initialPoints = [
   {
@@ -29,6 +31,8 @@ const initialPoints = [
 
 export default function WhyChooseUs() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<HomeWhyFormData>({
     badge: "Why Choose Us",
     title: "We Are Here to Grow Your Business Exponentially",
@@ -38,6 +42,37 @@ export default function WhyChooseUs() {
       "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80",
     points: initialPoints,
   });
+  
+  useEffect(() => {
+    const fetchWhyData = async () => {
+      const res = await getSettingsMap();
+      if (res.success && res.data.home_why_choose_us) {
+        setData(res.data.home_why_choose_us);
+      }
+      setIsLoading(false);
+    };
+    fetchWhyData();
+  }, []);
+
+  const handleUpdate = async (newData: HomeWhyFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "home_why_choose_us",
+        value: newData,
+        group: "home",
+        description: "Homepage Why Choose Us Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className=" md:py-20 pt-16 pb-10 relative group/section">
@@ -100,7 +135,8 @@ export default function WhyChooseUs() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={data}
-        onUpdate={(newData: HomeWhyFormData) => setData(newData)}
+        onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
     </section>
   );

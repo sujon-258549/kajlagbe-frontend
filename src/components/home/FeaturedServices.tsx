@@ -9,6 +9,8 @@ import AdminOnly from "../common/auth/AdminOnly";
 import { Edit } from "lucide-react";
 import FeaturedServicesModal from "../modal/home/FeaturedServicesModal";
 import { FeaturedServicesFormData } from "@/schemas/home/featuredServices.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { useEffect } from "react";
 
 const initialFeatured = [
   {
@@ -51,6 +53,8 @@ const initialFeatured = [
 
 export default function FeaturedServices() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<FeaturedServicesFormData>({
     tagline: "Features",
     mainTitle: "Premier One-Stop Custom Print Solutions",
@@ -59,6 +63,37 @@ export default function FeaturedServices() {
     buttonText: "View All Services",
     showcase: initialFeatured,
   });
+  
+  useEffect(() => {
+    const fetchFeaturedData = async () => {
+      const res = await getSettingsMap();
+      if (res.success && res.data.home_featured_services) {
+        setData(res.data.home_featured_services);
+      }
+      setIsLoading(false);
+    };
+    fetchFeaturedData();
+  }, []);
+
+  const handleUpdate = async (newData: FeaturedServicesFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "home_featured_services",
+        value: newData,
+        group: "home",
+        description: "Homepage Featured Services Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-white group/section relative">
@@ -169,7 +204,8 @@ export default function FeaturedServices() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={data}
-        onUpdate={(newData: FeaturedServicesFormData) => setData(newData)}
+        onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
     </section>
   );

@@ -27,6 +27,7 @@ interface AboutSectionModalProps {
   onClose: () => void;
   initialData: AboutSectionFormData;
   onUpdate: (data: AboutSectionFormData) => void;
+  isLoading?: boolean;
 }
 
 const AboutSectionModal: React.FC<AboutSectionModalProps> = ({
@@ -34,6 +35,7 @@ const AboutSectionModal: React.FC<AboutSectionModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<AboutSectionFormData>({
     resolver: zodResolver(aboutSectionSchema),
@@ -179,9 +181,10 @@ const AboutSectionModal: React.FC<AboutSectionModalProps> = ({
                   type="button"
                   variant="outline"
                   onClick={addPoint}
-                  className="border-dashed"
+                  className="border-dashed flex items-center justify-center gap-2 py-5 hover:bg-secondary/5 transition-all group"
                 >
-                  <Plus className="w-4 h-4 mr-2" /> Add Point
+                  <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+                  <span className="font-bold text-xs uppercase tracking-wider">Add Point</span>
                 </Button>
               </div>
             </div>
@@ -205,8 +208,12 @@ const AboutSectionModal: React.FC<AboutSectionModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white px-8">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

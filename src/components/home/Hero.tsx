@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import CustomImage from "../common/CustomImage";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay, EffectFade } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -12,11 +12,12 @@ import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/effect-fade";
-import Heading1 from "../common/Headings/Heading1";
-import AdminOnly from "../common/auth/AdminOnly";
 import HeroModal from "../modal/home/HeroModal";
 import { HeroFormData } from "@/schemas/home/hero.schema";
 import { Edit } from "lucide-react";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import Heading1 from "../common/Headings/Heading1";
+import AdminOnly from "../common/auth/AdminOnly";
 
 const initialSlides = [
   {
@@ -41,9 +42,42 @@ export default function Hero() {
   const swiperRef = useRef<SwiperType>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<HeroFormData>({
     slides: initialSlides,
   });
+
+  useEffect(() => {
+    const fetchHeroData = async () => {
+      const res = await getSettingsMap();
+      if (res.success && res.data.home_hero) {
+        setData(res.data.home_hero);
+      }
+      setIsLoading(false);
+    };
+    fetchHeroData();
+  }, []);
+
+  const handleUpdate = async (newData: HeroFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "home_hero",
+        value: newData,
+        group: "home",
+        description: "Homepage Hero Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className="relative w-full h-[450px] md:h-[500px] lg:h-[600px] overflow-hidden bg-secondary group/section">
@@ -148,7 +182,8 @@ export default function Hero() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={data}
-        onUpdate={(newData) => setData(newData)}
+        onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
     </section>
   );

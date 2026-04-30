@@ -8,6 +8,8 @@ import CustomImage from "../common/CustomImage";
 import AdminOnly from "../common/auth/AdminOnly";
 import StatsModal from "../modal/home/StatsModal";
 import { StatsFormData } from "@/schemas/home/stats.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { useEffect } from "react";
 
 const initialStats = [
   {
@@ -38,11 +40,44 @@ const initialStats = [
 
 export default function StatsSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<StatsFormData>({
     stats: initialStats,
-    backgroundImage:
+      backgroundImage:
       "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80",
   });
+  
+  useEffect(() => {
+    const fetchStatsData = async () => {
+      const res = await getSettingsMap();
+      if (res.success && res.data.home_stats) {
+        setData(res.data.home_stats);
+      }
+      setIsLoading(false);
+    };
+    fetchStatsData();
+  }, []);
+
+  const handleUpdate = async (newData: StatsFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "home_stats",
+        value: newData,
+        group: "home",
+        description: "Homepage Stats Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className="py-10 md:py-16 lg:py-24 relative overflow-hidden bg-secondary text-white group/section">
@@ -137,7 +172,8 @@ export default function StatsSection() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={data}
-        onUpdate={(newData: StatsFormData) => setData(newData)}
+        onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
     </section>
   );

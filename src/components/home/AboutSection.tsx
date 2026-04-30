@@ -8,9 +8,13 @@ import Heading3 from "../common/Headings/Heading3";
 import AdminOnly from "../common/auth/AdminOnly";
 import AboutSectionModal from "../modal/home/AboutSectionModal";
 import { AboutSectionFormData } from "@/schemas/home/aboutSection.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { useEffect } from "react";
 
 export default function AboutSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<AboutSectionFormData>({
     badge: "// Empowering Users & Professionals",
     title: "A Unified Marketplace for Excellence",
@@ -29,6 +33,37 @@ export default function AboutSection() {
     rating: "4.8/5",
     buttonText: "How It Works",
   });
+  
+  useEffect(() => {
+    const fetchAboutData = async () => {
+      const res = await getSettingsMap();
+      if (res.success && res.data.home_about) {
+        setData(res.data.home_about);
+      }
+      setIsLoading(false);
+    };
+    fetchAboutData();
+  }, []);
+
+  const handleUpdate = async (newData: AboutSectionFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "home_about",
+        value: newData,
+        group: "home",
+        description: "Homepage About Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden group/section relative">
@@ -113,7 +148,8 @@ export default function AboutSection() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={data}
-        onUpdate={(newData: AboutSectionFormData) => setData(newData)}
+        onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
     </section>
   );

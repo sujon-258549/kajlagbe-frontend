@@ -27,6 +27,7 @@ interface HomeWhyModalProps {
   onClose: () => void;
   initialData: HomeWhyFormData;
   onUpdate: (data: HomeWhyFormData) => void;
+  isLoading?: boolean;
 }
 
 const HomeWhyModal: React.FC<HomeWhyModalProps> = ({
@@ -34,6 +35,7 @@ const HomeWhyModal: React.FC<HomeWhyModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<HomeWhyFormData>({
     resolver: zodResolver(homeWhySectionSchema),
@@ -178,7 +180,7 @@ const HomeWhyModal: React.FC<HomeWhyModalProps> = ({
             <Button
               type="button"
               variant="outline"
-              className="w-full border-dashed border-2 py-6 rounded-xl flex gap-2"
+              className="w-full border-dashed border-2 py-6 rounded-xl flex items-center justify-center gap-3 hover:bg-secondary/5 transition-all group"
               onClick={() =>
                 append({
                   title: "",
@@ -186,8 +188,8 @@ const HomeWhyModal: React.FC<HomeWhyModalProps> = ({
                 })
               }
             >
-              <Plus className="w-5 h-5" />
-              <span>Add Point</span>
+              <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+              <span className="font-bold">Add Point</span>
             </Button>
           </div>
 
@@ -195,8 +197,12 @@ const HomeWhyModal: React.FC<HomeWhyModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white px-8">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

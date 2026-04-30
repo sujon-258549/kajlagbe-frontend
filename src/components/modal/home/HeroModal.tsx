@@ -24,6 +24,7 @@ interface HeroModalProps {
   onClose: () => void;
   initialData: HeroFormData;
   onUpdate: (data: HeroFormData) => void;
+  isLoading?: boolean;
 }
 
 const HeroModal: React.FC<HeroModalProps> = ({
@@ -31,6 +32,7 @@ const HeroModal: React.FC<HeroModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<HeroFormData>({
     resolver: zodResolver(heroSchema),
@@ -155,7 +157,7 @@ const HeroModal: React.FC<HeroModalProps> = ({
             <Button
               type="button"
               variant="outline"
-              className="w-full border-dashed border-2 py-8 rounded-xl flex flex-col gap-2 hover:bg-secondary/5 transition-colors"
+              className="w-full border-dashed border py-4 flex items-center justify-center gap-3 hover:bg-secondary/5 transition-all group"
               onClick={() =>
                 append({
                   title: "",
@@ -166,8 +168,8 @@ const HeroModal: React.FC<HeroModalProps> = ({
                 })
               }
             >
-              <Plus className="w-6 h-6" />
-              <span>Add New Slide</span>
+              <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+              <span className="font-bold">Add New Slide</span>
             </Button>
           </div>
 
@@ -175,8 +177,12 @@ const HeroModal: React.FC<HeroModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white px-8">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

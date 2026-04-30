@@ -2,9 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { 
-  Images, 
-  Plus, 
-  Trash2, 
   Upload, 
   RotateCw, 
   ArrowUp, 
@@ -13,7 +10,6 @@ import {
   FolderPlus,
   Loader2,
   X,
-  Search,
   CheckCircle2
 } from "lucide-react";
 import CommonModal from "../common/CommonModal";
@@ -56,20 +52,35 @@ export default function MediaLibraryPickerModal({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [foldersLoading, setFoldersLoading] = useState(false);
   
   const [folders, setFolders] = useState<TFolder[]>([]);
   const [libraryImages, setLibraryImages] = useState<TMediaImage[]>([]);
   const [pendingUploaded, setPendingUploaded] = useState<TMediaImage[]>([]);
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
 
+  console.log("pendingUploaded", folders)
+
   const fetchFolders = useCallback(async () => {
+    setFoldersLoading(true);
     try {
       const res = await getAllFolders();
+      console.log(" getAllFolders", res)
       if (res.success) {
-        setFolders(res.data || []);
+        const data = res.data as any;
+        if (Array.isArray(data)) {
+          setFolders(data);
+        } else if (data && typeof data === "object" && Array.isArray(data.folders)) {
+          setFolders(data.folders);
+        } else {
+          setFolders([]);
+        }
       }
     } catch (err) {
       console.error("Failed to fetch folders", err);
+      setFolders([]);
+    } finally {
+      setFoldersLoading(false);
     }
   }, []);
 
@@ -78,10 +89,18 @@ export default function MediaLibraryPickerModal({
     try {
       const res = await getImages(folderId);
       if (res.success) {
-        setLibraryImages(res.data || []);
+        const data = res.data as any;
+        if (Array.isArray(data)) {
+          setLibraryImages(data);
+        } else if (data && typeof data === "object" && Array.isArray(data.images)) {
+          setLibraryImages(data.images);
+        } else {
+          setLibraryImages([]);
+        }
       }
     } catch (err) {
       console.error("Failed to fetch images", err);
+      setLibraryImages([]);
     } finally {
       setLoading(false);
     }
@@ -96,7 +115,9 @@ export default function MediaLibraryPickerModal({
 
   const folderById = useMemo(() => {
     const map = new Map<string, TFolder>();
-    folders.forEach((f) => map.set(f.id, f));
+    if (Array.isArray(folders)) {
+      folders.forEach((f) => map.set(f.id, f));
+    }
     return map;
   }, [folders]);
 
@@ -112,10 +133,12 @@ export default function MediaLibraryPickerModal({
   }, [currentFolderId, folderById]);
 
   const currentFolders = useMemo(
-    () =>
-      folders.filter(
+    () => {
+      if (!Array.isArray(folders)) return [];
+      return folders.filter(
         (f) => parentKey(f.parentId) === parentKey(currentFolderId),
-      ),
+      );
+    },
     [folders, currentFolderId],
   );
 
@@ -129,8 +152,9 @@ export default function MediaLibraryPickerModal({
 
   const displayLibraryImages = useMemo(() => {
     const cid = parentKey(currentFolderId);
+    if (!Array.isArray(libraryImages)) return [];
     const ids = new Set(libraryImages.map((i) => i.id));
-    const extra = pendingUploaded.filter(
+    const extra = (pendingUploaded || []).filter(
       (p) => parentKey(p.folderId) === cid && !ids.has(p.id),
     );
     return [...libraryImages, ...extra];
@@ -227,10 +251,10 @@ export default function MediaLibraryPickerModal({
     try {
       const res = await createFolder({
         name: data.name,
-        parentId: currentFolderId,
+        parentId: currentFolderId || null,
       });
       if (res.success) {
-        fetchFolders();
+        await fetchFolders();
       }
     } catch (err) {
       console.error("Failed to create folder", err);
@@ -257,9 +281,9 @@ export default function MediaLibraryPickerModal({
         isOpen={isOpen}
         onClose={onClose}
         title={title}
-        description="Folders, images, upload from PC — check images then confirm."
         maxWidth="5xl"
-        className="p-0!"
+        className="!p-0"
+        zIndex={2000}
       >
         <input
           ref={fileInputRef}
@@ -353,18 +377,17 @@ export default function MediaLibraryPickerModal({
 
           {/* Content */}
           <div className="flex-1 overflow-y-auto p-6 bg-white relative">
-            {loading && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {[...Array(10)].map((_, i) => (
+            {(loading || foldersLoading) && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
+                {[...Array(5)].map((_, i) => (
                   <Skeleton key={i} className="aspect-square rounded-xl" />
                 ))}
               </div>
             )}
 
-            {!loading && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {/* Folders */}
-                {currentFolders.map((folder) => {
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {/* Folders - Show when not loading folders */}
+              {!foldersLoading && currentFolders.map((folder) => {
                   const inactive = folder.status === false;
                   return (
                     <div
@@ -395,8 +418,8 @@ export default function MediaLibraryPickerModal({
                   );
                 })}
 
-                {/* Images */}
-                {displayLibraryImages.map((img) => {
+                {/* Images - Show when not loading images */}
+                {!loading && displayLibraryImages.map((img) => {
                   const checked = selectedIds.has(img.id);
                   return (
                     <div
@@ -440,9 +463,8 @@ export default function MediaLibraryPickerModal({
                   );
                 })}
               </div>
-            )}
 
-            {!loading && currentFolders.length === 0 && displayLibraryImages.length === 0 && (
+            {!loading && !foldersLoading && currentFolders.length === 0 && displayLibraryImages.length === 0 && (
               <div className="flex flex-col items-center justify-center py-24 text-center">
                 <div className="w-20 h-20 rounded-full bg-gray-50 flex items-center justify-center mb-6 ring-8 ring-gray-50/50">
                   <ImageIcon className="w-10 h-10 text-gray-300" />

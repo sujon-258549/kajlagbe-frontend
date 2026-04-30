@@ -23,6 +23,7 @@ interface StatsModalProps {
   onClose: () => void;
   initialData: StatsFormData;
   onUpdate: (data: StatsFormData) => void;
+  isLoading?: boolean;
 }
 
 const StatsModal: React.FC<StatsModalProps> = ({
@@ -30,6 +31,7 @@ const StatsModal: React.FC<StatsModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<StatsFormData>({
     resolver: zodResolver(statsSchema),
@@ -178,8 +180,12 @@ const StatsModal: React.FC<StatsModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white px-8">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

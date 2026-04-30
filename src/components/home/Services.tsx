@@ -13,6 +13,8 @@ import {
   ServiceItem,
   ServicesHeaderFormData,
 } from "@/schemas/services/services.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { useEffect } from "react";
 
 const initialServices = [
   {
@@ -114,6 +116,8 @@ export default function Services() {
   const [editingItem, setEditingItem] = useState<ServiceItem | undefined>(
     undefined,
   );
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const [servicesData, setServicesData] = useState<ServicesFormData>({
     sectionTitle: "Our Services",
@@ -123,8 +127,36 @@ export default function Services() {
     services: initialServices,
   });
 
-  const handleUpdateHeader = (data: ServicesHeaderFormData) => {
-    setServicesData((prev) => ({ ...prev, ...data }));
+  useEffect(() => {
+    const fetchServicesData = async () => {
+      const res = await getSettingsMap();
+      if (res.success && res.data.home_services) {
+        setServicesData(res.data.home_services);
+      }
+      setIsLoading(false);
+    };
+    fetchServicesData();
+  }, []);
+
+  const handleUpdateHeader = async (data: ServicesHeaderFormData) => {
+    setIsUpdating(true);
+    try {
+      const newData = { ...servicesData, ...data };
+      const res = await upsertSetting({
+        key: "home_services",
+        value: newData,
+        group: "home",
+        description: "Homepage Services Section Settings",
+      });
+      if (res.success) {
+        setServicesData(newData);
+        setIsHeaderModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const handleEditItem = (e: React.MouseEvent, index: number) => {
@@ -135,15 +167,33 @@ export default function Services() {
     setIsItemModalOpen(true);
   };
 
-  const handleSaveItem = (newItem: ServiceItem) => {
-    if (editingIndex !== null) {
+  const handleSaveItem = async (newItem: ServiceItem) => {
+    if (editingIndex === null) return;
+    
+    setIsUpdating(true);
+    try {
       const updatedServices = [...servicesData.services];
       updatedServices[editingIndex] = newItem;
-      setServicesData({ ...servicesData, services: updatedServices });
+      const newData = { ...servicesData, services: updatedServices };
+      
+      const res = await upsertSetting({
+        key: "home_services",
+        value: newData,
+        group: "home",
+        description: "Homepage Services Section Settings",
+      });
+      
+      if (res.success) {
+        setServicesData(newData);
+        setIsItemModalOpen(false);
+        setEditingIndex(null);
+        setEditingItem(undefined);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
     }
-    setIsItemModalOpen(false);
-    setEditingIndex(null);
-    setEditingItem(undefined);
   };
 
   return (
@@ -254,13 +304,19 @@ export default function Services() {
           sectionBackgroundImage: servicesData.sectionBackgroundImage,
         }}
         onUpdate={handleUpdateHeader}
+        isLoading={isUpdating}
       />
 
       <ServiceItemModal
         isOpen={isItemModalOpen}
-        onClose={() => setIsItemModalOpen(false)}
+        onClose={() => {
+          setIsItemModalOpen(false);
+          setEditingIndex(null);
+          setEditingItem(undefined);
+        }}
         item={editingItem}
         onSave={handleSaveItem}
+        isLoading={isUpdating}
       />
     </section>
   );

@@ -25,6 +25,7 @@ interface ServiceBannerItemModalProps {
   onClose: () => void;
   item?: ServiceBannerItem;
   onSave: (data: ServiceBannerItem) => void;
+  isLoading?: boolean;
 }
 
 const ServiceBannerItemModal: React.FC<ServiceBannerItemModalProps> = ({
@@ -32,6 +33,7 @@ const ServiceBannerItemModal: React.FC<ServiceBannerItemModalProps> = ({
   onClose,
   item,
   onSave,
+  isLoading = false,
 }) => {
   const form = useForm<ServiceBannerItem>({
     resolver: zodResolver(serviceBannerItemSchema),
@@ -112,8 +114,12 @@ const ServiceBannerItemModal: React.FC<ServiceBannerItemModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white px-8">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

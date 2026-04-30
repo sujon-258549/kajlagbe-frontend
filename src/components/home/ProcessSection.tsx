@@ -8,6 +8,8 @@ import Heading5 from "../common/Headings/Heading5";
 import AdminOnly from "../common/auth/AdminOnly";
 import ProcessModal from "../modal/home/ProcessModal";
 import { ProcessFormData } from "@/schemas/home/process.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { useEffect } from "react";
 
 const initialSteps = [
   {
@@ -46,12 +48,45 @@ const initialSteps = [
 
 export default function ProcessSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<ProcessFormData>({
     badge: "Our Workflow",
     title: "Our Simplified Service Workflow",
     description: "A transparent and proven methodology designed for success.",
     steps: initialSteps,
   });
+  
+  useEffect(() => {
+    const fetchProcessData = async () => {
+      const res = await getSettingsMap();
+      if (res.success && res.data.home_process) {
+        setData(res.data.home_process);
+      }
+      setIsLoading(false);
+    };
+    fetchProcessData();
+  }, []);
+
+  const handleUpdate = async (newData: ProcessFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "home_process",
+        value: newData,
+        group: "home",
+        description: "Homepage Process Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className=" py-12 md:py-24 bg-white relative overflow-hidden group/section">
@@ -137,7 +172,8 @@ export default function ProcessSection() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={data}
-        onUpdate={(newData: ProcessFormData) => setData(newData)}
+        onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
     </section>
   );

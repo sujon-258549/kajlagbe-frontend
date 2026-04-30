@@ -24,6 +24,7 @@ interface HomeBlogHeaderModalProps {
   onClose: () => void;
   initialData: HomeBlogHeaderFormData;
   onUpdate: (data: HomeBlogHeaderFormData) => void;
+  isLoading?: boolean;
 }
 
 const HomeBlogHeaderModal: React.FC<HomeBlogHeaderModalProps> = ({
@@ -31,6 +32,7 @@ const HomeBlogHeaderModal: React.FC<HomeBlogHeaderModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<HomeBlogHeaderFormData>({
     resolver: zodResolver(homeBlogHeaderSchema),
@@ -104,8 +106,12 @@ const HomeBlogHeaderModal: React.FC<HomeBlogHeaderModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white px-8">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

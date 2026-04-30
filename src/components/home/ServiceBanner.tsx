@@ -14,6 +14,8 @@ import ServiceBannerItemModal, {
   ServiceBannerItem,
 } from "../modal/home/ServiceBannerItemModal";
 import { ServiceBannerFormData } from "@/schemas/home/serviceBanner.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { useEffect } from "react";
 
 const initialServices = [
   {
@@ -125,9 +127,22 @@ export default function ServiceBanner() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<ServiceBannerFormData>({
     services: initialServices,
   });
+
+  useEffect(() => {
+    const fetchBannerData = async () => {
+      const res = await getSettingsMap();
+      if (res.success && res.data.home_service_banner) {
+        setData(res.data.home_service_banner);
+      }
+      setIsLoading(false);
+    };
+    fetchBannerData();
+  }, []);
 
   const handleEditItem = (e: React.MouseEvent, index: number) => {
     e.preventDefault();
@@ -136,14 +151,52 @@ export default function ServiceBanner() {
     setIsItemModalOpen(true);
   };
 
-  const handleSaveItem = (updatedItem: ServiceBannerItem) => {
-    if (editingIndex !== null) {
+  const handleUpdate = async (newData: ServiceBannerFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "home_service_banner",
+        value: newData,
+        group: "home",
+        description: "Homepage Service Banner Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleSaveItem = async (updatedItem: ServiceBannerItem) => {
+    if (editingIndex === null) return;
+    
+    setIsUpdating(true);
+    try {
       const updatedServices = [...data.services];
       updatedServices[editingIndex] = updatedItem;
-      setData({ services: updatedServices });
+      const newData = { services: updatedServices };
+      
+      const res = await upsertSetting({
+        key: "home_service_banner",
+        value: newData,
+        group: "home",
+        description: "Homepage Service Banner Settings",
+      });
+      
+      if (res.success) {
+        setData(newData);
+        setIsItemModalOpen(false);
+        setEditingIndex(null);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
     }
-    setIsItemModalOpen(false);
-    setEditingIndex(null);
   };
 
   return (
@@ -250,14 +303,19 @@ export default function ServiceBanner() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={data}
-        onUpdate={(newData: ServiceBannerFormData) => setData(newData)}
+        onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
 
       <ServiceBannerItemModal
         isOpen={isItemModalOpen}
-        onClose={() => setIsItemModalOpen(false)}
+        onClose={() => {
+          setIsItemModalOpen(false);
+          setEditingIndex(null);
+        }}
         item={editingIndex !== null ? data.services[editingIndex] : undefined}
         onSave={handleSaveItem}
+        isLoading={isUpdating}
       />
     </section>
   );

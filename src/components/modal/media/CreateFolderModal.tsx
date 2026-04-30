@@ -54,14 +54,15 @@ const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
       title="Create New Folder"
       description="Enter a name for your new folder."
       maxWidth="md"
+      zIndex={3000}
       footer={
         <div className="flex gap-3 justify-end w-full">
           <Button variant="outline" onClick={onClose} type="button">
             Cancel
           </Button>
           <Button
-            type="submit"
-            form="create-folder-form"
+            type="button"
+            onClick={() => form.handleSubmit(handleSubmit)()}
             className="bg-secondary hover:bg-secondary/90 text-white font-bold"
           >
             Create Folder

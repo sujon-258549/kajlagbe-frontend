@@ -26,6 +26,7 @@ interface FeaturedServicesModalProps {
   onClose: () => void;
   initialData: FeaturedServicesFormData;
   onUpdate: (data: FeaturedServicesFormData) => void;
+  isLoading?: boolean;
 }
 
 const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
@@ -33,6 +34,7 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<FeaturedServicesFormData>({
     resolver: zodResolver(featuredServicesSchema),
@@ -205,8 +207,12 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white px-8">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

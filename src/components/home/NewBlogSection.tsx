@@ -14,6 +14,8 @@ import {
   HomeBlogItemFormData,
   HomeBlogHeaderFormData,
 } from "@/schemas/home/blog.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { useEffect } from "react";
 
 const initialBlogPosts = [
   {
@@ -52,6 +54,9 @@ export default function NewBlogSection() {
   const [isHeaderModalOpen, setIsHeaderModalOpen] = useState(false);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdatingHeader, setIsUpdatingHeader] = useState(false);
+  const [isUpdatingPost, setIsUpdatingPost] = useState(false);
 
   const [data, setData] = useState<HomeBlogFormData>({
     badge: "News & Blog",
@@ -60,27 +65,91 @@ export default function NewBlogSection() {
     posts: initialBlogPosts,
   });
 
-  const handleUpdateHeader = (headerData: HomeBlogHeaderFormData) => {
-    setData((prev) => ({ ...prev, ...headerData }));
-  };
+  useEffect(() => {
+    const fetchBlogData = async () => {
+      const res = await getSettingsMap();
+      if (res.success && res.data.home_blog) {
+        setData(res.data.home_blog);
+      }
+      setIsLoading(false);
+    };
+    fetchBlogData();
+  }, []);
 
-  const handleUpdatePost = (postData: HomeBlogItemFormData) => {
-    if (editingIndex !== null) {
-      // Edit existing
-      const updatedPosts = [...data.posts];
-      updatedPosts[editingIndex] = postData;
-      setData((prev) => ({ ...prev, posts: updatedPosts }));
+  const handleUpdateHeader = async (headerData: HomeBlogHeaderFormData) => {
+    setIsUpdatingHeader(true);
+    try {
+      const newData = { ...data, ...headerData };
+      const res = await upsertSetting({
+        key: "home_blog",
+        value: newData,
+        group: "home",
+        description: "Homepage Blog Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsHeaderModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdatingHeader(false);
     }
-    setIsPostModalOpen(false);
-    setEditingIndex(null);
   };
 
-  const handleDeletePost = () => {
-    if (editingIndex !== null) {
+  const handleUpdatePost = async (postData: HomeBlogItemFormData) => {
+    setIsUpdatingPost(true);
+    try {
+      const updatedPosts = [...data.posts];
+      if (editingIndex !== null) {
+        updatedPosts[editingIndex] = postData;
+      } else {
+        updatedPosts.push(postData);
+      }
+      
+      const newData = { ...data, posts: updatedPosts };
+      const res = await upsertSetting({
+        key: "home_blog",
+        value: newData,
+        group: "home",
+        description: "Homepage Blog Section Settings",
+      });
+      
+      if (res.success) {
+        setData(newData);
+        setIsPostModalOpen(false);
+        setEditingIndex(null);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdatingPost(false);
+    }
+  };
+
+  const handleDeletePost = async () => {
+    if (editingIndex === null) return;
+    
+    setIsUpdatingPost(true);
+    try {
       const updatedPosts = data.posts.filter((_, i) => i !== editingIndex);
-      setData((prev) => ({ ...prev, posts: updatedPosts }));
-      setIsPostModalOpen(false);
-      setEditingIndex(null);
+      const newData = { ...data, posts: updatedPosts };
+      const res = await upsertSetting({
+        key: "home_blog",
+        value: newData,
+        group: "home",
+        description: "Homepage Blog Section Settings",
+      });
+      
+      if (res.success) {
+        setData(newData);
+        setIsPostModalOpen(false);
+        setEditingIndex(null);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdatingPost(false);
     }
   };
 
@@ -207,6 +276,7 @@ export default function NewBlogSection() {
           buttonText: data.buttonText,
         }}
         onUpdate={handleUpdateHeader}
+        isLoading={isUpdatingHeader}
       />
 
       <HomeBlogPostModal
@@ -220,7 +290,8 @@ export default function NewBlogSection() {
         }
         onUpdate={handleUpdatePost}
         onDelete={handleDeletePost}
-        isNew={false}
+        isNew={editingIndex === null}
+        isLoading={isUpdatingPost}
       />
     </section>
   );

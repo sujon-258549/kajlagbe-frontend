@@ -25,6 +25,7 @@ interface ServicesHeaderModalProps {
   onClose: () => void;
   initialData: ServicesHeaderFormData;
   onUpdate: (data: ServicesHeaderFormData) => void;
+  isLoading?: boolean;
 }
 
 const ServicesHeaderModal: React.FC<ServicesHeaderModalProps> = ({
@@ -32,6 +33,7 @@ const ServicesHeaderModal: React.FC<ServicesHeaderModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<ServicesHeaderFormData>({
     resolver: zodResolver(servicesHeaderSchema),
@@ -115,8 +117,12 @@ const ServicesHeaderModal: React.FC<ServicesHeaderModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

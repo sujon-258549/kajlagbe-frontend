@@ -7,6 +7,7 @@ import ImageUpload from "@/components/common/ImageUpload";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import {
   aboutTestimonialItemSchema,
   AboutTestimonialItem,
@@ -209,7 +210,11 @@ const AboutTestimonialItemModal: React.FC<AboutTestimonialItemModalProps> = ({
               <FormItem>
                 <FormLabel>User Image</FormLabel>
                 <FormControl>
-                  <ImageUpload {...field} />
+                    <MediaLibraryImageUploader
+                      value={field.value}
+                      onChange={(url) => field.onChange(url)}
+                      className="w-full"
+                    />
                 </FormControl>
                 <FormMessage />
               </FormItem>

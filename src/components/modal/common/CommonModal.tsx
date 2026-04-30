@@ -18,6 +18,7 @@ interface CommonModalProps {
   maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
   className?: string;
   showBackground?: boolean;
+  zIndex?: number;
 }
 
 const maxWidthClasses = {
@@ -42,6 +43,7 @@ const CommonModal: React.FC<CommonModalProps> = ({
   maxWidth = "lg",
   className,
   showBackground = true,
+  zIndex,
 }) => {
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -54,12 +56,16 @@ const CommonModal: React.FC<CommonModalProps> = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-secondary/70 backdrop-blur-sm z-999"
+                className="fixed inset-0 bg-secondary/70 backdrop-blur-sm"
+                style={{ zIndex: zIndex ? zIndex : 999 }}
               />
             </Dialog.Overlay>
 
             {/* Content Container */}
-            <div className="fixed inset-0 z-1000 flex items-center justify-center p-4 sm:p-6">
+            <div 
+              className="fixed inset-0 flex items-center justify-center p-4 sm:p-6"
+              style={{ zIndex: zIndex ? zIndex + 1 : 1000 }}
+            >
               <Dialog.Content asChild>
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9, y: 30 }}

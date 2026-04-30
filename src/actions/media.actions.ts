@@ -18,12 +18,12 @@ export async function uploadImage(payload: TMediaImageCreatePayload) {
 }
 
 export async function getAllFolders() {
-  const res = await fetchWithAuth("/folder");
+  const res = await fetchWithAuth("/media/folders");
   return res.json() as Promise<TFolderResponse<TFolder[]>>;
 }
 
 export async function createFolder(payload: { name: string; parentId?: string | null }) {
-  const res = await fetchWithAuth("/folder", {
+  const res = await fetchWithAuth("/media/create-folder", {
     method: "POST",
     body: JSON.stringify(payload),
   });
@@ -31,14 +31,14 @@ export async function createFolder(payload: { name: string; parentId?: string | 
 }
 
 export async function deleteImage(id: string) {
-  const res = await fetchWithAuth(`/media/images/${id}`, {
+  const res = await fetchWithAuth(`/media/image/${id}`, {
     method: "DELETE",
   });
   return res.json();
 }
 
 export async function deleteFolder(id: string) {
-  const res = await fetchWithAuth(`/folder/${id}`, {
+  const res = await fetchWithAuth(`/media/folder/${id}`, {
     method: "DELETE",
   });
   return res.json();

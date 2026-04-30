@@ -26,6 +26,7 @@ interface HomeBlogModalProps {
   onClose: () => void;
   initialData: HomeBlogFormData;
   onUpdate: (data: HomeBlogFormData) => void;
+  isLoading?: boolean;
 }
 
 const HomeBlogModal: React.FC<HomeBlogModalProps> = ({
@@ -33,6 +34,7 @@ const HomeBlogModal: React.FC<HomeBlogModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<HomeBlogFormData>({
     resolver: zodResolver(homeBlogSectionSchema),
@@ -232,7 +234,7 @@ const HomeBlogModal: React.FC<HomeBlogModalProps> = ({
             <Button
               type="button"
               variant="outline"
-              className="w-full border-dashed border-2 py-6 rounded-xl flex gap-2"
+              className="w-full border-dashed border-2 py-6 rounded-xl flex items-center justify-center gap-3 hover:bg-secondary/5 transition-all group"
               onClick={() =>
                 append({
                   title: "",
@@ -247,8 +249,8 @@ const HomeBlogModal: React.FC<HomeBlogModalProps> = ({
                 })
               }
             >
-              <Plus className="w-5 h-5" />
-              <span>Add Blog Post</span>
+              <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+              <span className="font-bold">Add Blog Post</span>
             </Button>
           </div>
 
@@ -256,8 +258,12 @@ const HomeBlogModal: React.FC<HomeBlogModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white px-8">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>
