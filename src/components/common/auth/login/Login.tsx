@@ -48,6 +48,8 @@ export default function Login() {
         password: data.password,
       });
 
+      console.log("Login Result:", result);
+
       if (result.success) {
         // Successful login
         router.push("/dashboard");

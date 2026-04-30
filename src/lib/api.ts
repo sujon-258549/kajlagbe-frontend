@@ -37,6 +37,7 @@ export const fetchWithAuth = async (
   }
 
   let response = await fetch(`${getBaseUrl()}${endpoint}`, {
+    cache: "no-store",
     ...options,
     headers,
   });

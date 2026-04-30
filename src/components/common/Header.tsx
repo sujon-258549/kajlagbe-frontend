@@ -25,12 +25,19 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { servicesData } from "@/data/servicesData";
 import { ChevronRight, ChevronDown } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import UserMenu from "./auth/UserMenu";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
+  console.log("user", user);
+  console.log("isAuthenticated", isAuthenticated);
+  console.log("isLoading", isLoading);
 
   const [activeCategory, setActiveCategory] = useState(
     servicesData.length > 0 ? servicesData[0].slug : "",
@@ -195,12 +202,17 @@ export default function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2 sm:gap-4">
-            <Link href="/login">
-              <Button size="lg" className="px-3 sm:px-4 text-[13px] sm:text-sm">
-                <span className="hidden sm:inline">Login</span>{" "}
-                <LogInIcon className="h-4 w-4" />
-              </Button>
-            </Link>
+            {!isLoading && (
+              isAuthenticated ? (
+                <UserMenu />
+              ) : (
+                <Link href="/login">
+                  <Button variant="ghost" className="px-3 sm:px-4 text-[13px] sm:text-sm font-bold text-secondary">
+                    Login
+                  </Button>
+                </Link>
+              )
+            )}
 
             {/* Mobile Search Toggle */}
             <Button
@@ -317,6 +329,25 @@ export default function Header() {
                       );
                     })}
                   </nav>
+
+                  <div className="pt-6 border-t">
+                    {isAuthenticated ? (
+                      <Button 
+                        onClick={() => {
+                          logout();
+                          setIsMenuOpen(false);
+                        }}
+                        variant="destructive" 
+                        className="w-full flex items-center justify-center gap-2"
+                      >
+                        <LogInIcon className="h-4 w-4 rotate-180" /> Logout
+                      </Button>
+                    ) : (
+                      <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+                        <Button variant="outline" className="w-full border-secondary text-secondary font-bold">Login</Button>
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
