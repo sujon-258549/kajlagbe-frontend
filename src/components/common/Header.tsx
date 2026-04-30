@@ -27,7 +27,6 @@ import { servicesData } from "@/data/servicesData";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import UserMenu from "./auth/UserMenu";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
