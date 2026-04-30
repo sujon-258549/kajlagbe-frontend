@@ -26,6 +26,7 @@ interface HomeFaqModalProps {
   onClose: () => void;
   initialData: HomeFaqFormData;
   onUpdate: (data: HomeFaqFormData) => void;
+  isLoading?: boolean;
 }
 
 const HomeFaqModal: React.FC<HomeFaqModalProps> = ({
@@ -33,6 +34,7 @@ const HomeFaqModal: React.FC<HomeFaqModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<HomeFaqFormData>({
     resolver: zodResolver(homeFaqSectionSchema),
@@ -219,8 +221,12 @@ const HomeFaqModal: React.FC<HomeFaqModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white px-8">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

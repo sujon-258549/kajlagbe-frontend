@@ -8,6 +8,8 @@ import Heading2 from "../common/Headings/Heading2";
 import AdminOnly from "../common/auth/AdminOnly";
 import HomeBenefitsModal from "../modal/home/HomeBenefitsModal";
 import { HomeBenefitsFormData } from "@/schemas/home/homeBenefits.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { useEffect } from "react";
 
 const initialLeftBenefits = [
   {
@@ -47,6 +49,8 @@ const initialRightBenefits = [
 
 export default function HomeBenefits() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<HomeBenefitsFormData>({
     badge: "Our Benefits",
     title: "Discover the benefits that set our food products apart",
@@ -54,6 +58,37 @@ export default function HomeBenefits() {
     leftBenefits: initialLeftBenefits,
     rightBenefits: initialRightBenefits,
   });
+  
+  useEffect(() => {
+    const fetchBenefitsData = async () => {
+      const res = await getSettingsMap();
+      if (res.success && res.data.home_benefits) {
+        setData(res.data.home_benefits);
+      }
+      setIsLoading(false);
+    };
+    fetchBenefitsData();
+  }, []);
+
+  const handleUpdate = async (newData: HomeBenefitsFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "home_benefits",
+        value: newData,
+        group: "home",
+        description: "Homepage Benefits Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-[#fcfdfa] overflow-hidden group/section relative">
@@ -153,7 +188,8 @@ export default function HomeBenefits() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={data}
-        onUpdate={(newData: HomeBenefitsFormData) => setData(newData)}
+        onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
     </section>
   );

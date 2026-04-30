@@ -26,6 +26,7 @@ interface ServiceSliderItemModalProps {
   item?: ServiceSliderItem;
   onSave: (data: ServiceSliderItem) => void;
   onDelete?: () => void;
+  isLoading?: boolean;
 }
 
 const ServiceSliderItemModal: React.FC<ServiceSliderItemModalProps> = ({
@@ -34,6 +35,7 @@ const ServiceSliderItemModal: React.FC<ServiceSliderItemModalProps> = ({
   item,
   onSave,
   onDelete,
+  isLoading = false,
 }) => {
   const form = useForm<ServiceSliderItem>({
     resolver: zodResolver(serviceSliderItemSchema),
@@ -97,13 +99,14 @@ const ServiceSliderItemModal: React.FC<ServiceSliderItemModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button
-              type="submit"
-              form="slider-item-form"
-              className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
-            >
-              {item ? "Update Project" : "Add Project"}
-            </Button>
+             <Button
+               type="submit"
+               form="slider-item-form"
+               className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
+               disabled={isLoading}
+             >
+               {isLoading ? (item ? "Updating..." : "Adding...") : (item ? "Update Project" : "Add Project")}
+             </Button>
           </div>
         </div>
       }

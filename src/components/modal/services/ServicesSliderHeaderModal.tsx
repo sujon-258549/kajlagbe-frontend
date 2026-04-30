@@ -24,6 +24,7 @@ interface ServicesSliderHeaderModalProps {
   onClose: () => void;
   initialData: ServiceSliderHeaderFormData;
   onUpdate: (data: ServiceSliderHeaderFormData) => void;
+  isLoading?: boolean;
 }
 
 const ServicesSliderHeaderModal: React.FC<ServicesSliderHeaderModalProps> = ({
@@ -31,6 +32,7 @@ const ServicesSliderHeaderModal: React.FC<ServicesSliderHeaderModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<ServiceSliderHeaderFormData>({
     resolver: zodResolver(serviceSliderHeaderSchema),
@@ -76,8 +78,12 @@ const ServicesSliderHeaderModal: React.FC<ServicesSliderHeaderModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white px-8">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

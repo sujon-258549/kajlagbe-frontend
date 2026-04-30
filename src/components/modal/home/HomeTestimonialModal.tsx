@@ -27,6 +27,7 @@ interface HomeTestimonialModalProps {
   onClose: () => void;
   initialData: HomeTestimonialFormData;
   onUpdate: (data: HomeTestimonialFormData) => void;
+  isLoading?: boolean;
 }
 
 const HomeTestimonialModal: React.FC<HomeTestimonialModalProps> = ({
@@ -34,6 +35,7 @@ const HomeTestimonialModal: React.FC<HomeTestimonialModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<HomeTestimonialFormData>({
     resolver: zodResolver(homeTestimonialSectionSchema),
@@ -250,8 +252,12 @@ const HomeTestimonialModal: React.FC<HomeTestimonialModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white px-8">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

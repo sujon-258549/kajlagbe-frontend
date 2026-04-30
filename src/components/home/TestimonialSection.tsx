@@ -14,6 +14,8 @@ import Heading3 from "../common/Headings/Heading3";
 import AdminOnly from "../common/auth/AdminOnly";
 import HomeTestimonialModal from "../modal/home/HomeTestimonialModal";
 import { HomeTestimonialFormData } from "@/schemas/home/testimonial.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { useEffect } from "react";
 
 const initialTestimonials = [
   {
@@ -47,6 +49,8 @@ const initialTestimonials = [
 
 export default function TestimonialSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<HomeTestimonialFormData>({
     badge: "Testimonials",
     title: "What Our Clients Think",
@@ -55,6 +59,37 @@ export default function TestimonialSection() {
       "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg",
     testimonials: initialTestimonials,
   });
+  
+  useEffect(() => {
+    const fetchTestimonialData = async () => {
+      const res = await getSettingsMap();
+      if (res.success && res.data.home_testimonial) {
+        setData(res.data.home_testimonial);
+      }
+      setIsLoading(false);
+    };
+    fetchTestimonialData();
+  }, []);
+
+  const handleUpdate = async (newData: HomeTestimonialFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "home_testimonial",
+        value: newData,
+        group: "home",
+        description: "Homepage Testimonial Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className="md:py-24 py-12 relative group/section overflow-hidden">
@@ -195,7 +230,8 @@ export default function TestimonialSection() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={data}
-        onUpdate={(newData: HomeTestimonialFormData) => setData(newData)}
+        onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
 
       <style jsx global>{`

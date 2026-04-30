@@ -24,6 +24,7 @@ interface HomeVideoModalProps {
   onClose: () => void;
   initialData: HomeVideoFormData;
   onUpdate: (data: HomeVideoFormData) => void;
+  isLoading?: boolean;
 }
 
 const HomeVideoModal: React.FC<HomeVideoModalProps> = ({
@@ -31,6 +32,7 @@ const HomeVideoModal: React.FC<HomeVideoModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<HomeVideoFormData>({
     resolver: zodResolver(homeVideoSectionSchema),
@@ -117,8 +119,12 @@ const HomeVideoModal: React.FC<HomeVideoModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white px-8">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

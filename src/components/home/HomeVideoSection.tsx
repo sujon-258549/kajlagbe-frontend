@@ -6,10 +6,13 @@ import { Play, X, Edit } from "lucide-react";
 import AdminOnly from "../common/auth/AdminOnly";
 import HomeVideoModal from "../modal/home/HomeVideoModal";
 import { HomeVideoFormData } from "@/schemas/home/homeVideo.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 
 export default function HomeVideoSection() {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<HomeVideoFormData>({
     videoUrl:
       "https://assets.mixkit.co/videos/preview/mixkit-fresh-vegetables-in-a-market-12821-large.mp4",
@@ -22,6 +25,17 @@ export default function HomeVideoSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    const fetchVideoData = async () => {
+      const res = await getSettingsMap();
+      if (res.success && res.data.home_video) {
+        setData(res.data.home_video);
+      }
+      setIsLoading(false);
+    };
+    fetchVideoData();
+  }, []);
+
+  useEffect(() => {
     if (videoRef.current) {
       videoRef.current.playbackRate = 0.8;
       videoRef.current.play().catch((error) => {
@@ -29,6 +43,26 @@ export default function HomeVideoSection() {
       });
     }
   }, [data.videoUrl]);
+
+  const handleUpdate = async (newData: HomeVideoFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "home_video",
+        value: newData,
+        group: "home",
+        description: "Homepage Video Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsEditModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className="relative w-full h-[300px] md:h-[450px] lg:h-[600px] overflow-hidden group/section">
@@ -122,7 +156,8 @@ export default function HomeVideoSection() {
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         initialData={data}
-        onUpdate={(newData: HomeVideoFormData) => setData(newData)}
+        onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
 
       <style jsx>{`

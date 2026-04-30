@@ -15,6 +15,8 @@ import Heading4 from "../common/Headings/Heading4";
 import AdminOnly from "../common/auth/AdminOnly";
 import HomeFaqModal from "../modal/home/HomeFaqModal";
 import { HomeFaqFormData } from "@/schemas/home/faq.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { useEffect } from "react";
 
 const initialFaqs = [
   {
@@ -47,6 +49,8 @@ const initialFaqs = [
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<HomeFaqFormData>({
     badge: "Support Center",
     title: "Frequently Asked Questions",
@@ -58,6 +62,37 @@ export default function FAQSection() {
     ctaButtonText: "Contact Now",
     faqs: initialFaqs,
   });
+  
+  useEffect(() => {
+    const fetchFaqData = async () => {
+      const res = await getSettingsMap();
+      if (res.success && res.data.home_faq) {
+        setData(res.data.home_faq);
+      }
+      setIsLoading(false);
+    };
+    fetchFaqData();
+  }, []);
+
+  const handleUpdate = async (newData: HomeFaqFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "home_faq",
+        value: newData,
+        group: "home",
+        description: "Homepage FAQ Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className=" md:py-24 py-10 bg-slate-50/50 relative overflow-hidden group/section">
@@ -207,7 +242,8 @@ export default function FAQSection() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={data}
-        onUpdate={(newData: HomeFaqFormData) => setData(newData)}
+        onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
     </section>
   );
