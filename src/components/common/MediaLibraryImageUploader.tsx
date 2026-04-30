@@ -6,11 +6,13 @@ import {
   Plus, 
   Trash2, 
   Upload,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Check
 } from "lucide-react";
 import MediaLibraryPickerModal from "../modal/media/MediaLibraryPickerModal";
 import { TMediaImage } from "@/types/media";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 type BaseUploaderProps = {
   disabled?: boolean;
@@ -42,21 +44,8 @@ export type MediaLibraryImageUploaderProps =
   | MediaLibraryImageUploaderSingleProps
   | MediaLibraryImageUploaderMultiProps;
 
-const box = "h-40 w-40 shrink-0";
-const thumb = "h-32 w-32 shrink-0";
-const addTile = "h-32 w-32 shrink-0";
-
-/** Fills a square frame without gray letterboxing (object-cover + block img). */
-const previewImgClass =
-  "pointer-events-none block h-full w-full min-h-0 min-w-0 object-cover select-none";
-
 function urlsFromImages(images: TMediaImage[]): string[] {
-  const out: string[] = [];
-  for (const img of images) {
-    const u = img.url?.trim();
-    if (u) out.push(u);
-  }
-  return out;
+  return images.map(img => img.url?.trim()).filter(Boolean);
 }
 
 function MediaLibraryImageUploaderSingle({
@@ -66,7 +55,7 @@ function MediaLibraryImageUploaderSingle({
   pickerTitle = "Media Library",
   pickerOkText = "Use this image",
   emptyLabel = "Upload Image",
-  changeHoverLabel = "Change",
+  changeHoverLabel = "Change Image",
   className = "",
 }: MediaLibraryImageUploaderSingleProps) {
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -98,65 +87,74 @@ function MediaLibraryImageUploaderSingle({
       <div className={cn("flex", className)}>
         {hasImage ? (
           <div
-            className={cn(
-              "relative overflow-hidden rounded-xl border-2 border-gray-100 bg-gray-50 shadow-sm transition-all hover:shadow-md",
-              box
-            )}
+            className="relative h-44 w-44 shrink-0 overflow-hidden rounded-2xl border-4 border-white bg-gray-50 shadow-xl ring-1 ring-gray-200 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
           >
             <button
               type="button"
               disabled={disabled}
               onClick={openPicker}
-              aria-label="Change image"
-              title="Change image"
-              className="group relative z-0 block h-full w-full overflow-hidden p-0 text-left transition focus:outline-none disabled:pointer-events-none disabled:opacity-60"
+              className="group relative z-0 block h-full w-full overflow-hidden p-0 transition focus:outline-none disabled:pointer-events-none disabled:opacity-60"
             >
-              <img src={url} alt="" className={previewImgClass} />
+              <Image 
+                src={url} 
+                alt="Uploaded image" 
+                fill 
+                className="object-cover transition-transform duration-500 group-hover:scale-110" 
+              />
               <div
-                className="pointer-events-none absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/25"
+                className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/30"
                 aria-hidden
               />
-              <div className="pointer-events-none absolute left-2 top-2 rounded-lg bg-white/90 backdrop-blur-sm p-1.5 shadow-sm border border-white/50">
-                <Images className="w-3.5 h-3.5 text-secondary" />
+              
+              <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
+                <div className="bg-white/90 backdrop-blur-md p-2 rounded-full shadow-lg mb-2">
+                  <Images className="w-5 h-5 text-secondary" />
+                </div>
+                <span className="bg-secondary text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">
+                  {changeHoverLabel}
+                </span>
               </div>
-              <span className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-black/60 backdrop-blur-sm px-3 py-1 text-[10px] font-bold text-white opacity-0 transition-all group-hover:opacity-100 scale-90 group-hover:scale-100">
-                {changeHoverLabel}
-              </span>
             </button>
+            
             <button
               type="button"
               disabled={disabled}
-              aria-label="Remove image"
-              title="Remove image"
-              className="absolute right-2 top-2 z-10 rounded-lg bg-white/90 backdrop-blur-sm p-1.5 shadow-sm border border-white/50 transition-all hover:bg-red-50 hover:text-red-600 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
+              className="absolute right-3 top-3 z-10 rounded-xl bg-red-500 p-2 shadow-lg text-white transition-all hover:bg-red-600 hover:scale-110 active:scale-90 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 applyUrl("");
               }}
             >
-              <Trash2 className="w-3.5 h-3.5" />
+              <Trash2 className="w-4 h-4" />
             </button>
+
+            {/* Status badge */}
+            <div className="absolute left-3 bottom-3 z-10 rounded-lg bg-green-500/90 backdrop-blur-sm p-1 shadow-md">
+              <Check className="w-3 h-3 text-white" />
+            </div>
           </div>
         ) : (
           <button
             type="button"
             disabled={disabled}
             onClick={openPicker}
-            aria-label="Open media library to upload or choose image"
-            className={cn(
-              "group flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-4 text-center transition-all duration-300 hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-sm active:scale-95 focus:outline-none disabled:pointer-events-none disabled:opacity-60",
-              box
-            )}
+            className="group flex h-44 w-44 shrink-0 flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-4 text-center transition-all duration-300 hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-inner active:scale-95 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
           >
-            <div className="p-3 rounded-full bg-white shadow-sm border border-gray-100 group-hover:border-secondary/20 transition-colors">
-              <Upload
-                className="w-6 h-6 text-gray-400 transition-colors duration-300 group-hover:text-secondary"
-              />
+            <div className="relative">
+              <div className="absolute inset-0 bg-secondary/10 rounded-full blur-xl group-hover:bg-secondary/20 transition-all" />
+              <div className="relative p-4 rounded-2xl bg-white shadow-sm border border-gray-100 group-hover:border-secondary/20 transition-all group-hover:-translate-y-1">
+                <Upload
+                  className="w-8 h-8 text-gray-400 transition-colors duration-300 group-hover:text-secondary"
+                />
+              </div>
             </div>
-            <span className="text-xs font-bold text-gray-500 transition-colors duration-300 group-hover:text-secondary">
-              {emptyLabel}
-            </span>
+            <div className="space-y-1">
+              <span className="block text-sm font-bold text-gray-700 transition-colors duration-300 group-hover:text-secondary">
+                {emptyLabel}
+              </span>
+              <span className="text-[10px] text-gray-400 font-medium">Click to browse library</span>
+            </div>
           </button>
         )}
       </div>
@@ -226,31 +224,31 @@ function MediaLibraryImageUploaderMulti({
 
   return (
     <>
-      <div className={cn("flex flex-wrap items-start gap-4", className)}>
+      <div className={cn("flex flex-wrap items-start gap-6", className)}>
         {hasAny ? (
           <>
             {urls.map((u, idx) => (
               <div
                 key={`${u}-${idx}`}
-                className={cn(
-                  "relative overflow-hidden rounded-xl border-2 border-gray-100 bg-gray-50 shadow-sm transition-all hover:shadow-md",
-                  thumb
-                )}
+                className="relative h-36 w-36 shrink-0 overflow-hidden rounded-2xl border-2 border-white bg-gray-50 shadow-lg ring-1 ring-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-105"
               >
-                <img src={u} alt="" className={previewImgClass} />
+                <Image 
+                  src={u} 
+                  alt={`Uploaded image ${idx + 1}`} 
+                  fill 
+                  className="object-cover" 
+                />
                 <button
                   type="button"
                   disabled={disabled}
-                  aria-label={`Remove image ${idx + 1}`}
-                  title="Remove"
-                  className="absolute right-1.5 top-1.5 z-10 rounded-lg bg-white/90 backdrop-blur-sm p-1 shadow-sm border border-white/50 transition-all hover:bg-red-50 hover:text-red-600 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
+                  className="absolute right-2 top-2 z-10 rounded-lg bg-red-500 p-1.5 shadow-md text-white transition-all hover:bg-red-600 active:scale-90 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     removeAt(idx);
                   }}
                 >
-                  <Trash2 className="w-3 h-3" />
+                  <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
             ))}
@@ -258,18 +256,14 @@ function MediaLibraryImageUploaderMulti({
               type="button"
               disabled={disabled}
               onClick={openPicker}
-              aria-label="Add more images from media library"
-              className={cn(
-                "group flex flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 text-center transition-all hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-sm active:scale-95 focus:outline-none disabled:pointer-events-none disabled:opacity-60",
-                addTile
-              )}
+              className="group flex h-36 w-36 shrink-0 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 text-center transition-all hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-inner active:scale-95 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
             >
-              <div className="p-2 rounded-full bg-white shadow-sm border border-gray-100 group-hover:border-secondary/20 transition-colors">
+              <div className="p-3 rounded-xl bg-white shadow-sm border border-gray-100 group-hover:border-secondary/20 transition-all group-hover:-translate-y-1">
                 <Plus
-                  className="w-5 h-5 text-gray-400 transition-colors group-hover:text-secondary"
+                  className="w-6 h-6 text-gray-400 transition-colors group-hover:text-secondary"
                 />
               </div>
-              <span className="text-[10px] font-bold text-gray-500 group-hover:text-secondary">Add</span>
+              <span className="text-[10px] font-bold text-gray-500 group-hover:text-secondary tracking-tight">Add More</span>
             </button>
           </>
         ) : (
@@ -277,20 +271,22 @@ function MediaLibraryImageUploaderMulti({
             type="button"
             disabled={disabled}
             onClick={openPicker}
-            aria-label="Open media library to upload or choose images"
-            className={cn(
-              "group flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-4 text-center transition-all duration-300 hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-sm active:scale-95 focus:outline-none disabled:pointer-events-none disabled:opacity-60",
-              box
-            )}
+            className="group flex h-44 w-44 shrink-0 flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-4 text-center transition-all duration-300 hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-inner active:scale-95 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
           >
-            <div className="p-3 rounded-full bg-white shadow-sm border border-gray-100 group-hover:border-secondary/20 transition-colors">
-              <Upload
-                className="w-6 h-6 text-gray-400 transition-colors duration-300 group-hover:text-secondary"
-              />
+            <div className="relative">
+              <div className="absolute inset-0 bg-secondary/10 rounded-full blur-xl group-hover:bg-secondary/20 transition-all" />
+              <div className="relative p-4 rounded-2xl bg-white shadow-sm border border-gray-100 group-hover:border-secondary/20 transition-all group-hover:-translate-y-1">
+                <Upload
+                  className="w-8 h-8 text-gray-400 transition-colors duration-300 group-hover:text-secondary"
+                />
+              </div>
             </div>
-            <span className="text-xs font-bold text-gray-500 transition-colors duration-300 group-hover:text-secondary">
-              {emptyLabel}
-            </span>
+            <div className="space-y-1">
+              <span className="block text-sm font-bold text-gray-700 transition-colors duration-300 group-hover:text-secondary">
+                {emptyLabel}
+              </span>
+              <span className="text-[10px] text-gray-400 font-medium">Browse media library</span>
+            </div>
           </button>
         )}
       </div>
