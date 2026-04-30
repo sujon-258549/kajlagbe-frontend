@@ -50,9 +50,9 @@ export default function StatsSection() {
   
   useEffect(() => {
     const fetchStatsData = async () => {
-      const res = await getSettingsMap();
+      const res = await getSettingsMap("home");
       if (res.success && res.data.home_stats) {
-        setData(res.data.home_stats);
+        setData(res.data.home_stats.value);
       }
       setIsLoading(false);
     };

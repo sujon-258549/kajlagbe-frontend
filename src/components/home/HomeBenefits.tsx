@@ -61,9 +61,9 @@ export default function HomeBenefits() {
   
   useEffect(() => {
     const fetchBenefitsData = async () => {
-      const res = await getSettingsMap();
+      const res = await getSettingsMap("home");
       if (res.success && res.data.home_benefits) {
-        setData(res.data.home_benefits);
+        setData(res.data.home_benefits.value);
       }
       setIsLoading(false);
     };

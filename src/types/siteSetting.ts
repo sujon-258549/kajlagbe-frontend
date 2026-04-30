@@ -3,6 +3,7 @@ export interface TSiteSetting {
   key: string;
   value: any;
   group?: string;
+  name?: string;
   description?: string;
   createdAt?: string;
   updatedAt?: string;

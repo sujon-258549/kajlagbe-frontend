@@ -17,6 +17,8 @@ import { ServiceBannerFormData } from "@/schemas/home/serviceBanner.schema";
 import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 import { useEffect } from "react";
 
+
+
 const initialServices = [
   {
     title: "Home Repair & Maintenance",
@@ -64,7 +66,7 @@ const initialServices = [
     title: "Electronics, IT & CCTV",
     slug: "electronics-it-cctv",
     image:
-      "https://img.freepik.com/free-photo/technician-installing-cctv-camera_23-2149323743.jpg",
+      "https://img.freepik.com/free-photo/technician-installing-cctv-camera_23-2149338512.jpg",
   },
   {
     title: "Tutor & Education",
@@ -122,33 +124,50 @@ const initialServices = [
   },
 ];
 
+import { getAllCategory } from "@/actions/category.actions";
+import { TCategory } from "@/types/category";
+import CategoryModal from "../modal/category/CategoryModal";
+import { Plus } from "lucide-react";
+
 export default function ServiceBanner() {
   const swiperRef = useRef<SwiperType>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isItemModalOpen, setIsItemModalOpen] = useState(false);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<TCategory | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [categories, setCategories] = useState<TCategory[]>([]);
   const [data, setData] = useState<ServiceBannerFormData>({
     services: initialServices,
   });
 
-  useEffect(() => {
-    const fetchBannerData = async () => {
-      const res = await getSettingsMap();
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      // Fetch Banner Settings (Title etc if any)
+      const res = await getSettingsMap("home");
       if (res.success && res.data.home_service_banner) {
-        setData(res.data.home_service_banner);
+        setData(res.data.home_service_banner.value);
       }
+
+      // Fetch Actual Categories
+      const catRes = await getAllCategory();
+      if (catRes.success) {
+        setCategories(catRes.data);
+      }
+    } catch (error) {
+      console.error("Error fetching banner data:", error);
+    } finally {
       setIsLoading(false);
-    };
-    fetchBannerData();
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
-  const handleEditItem = (e: React.MouseEvent, index: number) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setEditingIndex(index);
-    setIsItemModalOpen(true);
+  const handleCategorySuccess = () => {
+    fetchData();
   };
 
   const handleUpdate = async (newData: ServiceBannerFormData) => {
@@ -171,46 +190,31 @@ export default function ServiceBanner() {
     }
   };
 
-  const handleSaveItem = async (updatedItem: ServiceBannerItem) => {
-    if (editingIndex === null) return;
-    
-    setIsUpdating(true);
-    try {
-      const updatedServices = [...data.services];
-      updatedServices[editingIndex] = updatedItem;
-      const newData = { services: updatedServices };
-      
-      const res = await upsertSetting({
-        key: "home_service_banner",
-        value: newData,
-        group: "home",
-        description: "Homepage Service Banner Settings",
-      });
-      
-      if (res.success) {
-        setData(newData);
-        setIsItemModalOpen(false);
-        setEditingIndex(null);
-      }
-    } catch (error) {
-      console.log("error", error);
-    } finally {
-      setIsUpdating(false);
-    }
-  };
-
   return (
     <section className="py-12 bg-[#F9F8F3] overflow-hidden group/section relative">
       <AdminOnly>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white"
-          title="Edit Banner"
-        >
-          <Edit className="w-3.5 h-3.5" />
-        </button>
+        <div className="absolute top-4 right-4 z-20 flex gap-2">
+          <button
+            onClick={() => {
+              setEditingCategory(null);
+              setIsCategoryModalOpen(true);
+            }}
+            className="px-4 py-1.5 flex items-center justify-center gap-2 rounded-lg bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white"
+            title="Add Category"
+          >
+            <Plus className="w-4 h-4" />
+            <span className="text-xs font-bold uppercase tracking-wider">Add Category</span>
+          </button>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 text-secondary opacity-0 group-hover/section:opacity-100 transition-all hover:bg-secondary hover:text-white"
+            title="Edit Banner Settings"
+          >
+            <Edit className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </AdminOnly>
-      <div className="main-container mx-auto px-6">
+      <div className="main-container">
         <div className="relative flex items-center justify-center gap-2 lg:gap-2">
           {/* Controls - Left */}
           <button
@@ -250,25 +254,30 @@ export default function ServiceBanner() {
               }}
               className="w-full"
             >
-              {data.services.map((service, i) => (
-                <SwiperSlide key={i}>
+              {categories.map((cat, i) => (
+                <SwiperSlide key={cat.id || i}>
                   <div className="flex items-center gap-4 group/card relative">
                     {/* Edit Button */}
                     <AdminOnly>
                       <button
-                        onClick={(e) => handleEditItem(e, i)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setEditingCategory(cat);
+                          setIsCategoryModalOpen(true);
+                        }}
                         className="absolute top-0 right-0 z-20 w-7 h-7 flex items-center justify-center rounded-full bg-white border border-secondary/20 text-secondary opacity-0 group-hover/card:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-md"
-                        title="Edit Service"
+                        title="Edit Category"
                       >
                         <Edit className="w-3.5 h-3.5" />
                       </button>
                     </AdminOnly>
 
                     {/* Square Image */}
-                    <div className="w-24 h-24 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0 border border-slate-100">
+                    <div className="w-24 h-24 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0 border border-slate-100 bg-slate-50">
                       <CustomImage
-                        src={service.image}
-                        alt={service.title}
+                        src={cat.url || ""}
+                        alt={cat.name}
                         fill
                         className="object-cover group-hover/card:scale-110 transition-transform duration-500"
                       />
@@ -277,7 +286,7 @@ export default function ServiceBanner() {
                     {/* Content */}
                     <div className="flex flex-col gap-1">
                       <Heading5 className="text-lg md:text-xl font-bold text-secondary leading-tight line-clamp-2">
-                        {service.title}
+                        {cat.name}
                       </Heading5>
                       <span className="text-primary text-sm font-medium hover:underline cursor-pointer">
                         Book Now →
@@ -307,15 +316,14 @@ export default function ServiceBanner() {
         isLoading={isUpdating}
       />
 
-      <ServiceBannerItemModal
-        isOpen={isItemModalOpen}
+      <CategoryModal
+        isOpen={isCategoryModalOpen}
         onClose={() => {
-          setIsItemModalOpen(false);
-          setEditingIndex(null);
+          setIsCategoryModalOpen(false);
+          setEditingCategory(null);
         }}
-        item={editingIndex !== null ? data.services[editingIndex] : undefined}
-        onSave={handleSaveItem}
-        isLoading={isUpdating}
+        initialData={editingCategory}
+        onSuccess={handleCategorySuccess}
       />
     </section>
   );

@@ -59,9 +59,9 @@ export default function ProcessSection() {
   
   useEffect(() => {
     const fetchProcessData = async () => {
-      const res = await getSettingsMap();
+      const res = await getSettingsMap("home");
       if (res.success && res.data.home_process) {
-        setData(res.data.home_process);
+        setData(res.data.home_process.value);
       }
       setIsLoading(false);
     };

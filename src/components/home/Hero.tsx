@@ -25,7 +25,8 @@ const initialSlides = [
     description:
       "We are 100+ professional software engineers with more than 10 years of experience in delivering superior products.",
     image:
-      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80",
+      "https://res.cloudinary.com/dsg1s6emc/image/upload/v1777051314/on56jor046elpxj39nb2.png",
+    imageId: "cd79e049-86f5-4d7d-88bf-57c8792bd51a",
     buttonText: "LEARN MORE",
   },
   {
@@ -44,22 +45,26 @@ export default function Hero() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [settingName, setSettingName] = useState("Hero Section");
   const [data, setData] = useState<HeroFormData>({
     slides: initialSlides,
   });
 
   useEffect(() => {
     const fetchHeroData = async () => {
-      const res = await getSettingsMap();
+      const res = await getSettingsMap("home");
       if (res.success && res.data.home_hero) {
-        setData(res.data.home_hero);
+        setData(res.data.home_hero.value);
+        if (res.data.home_hero.name) {
+          setSettingName(res.data.home_hero.name);
+        }
       }
       setIsLoading(false);
     };
     fetchHeroData();
   }, []);
 
-  const handleUpdate = async (newData: HeroFormData) => {
+  const handleUpdate = async (newData: HeroFormData, newName?: string) => {
     setIsUpdating(true);
     try {
       const res = await upsertSetting({
@@ -67,9 +72,11 @@ export default function Hero() {
         value: newData,
         group: "home",
         description: "Homepage Hero Section Settings",
+        name: newName || settingName,
       });
       if (res.success) {
         setData(newData);
+        if (newName) setSettingName(newName);
         setIsModalOpen(false);
       }
     } catch (error) {
@@ -93,97 +100,115 @@ export default function Hero() {
         </AdminOnly>
       </div>
 
-      <Swiper
-        modules={[Navigation, Autoplay, EffectFade]}
-        effect="fade"
-        onBeforeInit={(swiper) => {
-          swiperRef.current = swiper;
-        }}
-        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-        loop={true}
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-        }}
-        className="w-full h-full"
-      >
-        {data.slides.map((slide, index) => (
-          <SwiperSlide key={index} className="relative w-full h-full">
-            {/* Background Image with Dark Overlay */}
-            <div className="absolute inset-0">
-              <CustomImage
-                src={slide.image}
-                alt={slide.title}
-                fill
-                wrapperClassName="w-full h-full"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-secondary/70 mix-blend-multiply"></div>
-              <div className="absolute inset-0 bg-linear-to-r from-secondary/80 via-secondary/40 to-transparent"></div>
-            </div>
-
-            {/* Content main-container */}
-            <div className="main-container mx-auto px-4 md:px-6 h-full relative z-10 flex flex-col justify-center">
-              <div className="max-w-3xl transform transition-all duration-1000 translate-y-0 opacity-100 border-2 border-dashed border-secondary/30 p-6 md:p-12 rounded-2xl bg-secondary/40 backdrop-blur-md">
-                <div className="space-y-6">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-sm border border-slate-200 text-white font-bold tracking-wider uppercase text-xs w-fit">
-                    <span className="w-2 h-2 rounded-lg bg-primary animate-pulse" />
-                    Marketplace Excellence
-                  </div>
-                  <Heading1 className=" text-white leading-tight font-bold ">
-                    {slide.title}
-                  </Heading1>
-                  <p className="text-white/80 text-base md:text-lg font-medium max-w-xl leading-relaxed line-clamp-2 md:line-clamp-none">
-                    {slide.description}
-                  </p>
-                  <Button
-                    size="lg"
-                    className="px-8  bg-primary hover:scale-105 transition-transform cursor-pointer"
-                  >
-                    {slide.buttonText}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </SwiperSlide>
-        ))}
-
-        {/* Custom Navigation - Bottom Left */}
-        <div className="absolute bottom-6 md:bottom-10 left-0 z-20 w-full">
-          <div className="main-container mx-auto px-4 md:px-6 flex items-center gap-6">
-            <div className="flex items-center gap-4 text-white font-bold text-base md:text-lg">
-              <button
-                onClick={() => swiperRef.current?.slidePrev()}
-                className="hover:text-[#3ABEF9] transition-colors"
-                aria-label="Previous slide"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-
-              <div className="flex items-center gap-1 tabular-nums">
-                <span>0{activeIndex + 1}</span>
-                <span className="opacity-40">/</span>
-                <span className="opacity-40">0{data.slides.length}</span>
-              </div>
-
-              <button
-                onClick={() => swiperRef.current?.slideNext()}
-                className="hover:text-[#3ABEF9] transition-colors"
-                aria-label="Next slide"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
+      {isLoading ? (
+        <div className="w-full h-full bg-secondary/20 animate-pulse flex items-center justify-center">
+          <div className="main-container mx-auto px-4 md:px-6 w-full">
+            <div className="max-w-3xl space-y-6">
+              <div className="h-8 w-48 bg-white/20 rounded-sm" />
+              <div className="h-16 md:h-24 w-full bg-white/20 rounded-md" />
+              <div className="h-20 w-3/4 bg-white/20 rounded-md" />
+              <div className="h-12 w-40 bg-white/20 rounded-md" />
             </div>
           </div>
         </div>
-      </Swiper>
+      ) : (
+        <Swiper
+          modules={[Navigation, Autoplay, EffectFade]}
+          effect="fade"
+          onBeforeInit={(swiper) => {
+            swiperRef.current = swiper;
+          }}
+          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+          loop={true}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+          className="w-full h-full"
+        >
+          {data.slides.map((slide, index) => (
+            <SwiperSlide key={index} className="relative w-full h-full">
+              {/* Background Image with Dark Overlay */}
+              <div className="absolute inset-0">
+                <CustomImage
+                  src={slide.image}
+                  alt={slide.title}
+                  fill
+                  wrapperClassName="w-full h-full"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-secondary/70 mix-blend-multiply"></div>
+                <div className="absolute inset-0 bg-linear-to-r from-secondary/80 via-secondary/40 to-transparent"></div>
+              </div>
+
+              {/* Content container */}
+              <div className="main-container mx-auto px-4 md:px-6 h-full relative z-10 flex flex-col justify-center">
+                <div className="max-w-3xl transform transition-all duration-1000 translate-y-0 opacity-100 border-2 border-dashed border-secondary/30 p-6 md:p-12 rounded-2xl bg-secondary/40 backdrop-blur-md">
+                  <div className="space-y-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-sm border border-slate-200 text-white font-bold tracking-wider uppercase text-xs w-fit">
+                      <span className="w-2 h-2 rounded-lg bg-primary animate-pulse" />
+                      Marketplace Excellence
+                    </div>
+                    <Heading1 className=" text-white leading-tight font-bold ">
+                      {slide.title}
+                    </Heading1>
+                    <p className="text-white/80 text-base md:text-lg font-medium max-w-xl leading-relaxed line-clamp-2 md:line-clamp-none">
+                      {slide.description}
+                    </p>
+                    <Button
+                      size="lg"
+                      className="px-8  bg-primary hover:scale-105 transition-transform cursor-pointer"
+                    >
+                      {slide.buttonText}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </SwiperSlide>
+          ))}
+
+          {/* Custom Navigation - Bottom Left */}
+          <div className="absolute bottom-6 md:bottom-10 left-0 z-20 w-full">
+            <div className="main-container mx-auto px-4 md:px-6 flex items-center gap-6">
+              <div className="flex items-center gap-4 text-white font-bold text-base md:text-lg">
+                <button
+                  onClick={() => swiperRef.current?.slidePrev()}
+                  className="hover:text-[#3ABEF9] transition-colors"
+                  aria-label="Previous slide"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+
+                <div className="flex items-center gap-1 tabular-nums">
+                  <span>0{activeIndex + 1}</span>
+                  <span className="opacity-40">/</span>
+                  <span className="opacity-40">0{data.slides.length}</span>
+                </div>
+
+                <button
+                  onClick={() => swiperRef.current?.slideNext()}
+                  className="hover:text-[#3ABEF9] transition-colors"
+                  aria-label="Next slide"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </Swiper>
+      )}
 
       <HeroModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={data}
-        onUpdate={handleUpdate}
+        onUpdate={(newData, newName) => {
+          if (newName) setSettingName(newName);
+          handleUpdate(newData, newName);
+        }}
         isLoading={isUpdating}
+        settingName={settingName}
+        settingKey="home_hero"
       />
     </section>
   );

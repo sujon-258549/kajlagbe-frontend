@@ -4,11 +4,13 @@ import { fetchWithAuth } from "@/lib/api";
 import { TSiteSetting, TSiteSettingMap, TSiteSettingResponse } from "@/types/siteSetting";
 
 /**
- * Get all settings as a key-value map (Public)
+ * Get settings as a key-value map (Public)
+ * Supports optional filtering by group
  */
-export async function getSettingsMap() {
+export async function getSettingsMap(group?: string) {
   try {
-    const res = await fetchWithAuth("/site-settings/map");
+    const url = group ? `/site-setting/map?group=${group}` : "/site-setting/map";
+    const res = await fetchWithAuth(url);
     return res.json() as Promise<TSiteSettingResponse<TSiteSettingMap>>;
   } catch (error) {
     console.error("Error fetching settings map:", error);
@@ -21,7 +23,7 @@ export async function getSettingsMap() {
  */
 export async function getSettingsByGroup(group: string) {
   try {
-    const res = await fetchWithAuth(`/site-settings/group/${group}`);
+    const res = await fetchWithAuth(`/site-setting/group/${group}`);
     return res.json() as Promise<TSiteSettingResponse<TSiteSetting[]>>;
   } catch (error) {
     console.error(`Error fetching settings for group ${group}:`, error);
@@ -34,7 +36,7 @@ export async function getSettingsByGroup(group: string) {
  */
 export async function getAllSettings() {
   try {
-    const res = await fetchWithAuth("/site-settings/all");
+    const res = await fetchWithAuth("/site-setting/all");
     return res.json() as Promise<TSiteSettingResponse<TSiteSetting[]>>;
   } catch (error) {
     console.error("Error fetching all settings:", error);
@@ -42,12 +44,15 @@ export async function getAllSettings() {
   }
 }
 
-/**
- * Upsert a single setting (Admin)
- */
-export async function upsertSetting(payload: { key: string; value: any; group?: string; description?: string }) {
+export async function upsertSetting(payload: { 
+  key: string; 
+  value: any; 
+  group?: string; 
+  description?: string;
+  name?: string;
+}) {
   try {
-    const res = await fetchWithAuth("/site-settings/upsert", {
+    const res = await fetchWithAuth("/site-setting/upsert", {
       method: "POST",
       body: JSON.stringify(payload),
     });
@@ -63,7 +68,7 @@ export async function upsertSetting(payload: { key: string; value: any; group?: 
  */
 export async function bulkUpsertSettings(settings: TSiteSetting[]) {
   try {
-    const res = await fetchWithAuth("/site-settings/bulk-upsert", {
+    const res = await fetchWithAuth("/site-setting/bulk-upsert", {
       method: "POST",
       body: JSON.stringify({ settings }),
     });
@@ -79,12 +84,13 @@ export async function bulkUpsertSettings(settings: TSiteSetting[]) {
  */
 export async function deleteSetting(key: string) {
   try {
-    const res = await fetchWithAuth(`/site-settings/${key}`, {
+    const res = await fetchWithAuth(`/site-setting/${key}`, {
       method: "DELETE",
     });
     return res.json() as Promise<TSiteSettingResponse<null>>;
   } catch (error) {
     console.error(`Error deleting setting ${key}:`, error);
+    return { success: false, message: "Failed to delete setting", data: null };
   }
 }
 
@@ -93,7 +99,7 @@ export async function deleteSetting(key: string) {
  */
 export async function bulkDeleteSettings(keys: string[]) {
   try {
-    const res = await fetchWithAuth("/site-settings/bulk-delete", {
+    const res = await fetchWithAuth("/site-setting/bulk-delete", {
       method: "DELETE",
       body: JSON.stringify({ keys }),
     });

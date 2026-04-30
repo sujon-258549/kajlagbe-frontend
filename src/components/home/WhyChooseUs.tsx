@@ -45,9 +45,9 @@ export default function WhyChooseUs() {
   
   useEffect(() => {
     const fetchWhyData = async () => {
-      const res = await getSettingsMap();
-      if (res.success && res.data.home_why_choose_us) {
-        setData(res.data.home_why_choose_us);
+      const res = await getSettingsMap("home");
+      if (res.success && res.data.home_why) {
+        setData(res.data.home_why.value);
       }
       setIsLoading(false);
     };

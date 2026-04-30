@@ -12,6 +12,8 @@ import {
   ServiceSliderFormData,
   ServiceSliderHeaderFormData,
 } from "@/schemas/services/slider.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { useEffect } from "react";
 
 const initialProjects = [
   {
@@ -51,6 +53,19 @@ export default function ServicesVerticalSlider() {
   const [editingItem, setEditingItem] = useState<ServiceSliderItem | undefined>(
     undefined,
   );
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    const fetchSliderData = async () => {
+      const res = await getSettingsMap("home");
+      if (res.success && res.data.home_service_slider) {
+        setData(res.data.home_service_slider.value);
+      }
+      setIsLoading(false);
+    };
+    fetchSliderData();
+  }, []);
 
   const handleAddItem = () => {
     setEditingItem(undefined);
@@ -62,35 +77,83 @@ export default function ServicesVerticalSlider() {
     setIsItemModalOpen(true);
   };
 
-  const handleSaveItem = (updatedItem: ServiceSliderItem) => {
-    if (editingItem) {
-      setData((prev) => ({
-        ...prev,
-        projects: prev.projects.map((item) =>
-          item.id === editingItem.id ? updatedItem : item,
-        ),
-      }));
-    } else {
-      setData((prev) => ({
-        ...prev,
-        projects: [...prev.projects, { ...updatedItem, id: Date.now() }],
-      }));
+  const handleSaveItem = async (updatedItem: ServiceSliderItem) => {
+    setIsUpdating(true);
+    try {
+      let updatedProjects;
+      if (editingItem) {
+        updatedProjects = data.projects.map((item) =>
+          item.id === editingItem.id ? updatedItem : item
+        );
+      } else {
+        updatedProjects = [...data.projects, { ...updatedItem, id: Date.now() }];
+      }
+      
+      const newData = { ...data, projects: updatedProjects };
+      const res = await upsertSetting({
+        key: "home_service_slider",
+        value: newData,
+        group: "home",
+        description: "Homepage Service Slider Settings",
+      });
+      
+      if (res.success) {
+        setData(newData);
+        setIsItemModalOpen(false);
+        setEditingItem(undefined);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
     }
-    setIsItemModalOpen(false);
   };
 
-  const handleDeleteItem = () => {
-    if (editingItem) {
-      setData((prev) => ({
-        ...prev,
-        projects: prev.projects.filter((item) => item.id !== editingItem.id),
-      }));
-      setIsItemModalOpen(false);
+  const handleDeleteItem = async () => {
+    if (!editingItem) return;
+    
+    setIsUpdating(true);
+    try {
+      const updatedProjects = data.projects.filter((item) => item.id !== editingItem.id);
+      const newData = { ...data, projects: updatedProjects };
+      const res = await upsertSetting({
+        key: "home_service_slider",
+        value: newData,
+        group: "home",
+        description: "Homepage Service Slider Settings",
+      });
+      
+      if (res.success) {
+        setData(newData);
+        setIsItemModalOpen(false);
+        setEditingItem(undefined);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
-  const handleUpdateHeader = (headerData: ServiceSliderHeaderFormData) => {
-    setData((prev) => ({ ...prev, ...headerData }));
+  const handleUpdateHeader = async (headerData: ServiceSliderHeaderFormData) => {
+    setIsUpdating(true);
+    try {
+      const newData = { ...data, ...headerData };
+      const res = await upsertSetting({
+        key: "home_service_slider",
+        value: newData,
+        group: "home",
+        description: "Homepage Service Slider Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsHeaderModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -188,14 +251,19 @@ export default function ServicesVerticalSlider() {
         onClose={() => setIsHeaderModalOpen(false)}
         initialData={{ title: data.title }}
         onUpdate={handleUpdateHeader}
+        isLoading={isUpdating}
       />
 
       <ServiceSliderItemModal
         isOpen={isItemModalOpen}
-        onClose={() => setIsItemModalOpen(false)}
+        onClose={() => {
+          setIsItemModalOpen(false);
+          setEditingItem(undefined);
+        }}
         item={editingItem}
         onSave={handleSaveItem}
         onDelete={handleDeleteItem}
+        isLoading={isUpdating}
       />
     </section>
   );

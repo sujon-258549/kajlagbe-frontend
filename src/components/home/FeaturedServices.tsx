@@ -55,6 +55,7 @@ export default function FeaturedServices() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [settingName, setSettingName] = useState("Featured Services");
   const [data, setData] = useState<FeaturedServicesFormData>({
     tagline: "Features",
     mainTitle: "Premier One-Stop Custom Print Solutions",
@@ -66,16 +67,19 @@ export default function FeaturedServices() {
   
   useEffect(() => {
     const fetchFeaturedData = async () => {
-      const res = await getSettingsMap();
+      const res = await getSettingsMap("home");
       if (res.success && res.data.home_featured_services) {
-        setData(res.data.home_featured_services);
+        setData(res.data.home_featured_services.value);
+        if (res.data.home_featured_services.name) {
+          setSettingName(res.data.home_featured_services.name);
+        }
       }
       setIsLoading(false);
     };
     fetchFeaturedData();
   }, []);
 
-  const handleUpdate = async (newData: FeaturedServicesFormData) => {
+  const handleUpdate = async (newData: FeaturedServicesFormData, newName?: string) => {
     setIsUpdating(true);
     try {
       const res = await upsertSetting({
@@ -83,9 +87,11 @@ export default function FeaturedServices() {
         value: newData,
         group: "home",
         description: "Homepage Featured Services Settings",
+        name: newName || settingName,
       });
       if (res.success) {
         setData(newData);
+        if (newName) setSettingName(newName);
         setIsModalOpen(false);
       }
     } catch (error) {
@@ -107,78 +113,23 @@ export default function FeaturedServices() {
             <Edit className="w-3.5 h-3.5" />
           </button>
         </AdminOnly>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-fr">
-          {/* Slot 1 */}
-          <div className="relative group h-[250px] md:h-[300px] lg:h-[350px] rounded-2xl overflow-hidden border border-slate-200">
-            <CustomImage
-              src={data.showcase[0].image}
-              alt={data.showcase[0].title}
-              fill
-              wrapperClassName="w-full h-full"
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-            <div
-              className="absolute inset-0 flex flex-col justify-center items-center text-center p-4
-                            bg-black/20 backdrop-blur-sm opacity-100 md:opacity-0 group-hover:opacity-100
-                            transition-all duration-300"
-            >
-              <Heading5 className="text-white font-bold text-lg">
-                {data.showcase[0].title}
-              </Heading5>
-              <p className="text-gray-200 text-sm mt-2">
-                {data.showcase[0].description}
-              </p>
-            </div>
-          </div>
 
-          {/* Slot 2 */}
-          <div className="relative group h-[250px] md:h-[300px] lg:h-[350px] rounded-2xl overflow-hidden border border-slate-200">
-            <CustomImage
-              src={data.showcase[1].image}
-              alt={data.showcase[1].title}
-              fill
-              wrapperClassName="w-full h-full"
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-            <div
-              className="absolute inset-0 flex flex-col justify-center items-center text-center p-4
-                            bg-black/20 backdrop-blur-sm opacity-100 md:opacity-0 group-hover:opacity-100
-                            transition-all duration-300"
-            >
-              <Heading5 className="text-white font-bold text-lg">
-                {data.showcase[1].title}
-              </Heading5>
-              <p className="text-gray-200 text-sm mt-2">
-                {data.showcase[1].description}
-              </p>
-            </div>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-pulse">
+            <div className="h-[250px] md:h-[300px] lg:h-[350px] bg-slate-100 rounded-2xl" />
+            <div className="h-[250px] md:h-[300px] lg:h-[350px] bg-slate-100 rounded-2xl" />
+            <div className="md:col-span-2 h-[250px] md:h-[300px] lg:h-[350px] bg-slate-100 rounded-2xl" />
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-[250px] md:h-[300px] lg:h-[350px] bg-slate-100 rounded-2xl" />
+            ))}
           </div>
-
-          {/* Slot 3-4 Header Block */}
-          <div className="md:col-span-2 bg-[#fdfdfd] rounded-2xl p-6 lg:p-8 flex flex-col justify-center space-y-4 border-2 border-dashed border-secondary h-[250px] md:h-[300px] lg:h-[350px]">
-            <span className="text-[#ff4d1c] font-serif italic text-xl lg:text-2xl">
-              {data.tagline}
-            </span>
-            <Heading3 className=" font-bold  leading-[1.1] text-xl md:text-3xl lg:text-4xl">
-              {data.mainTitle}
-            </Heading3>
-            <p className="text-gray-500 text-xs md:text-sm leading-relaxed max-w-md">
-              {data.mainDescription}
-            </p>
-            <div>
-              <Button className="rounded-md">{data.buttonText}</Button>
-            </div>
-          </div>
-
-          {/* Remaining slots */}
-          {data.showcase.slice(2).map((service, index) => (
-            <div
-              key={index}
-              className="relative group h-[250px] md:h-[300px] lg:h-[350px] rounded-2xl overflow-hidden border border-slate-200"
-            >
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-fr">
+            {/* Slot 1 */}
+            <div className="relative group h-[250px] md:h-[300px] lg:h-[350px] rounded-2xl overflow-hidden border border-slate-200">
               <CustomImage
-                src={service.image}
-                alt={service.title}
+                src={data.showcase[0].image}
+                alt={data.showcase[0].title}
                 fill
                 wrapperClassName="w-full h-full"
                 className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -189,23 +140,95 @@ export default function FeaturedServices() {
                               transition-all duration-300"
               >
                 <Heading5 className="text-white font-bold text-lg">
-                  {service.title}
+                  {data.showcase[0].title}
                 </Heading5>
                 <p className="text-gray-200 text-sm mt-2">
-                  {service.description}
+                  {data.showcase[0].description}
                 </p>
               </div>
             </div>
-          ))}
-        </div>
+
+            {/* Slot 2 */}
+            <div className="relative group h-[250px] md:h-[300px] lg:h-[350px] rounded-2xl overflow-hidden border border-slate-200">
+              <CustomImage
+                src={data.showcase[1].image}
+                alt={data.showcase[1].title}
+                fill
+                wrapperClassName="w-full h-full"
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                className="absolute inset-0 flex flex-col justify-center items-center text-center p-4
+                              bg-black/20 backdrop-blur-sm opacity-100 md:opacity-0 group-hover:opacity-100
+                              transition-all duration-300"
+              >
+                <Heading5 className="text-white font-bold text-lg">
+                  {data.showcase[1].title}
+                </Heading5>
+                <p className="text-gray-200 text-sm mt-2">
+                  {data.showcase[1].description}
+                </p>
+              </div>
+            </div>
+
+            {/* Slot 3-4 Header Block */}
+            <div className="md:col-span-2 bg-[#fdfdfd] rounded-2xl p-6 lg:p-8 flex flex-col justify-center space-y-4 border-2 border-dashed border-secondary h-[250px] md:h-[300px] lg:h-[350px]">
+              <span className="text-[#ff4d1c] font-serif italic text-xl lg:text-2xl">
+                {data.tagline}
+              </span>
+              <Heading3 className=" font-bold  leading-[1.1] text-xl md:text-3xl lg:text-4xl">
+                {data.mainTitle}
+              </Heading3>
+              <p className="text-gray-500 text-xs md:text-sm leading-relaxed max-w-md">
+                {data.mainDescription}
+              </p>
+              <div>
+                <Button className="rounded-md">{data.buttonText}</Button>
+              </div>
+            </div>
+
+            {/* Remaining slots */}
+            {data.showcase.slice(2).map((service, index) => (
+              <div
+                key={index}
+                className="relative group h-[250px] md:h-[300px] lg:h-[350px] rounded-2xl overflow-hidden border border-slate-200"
+              >
+                <CustomImage
+                  src={service.image}
+                  alt={service.title}
+                  fill
+                  wrapperClassName="w-full h-full"
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div
+                  className="absolute inset-0 flex flex-col justify-center items-center text-center p-4
+                                bg-black/20 backdrop-blur-sm opacity-100 md:opacity-0 group-hover:opacity-100
+                                transition-all duration-300"
+                >
+                  <Heading5 className="text-white font-bold text-lg">
+                    {service.title}
+                  </Heading5>
+                  <p className="text-gray-200 text-sm mt-2">
+                    {service.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <FeaturedServicesModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={data}
-        onUpdate={handleUpdate}
+        onUpdate={(newData, newName) => {
+          if (newName) setSettingName(newName);
+          handleUpdate(newData, newName);
+        }}
         isLoading={isUpdating}
+        settingName={settingName}
+        settingKey="home_featured_services"
       />
     </section>
   );

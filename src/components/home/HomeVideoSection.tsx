@@ -26,9 +26,9 @@ export default function HomeVideoSection() {
 
   useEffect(() => {
     const fetchVideoData = async () => {
-      const res = await getSettingsMap();
+      const res = await getSettingsMap("home");
       if (res.success && res.data.home_video) {
-        setData(res.data.home_video);
+        setData(res.data.home_video.value);
       }
       setIsLoading(false);
     };

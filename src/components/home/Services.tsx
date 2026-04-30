@@ -129,9 +129,9 @@ export default function Services() {
 
   useEffect(() => {
     const fetchServicesData = async () => {
-      const res = await getSettingsMap();
+      const res = await getSettingsMap("home");
       if (res.success && res.data.home_services) {
-        setServicesData(res.data.home_services);
+        setServicesData(res.data.home_services.value);
       }
       setIsLoading(false);
     };

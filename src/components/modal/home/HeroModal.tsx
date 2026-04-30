@@ -23,8 +23,10 @@ interface HeroModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData: HeroFormData;
-  onUpdate: (data: HeroFormData) => void;
+  onUpdate: (data: HeroFormData, name: string) => void;
   isLoading?: boolean;
+  settingName: string;
+  settingKey: string;
 }
 
 const HeroModal: React.FC<HeroModalProps> = ({
@@ -33,7 +35,17 @@ const HeroModal: React.FC<HeroModalProps> = ({
   initialData,
   onUpdate,
   isLoading = false,
+  settingName,
+  settingKey,
 }) => {
+  const [prevSettingName, setPrevSettingName] = React.useState(settingName);
+  const [localSettingName, setLocalSettingName] = React.useState(settingName);
+
+  if (settingName !== prevSettingName) {
+    setPrevSettingName(settingName);
+    setLocalSettingName(settingName);
+  }
+
   const form = useForm<HeroFormData>({
     resolver: zodResolver(heroSchema),
     defaultValues: initialData,
@@ -51,8 +63,7 @@ const HeroModal: React.FC<HeroModalProps> = ({
   }, [isOpen, initialData, form]);
 
   const onSubmit = (data: HeroFormData) => {
-    onUpdate(data);
-    onClose();
+    onUpdate(data, localSettingName);
   };
 
   return (
@@ -65,7 +76,30 @@ const HeroModal: React.FC<HeroModalProps> = ({
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border">
+            <FormItem>
+              <FormLabel className="text-secondary font-bold">Setting Name</FormLabel>
+              <FormControl>
+                <FormInput 
+                  value={localSettingName}
+                  onChange={(e) => setLocalSettingName(e.target.value)}
+                  placeholder="e.g. Homepage Hero"
+                />
+              </FormControl>
+            </FormItem>
+            <FormItem>
+              <FormLabel className="text-slate-400 font-bold">Setting Key (Read-only)</FormLabel>
+              <FormControl>
+                <FormInput 
+                  value={settingKey}
+                  readOnly
+                  className="bg-slate-100 cursor-not-allowed opacity-70"
+                />
+              </FormControl>
+            </FormItem>
+          </div>
+
+          <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
             {fields.map((field, index) => (
               <div
                 key={field.id}

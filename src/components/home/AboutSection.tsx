@@ -36,9 +36,9 @@ export default function AboutSection() {
   
   useEffect(() => {
     const fetchAboutData = async () => {
-      const res = await getSettingsMap();
+      const res = await getSettingsMap("home");
       if (res.success && res.data.home_about) {
-        setData(res.data.home_about);
+        setData(res.data.home_about.value);
       }
       setIsLoading(false);
     };

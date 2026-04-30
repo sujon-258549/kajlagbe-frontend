@@ -65,9 +65,9 @@ export default function FAQSection() {
   
   useEffect(() => {
     const fetchFaqData = async () => {
-      const res = await getSettingsMap();
+      const res = await getSettingsMap("home");
       if (res.success && res.data.home_faq) {
-        setData(res.data.home_faq);
+        setData(res.data.home_faq.value);
       }
       setIsLoading(false);
     };

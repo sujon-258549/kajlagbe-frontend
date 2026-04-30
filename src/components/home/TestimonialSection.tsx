@@ -62,9 +62,9 @@ export default function TestimonialSection() {
   
   useEffect(() => {
     const fetchTestimonialData = async () => {
-      const res = await getSettingsMap();
+      const res = await getSettingsMap("home");
       if (res.success && res.data.home_testimonial) {
-        setData(res.data.home_testimonial);
+        setData(res.data.home_testimonial.value);
       }
       setIsLoading(false);
     };

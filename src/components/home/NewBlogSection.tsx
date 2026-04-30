@@ -58,36 +58,42 @@ export default function NewBlogSection() {
   const [isUpdatingHeader, setIsUpdatingHeader] = useState(false);
   const [isUpdatingPost, setIsUpdatingPost] = useState(false);
 
-  const [data, setData] = useState<HomeBlogFormData>({
+  const [headerData, setHeaderData] = useState<HomeBlogHeaderFormData>({
     badge: "News & Blog",
     title: "Check Latest Blog Post",
     buttonText: "Read All Posts",
-    posts: initialBlogPosts,
   });
+  const [posts, setPosts] = useState<HomeBlogItemFormData[]>(initialBlogPosts);
+
+  const data = { ...headerData, posts };
 
   useEffect(() => {
     const fetchBlogData = async () => {
-      const res = await getSettingsMap();
-      if (res.success && res.data.home_blog) {
-        setData(res.data.home_blog);
+      const res = await getSettingsMap("home");
+      if (res.success) {
+        if (res.data.home_blog_header) {
+          setHeaderData(res.data.home_blog_header.value);
+        }
+        if (res.data.home_blog_posts) {
+          setPosts(res.data.home_blog_posts.value);
+        }
       }
       setIsLoading(false);
     };
     fetchBlogData();
   }, []);
 
-  const handleUpdateHeader = async (headerData: HomeBlogHeaderFormData) => {
+  const handleUpdateHeader = async (newHeaderData: HomeBlogHeaderFormData) => {
     setIsUpdatingHeader(true);
     try {
-      const newData = { ...data, ...headerData };
       const res = await upsertSetting({
-        key: "home_blog",
-        value: newData,
+        key: "home_blog_header",
+        value: newHeaderData,
         group: "home",
-        description: "Homepage Blog Section Settings",
+        description: "Homepage Blog Section Header Settings",
       });
       if (res.success) {
-        setData(newData);
+        setHeaderData(newHeaderData);
         setIsHeaderModalOpen(false);
       }
     } catch (error) {
@@ -96,27 +102,25 @@ export default function NewBlogSection() {
       setIsUpdatingHeader(false);
     }
   };
-
   const handleUpdatePost = async (postData: HomeBlogItemFormData) => {
     setIsUpdatingPost(true);
     try {
-      const updatedPosts = [...data.posts];
+      let updatedPosts = [...posts];
       if (editingIndex !== null) {
         updatedPosts[editingIndex] = postData;
       } else {
         updatedPosts.push(postData);
       }
       
-      const newData = { ...data, posts: updatedPosts };
       const res = await upsertSetting({
-        key: "home_blog",
-        value: newData,
+        key: "home_blog_posts",
+        value: updatedPosts,
         group: "home",
-        description: "Homepage Blog Section Settings",
+        description: "Homepage Blog Section Posts Settings",
       });
       
       if (res.success) {
-        setData(newData);
+        setPosts(updatedPosts);
         setIsPostModalOpen(false);
         setEditingIndex(null);
       }
@@ -132,17 +136,16 @@ export default function NewBlogSection() {
     
     setIsUpdatingPost(true);
     try {
-      const updatedPosts = data.posts.filter((_, i) => i !== editingIndex);
-      const newData = { ...data, posts: updatedPosts };
+      const updatedPosts = posts.filter((_, i) => i !== editingIndex);
       const res = await upsertSetting({
-        key: "home_blog",
-        value: newData,
+        key: "home_blog_posts",
+        value: updatedPosts,
         group: "home",
-        description: "Homepage Blog Section Settings",
+        description: "Homepage Blog Section Posts Settings",
       });
       
       if (res.success) {
-        setData(newData);
+        setPosts(updatedPosts);
         setIsPostModalOpen(false);
         setEditingIndex(null);
       }
