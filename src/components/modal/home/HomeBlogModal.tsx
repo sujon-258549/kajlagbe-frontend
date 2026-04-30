@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -159,10 +159,13 @@ const HomeBlogModal: React.FC<HomeBlogModalProps> = ({
                     <FormItem className="col-span-1">
                       <FormLabel className="text-xs">Blog Image</FormLabel>
                       <FormControl>
-                        <ImageUpload
+                        <MediaLibraryImageUploader
                           value={field.value}
-                          onValueChange={field.onChange}
-                          className="aspect-square w-full"
+                          onChange={(url, id) => {
+                            field.onChange(url);
+                            if (id) form.setValue(`posts.${index}.imageId`, id);
+                          }}
+                          className="w-full"
                         />
                       </FormControl>
                       <FormMessage />
@@ -235,6 +238,7 @@ const HomeBlogModal: React.FC<HomeBlogModalProps> = ({
                   title: "",
                   image:
                     "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&q=80&w=800",
+                  imageId: "",
                   day: "01",
                   month: "Jan",
                   author: "Admin",

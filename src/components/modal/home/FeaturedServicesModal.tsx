@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import FormTextarea from "@/components/common/FormTextarea";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -168,10 +168,13 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
                       <FormItem>
                         <FormLabel className="text-xs">Service Image</FormLabel>
                         <FormControl>
-                          <ImageUpload
+                          <MediaLibraryImageUploader
                             value={field.value}
-                            onValueChange={field.onChange}
-                            className="aspect-square w-full"
+                            onChange={(url, id) => {
+                              field.onChange(url);
+                              if (id) form.setValue(`showcase.${index}.imageId`, id);
+                            }}
+                            className="w-full"
                           />
                         </FormControl>
                         <FormMessage />

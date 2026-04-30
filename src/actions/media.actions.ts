@@ -29,3 +29,17 @@ export async function createFolder(payload: { name: string; parentId?: string | 
   });
   return res.json() as Promise<TFolderResponse<TFolder>>;
 }
+
+export async function deleteImage(id: string) {
+  const res = await fetchWithAuth(`/media/images/${id}`, {
+    method: "DELETE",
+  });
+  return res.json();
+}
+
+export async function deleteFolder(id: string) {
+  const res = await fetchWithAuth(`/folder/${id}`, {
+    method: "DELETE",
+  });
+  return res.json();
+}

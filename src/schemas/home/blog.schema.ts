@@ -3,6 +3,7 @@ import { z } from "zod";
 export const homeBlogItemSchema = z.object({
   title: z.string().min(1, "Title is required"),
   image: z.string().min(1, "Image is required"),
+  imageId: z.string().optional(),
   day: z.string().min(1, "Day is required"),
   month: z.string().min(1, "Month is required"),
   author: z.string().min(1, "Author is required"),

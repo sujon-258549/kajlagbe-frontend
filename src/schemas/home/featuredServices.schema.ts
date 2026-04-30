@@ -4,6 +4,7 @@ export const featuredServiceItemSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   image: z.string().url("Must be a valid URL"),
+  imageId: z.string().optional(),
 });
 
 export const featuredServicesSchema = z.object({
