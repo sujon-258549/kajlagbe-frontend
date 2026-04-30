@@ -10,18 +10,21 @@ import {
   ArrowUp, 
   Folder, 
   Image as ImageIcon, 
-  Pin,
+  FolderPlus,
+  Loader2,
+  X,
   Search,
-  Loader2
+  CheckCircle2
 } from "lucide-react";
 import CommonModal from "../common/CommonModal";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TFolder, TMediaImage } from "@/types/media";
-import { getAllFolders, getImages, uploadImage } from "@/actions/media.actions";
+import { getAllFolders, getImages, uploadImage, createFolder } from "@/actions/media.actions";
 import { uploadMediaImage } from "@/lib/imageUpload";
 import { cn } from "@/lib/utils";
+import CreateFolderModal from "./CreateFolderModal";
+import Image from "next/image";
 
 export type MediaLibraryPickerModalProps = {
   isOpen: boolean;
@@ -38,17 +41,6 @@ export type MediaLibraryPickerModalProps = {
 
 const parentKey = (id: string | null | undefined) =>
   id == null || id === "" ? null : id;
-
-/** Match DB row to Cloudinary URL after refetch. */
-function urlMatchKey(u: string): string {
-  const t = u.trim();
-  try {
-    const x = new URL(t);
-    return `${x.origin}${x.pathname}`.toLowerCase();
-  } catch {
-    return t.toLowerCase();
-  }
-}
 
 export default function MediaLibraryPickerModal({
   isOpen,
@@ -68,6 +60,7 @@ export default function MediaLibraryPickerModal({
   const [folders, setFolders] = useState<TFolder[]>([]);
   const [libraryImages, setLibraryImages] = useState<TMediaImage[]>([]);
   const [pendingUploaded, setPendingUploaded] = useState<TMediaImage[]>([]);
+  const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
 
   const fetchFolders = useCallback(async () => {
     try {
@@ -143,11 +136,6 @@ export default function MediaLibraryPickerModal({
     return [...libraryImages, ...extra];
   }, [libraryImages, pendingUploaded, currentFolderId]);
 
-  const pathSubtitle = useMemo(() => {
-    if (currentPath.length === 0) return "All Folders";
-    return ["All Folders", ...currentPath.map((n) => n.name)].join(" / ");
-  }, [currentPath]);
-
   useEffect(() => {
     if (!isOpen) {
       setCurrentFolderId(null);
@@ -173,7 +161,6 @@ export default function MediaLibraryPickerModal({
           return new Set([img.id]);
         }
         if (maxSelection != null && next.size >= maxSelection) {
-          alert(`You can select at most ${maxSelection} image(s).`);
           return prev;
         }
         next.add(img.id);
@@ -193,30 +180,25 @@ export default function MediaLibraryPickerModal({
 
     const imageFiles = picked.filter((f) => f.type.startsWith("image/"));
     if (imageFiles.length === 0) {
-      alert("Please choose image files.");
       return;
     }
 
     setUploading(true);
     let ok = 0;
-    const uploadedIds: string[] = [];
     const newPendingRows: TMediaImage[] = [];
-    const uploadedPublicUrls: string[] = [];
     
     try {
       for (const file of imageFiles) {
         try {
-          const { result: res, publicUrl } = await uploadMediaImage(
+          const { result: res } = await uploadMediaImage(
             file,
             currentFolderId,
             (payload) => uploadImage(payload),
           );
           
           if (res.success) {
-            uploadedPublicUrls.push(publicUrl);
             const row = res.data;
             if (row) {
-              uploadedIds.push(row.id);
               newPendingRows.push(row);
             }
             ok += 1;
@@ -241,6 +223,20 @@ export default function MediaLibraryPickerModal({
     }
   };
 
+  const handleCreateFolder = async (data: { name: string }) => {
+    try {
+      const res = await createFolder({
+        name: data.name,
+        parentId: currentFolderId,
+      });
+      if (res.success) {
+        fetchFolders();
+      }
+    } catch (err) {
+      console.error("Failed to create folder", err);
+    }
+  };
+
   const handleConfirm = () => {
     const selected = displayLibraryImages.filter((img) => selectedIds.has(img.id));
     if (selected.length === 0) {
@@ -256,222 +252,267 @@ export default function MediaLibraryPickerModal({
   };
 
   return (
-    <CommonModal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={title}
-      description="Folders, images, upload from PC — check images then confirm."
-      maxWidth="5xl"
-      className="p-0!"
-    >
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        multiple
-        className="hidden"
-        aria-hidden
-        onChange={handleFileChange}
-      />
+    <>
+      <CommonModal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={title}
+        description="Folders, images, upload from PC — check images then confirm."
+        maxWidth="5xl"
+        className="p-0!"
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          className="hidden"
+          aria-hidden
+          onChange={handleFileChange}
+        />
 
-      <div className="flex flex-col h-[70vh]">
-        {/* Toolbar */}
-        <div className="flex flex-wrap items-center gap-2 border-b border-gray-100 bg-gray-50/50 px-6 py-3 text-sm">
-          <span className="font-semibold text-gray-700 shrink-0">Path:</span>
-          <button
-            type="button"
-            className={cn(
-              "rounded-md px-2 py-0.5 font-medium transition-colors",
-              currentFolderId === null
-                ? "bg-secondary/10 text-secondary"
-                : "text-gray-600 hover:bg-gray-100 hover:text-secondary"
-            )}
-            onClick={() => goToFolder(null)}
-          >
-            All Folders
-          </button>
-          {currentPath.map((node) => (
-            <span key={node.id} className="flex items-center gap-1 text-gray-400">
-              <span>/</span>
-              <button
-                type="button"
-                className={cn(
-                  "rounded-md px-2 py-0.5 font-medium transition-colors",
-                  currentFolderId === node.id
-                    ? "bg-secondary/10 text-secondary"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-secondary"
-                )}
-                onClick={() => goToFolder(node.id)}
+        <div className="flex flex-col h-[70vh]">
+          {/* Toolbar */}
+          <div className="flex flex-wrap items-center gap-2 border-b border-gray-100 bg-gray-50/50 px-6 py-3 text-sm">
+            <span className="font-semibold text-gray-700 shrink-0">Path:</span>
+            <button
+              type="button"
+              className={cn(
+                "rounded-md px-2 py-0.5 font-medium transition-colors",
+                currentFolderId === null
+                  ? "bg-secondary/10 text-secondary"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-secondary"
+              )}
+              onClick={() => goToFolder(null)}
+            >
+              All Folders
+            </button>
+            {currentPath.map((node) => (
+              <span key={node.id} className="flex items-center gap-1 text-gray-400">
+                <span>/</span>
+                <button
+                  type="button"
+                  className={cn(
+                    "rounded-md px-2 py-0.5 font-medium transition-colors",
+                    currentFolderId === node.id
+                      ? "bg-secondary/10 text-secondary"
+                      : "text-gray-600 hover:bg-gray-100 hover:text-secondary"
+                  )}
+                  onClick={() => goToFolder(node.id)}
+                >
+                  {node.name}
+                </button>
+              </span>
+            ))}
+            
+            <div className="ml-auto flex items-center gap-2">
+              <span className="text-xs text-gray-500 mr-2">
+                {selectedIds.size} selected
+                {!multiple ? " (single)" : ""}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8"
+                onClick={handleRefresh}
               >
-                {node.name}
-              </button>
-            </span>
-          ))}
-          
-          <div className="ml-auto flex items-center gap-2">
-            <span className="text-xs text-gray-500 mr-2">
-              {selectedIds.size} selected
-              {!multiple ? " (single)" : ""}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8"
-              onClick={handleRefresh}
-            >
-              <RotateCw className="w-3.5 h-3.5 mr-1.5" />
-              Refresh
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8"
-              onClick={() => goToFolder(parentFolder?.parentId ?? null)}
-              disabled={!currentFolderId}
-            >
-              <ArrowUp className="w-3.5 h-3.5 mr-1.5" />
-              Up
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              className="h-8 bg-secondary text-white hover:bg-secondary/90"
-              disabled={uploading}
-              onClick={handlePickFiles}
-            >
-              {uploading ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Upload className="w-3.5 h-3.5 mr-1.5" />}
-              Upload
-            </Button>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 bg-white">
-          {loading && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {[...Array(10)].map((_, i) => (
-                <Skeleton key={i} className="h-32 rounded-lg" />
-              ))}
-            </div>
-          )}
-
-          {!loading && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {/* Folders */}
-              {currentFolders.map((folder) => {
-                const inactive = folder.status === false;
-                return (
-                  <div
-                    key={folder.id}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => !inactive && goToFolder(folder.id)}
-                    className={cn(
-                      "group relative flex flex-col items-center justify-center gap-2 rounded-xl border p-4 text-center transition-all duration-200 select-none",
-                      inactive
-                        ? "cursor-default opacity-50 bg-gray-50 border-gray-100"
-                        : "cursor-pointer bg-white border-gray-100 hover:border-secondary/50 hover:bg-secondary/5 hover:shadow-sm active:scale-95"
-                    )}
-                  >
-                    <div className="relative">
-                      <Folder
-                        className={cn(
-                          "w-12 h-12 transition-colors",
-                          inactive ? "text-gray-300" : "text-amber-400 fill-amber-400/10 group-hover:text-amber-500"
-                        )}
-                      />
-                    </div>
-                    <div className="w-full">
-                      <span className="block truncate font-semibold text-gray-900 text-sm">{folder.name}</span>
-                      <span className="text-[10px] text-gray-400">Folder</span>
-                    </div>
-                  </div>
-                );
-              })}
-
-              {/* Images */}
-              {displayLibraryImages.map((img) => {
-                const checked = selectedIds.has(img.id);
-                return (
-                  <div
-                    key={img.id}
-                    role="checkbox"
-                    aria-checked={checked}
-                    tabIndex={0}
-                    onClick={() => toggleImage(img)}
-                    className={cn(
-                      "group relative aspect-square cursor-pointer overflow-hidden rounded-xl border transition-all duration-200 select-none",
-                      checked
-                        ? "border-secondary ring-2 ring-secondary/20 shadow-md"
-                        : "border-gray-100 bg-gray-50 hover:border-secondary/30 hover:shadow-sm"
-                    )}
-                  >
-                    <img 
-                      src={img.url} 
-                      alt={img.name} 
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    
-                    {/* Checkbox overlay */}
-                    <div className={cn(
-                      "absolute top-2 left-2 z-10 transition-opacity",
-                      checked ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                    )}>
-                      <div className={cn(
-                        "w-5 h-5 rounded-md flex items-center justify-center border transition-all",
-                        checked ? "bg-secondary border-secondary" : "bg-white/80 backdrop-blur-sm border-white/40"
-                      )}>
-                        {checked && <div className="w-2 h-2 rounded-full bg-white" />}
-                      </div>
-                    </div>
-
-                    {/* Gradient overlay for name */}
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 pt-6 translate-y-full group-hover:translate-y-0 transition-transform">
-                      <span className="block truncate text-[10px] font-medium text-white">{img.name}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {!loading && currentFolders.length === 0 && displayLibraryImages.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center mb-4">
-                <ImageIcon className="w-8 h-8 text-gray-300" />
-              </div>
-              <h3 className="text-sm font-semibold text-gray-900">No images found</h3>
-              <p className="text-xs text-gray-500 mt-1 max-w-[200px]">
-                This folder is empty. Upload some images or choose another folder.
-              </p>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="mt-4"
+                <RotateCw className="w-3.5 h-3.5 mr-1.5" />
+                Refresh
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8"
+                onClick={() => goToFolder(parentFolder?.parentId ?? null)}
+                disabled={!currentFolderId}
+              >
+                <ArrowUp className="w-3.5 h-3.5 mr-1.5" />
+                Up
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 border-secondary/30 text-secondary hover:bg-secondary/5"
+                onClick={() => setIsCreateFolderOpen(true)}
+              >
+                <FolderPlus className="w-3.5 h-3.5 mr-1.5" />
+                New Folder
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="h-8 bg-secondary text-white hover:bg-secondary/90 shadow-sm"
+                disabled={uploading}
                 onClick={handlePickFiles}
               >
-                <Plus className="w-3.5 h-3.5 mr-1.5" />
-                Upload Image
+                {uploading ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Upload className="w-3.5 h-3.5 mr-1.5" />}
+                Upload
               </Button>
             </div>
-          )}
-        </div>
+          </div>
 
-        {/* Footer */}
-        <div className="flex items-center justify-end gap-3 border-t border-gray-100 bg-white px-6 py-4">
-          <Button variant="outline" onClick={onClose} className="h-9 px-6">
-            Cancel
-          </Button>
-          <Button
-            className="h-9 px-6 bg-secondary text-white hover:bg-secondary/90 font-bold"
-            onClick={handleConfirm}
-            disabled={selectedIds.size === 0}
-          >
-            {okText}
-            {selectedIds.size > 0 ? ` (${selectedIds.size})` : ""}
-          </Button>
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto p-6 bg-white relative">
+            {loading && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {[...Array(10)].map((_, i) => (
+                  <Skeleton key={i} className="aspect-square rounded-xl" />
+                ))}
+              </div>
+            )}
+
+            {!loading && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {/* Folders */}
+                {currentFolders.map((folder) => {
+                  const inactive = folder.status === false;
+                  return (
+                    <div
+                      key={folder.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => !inactive && goToFolder(folder.id)}
+                      className={cn(
+                        "group relative flex flex-col items-center justify-center gap-2 rounded-xl border p-4 text-center transition-all duration-200 select-none aspect-square",
+                        inactive
+                          ? "cursor-default opacity-50 bg-gray-50 border-gray-100"
+                          : "cursor-pointer bg-white border-gray-100 hover:border-secondary/50 hover:bg-secondary/5 hover:shadow-md active:scale-95"
+                      )}
+                    >
+                      <div className="relative">
+                        <Folder
+                          className={cn(
+                            "w-12 h-12 transition-all duration-300",
+                            inactive ? "text-gray-300" : "text-amber-400 fill-amber-400/10 group-hover:scale-110 group-hover:text-amber-500"
+                          )}
+                        />
+                      </div>
+                      <div className="w-full">
+                        <span className="block truncate font-bold text-gray-900 text-sm">{folder.name}</span>
+                        <span className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Folder</span>
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Images */}
+                {displayLibraryImages.map((img) => {
+                  const checked = selectedIds.has(img.id);
+                  return (
+                    <div
+                      key={img.id}
+                      role="checkbox"
+                      aria-checked={checked}
+                      tabIndex={0}
+                      onClick={() => toggleImage(img)}
+                      className={cn(
+                        "group relative aspect-square cursor-pointer overflow-hidden rounded-xl border transition-all duration-300 select-none",
+                        checked
+                          ? "border-secondary ring-4 ring-secondary/10 shadow-lg scale-95"
+                          : "border-gray-100 bg-gray-50 hover:border-secondary/30 hover:shadow-md"
+                      )}
+                    >
+                      <Image 
+                        src={img.url} 
+                        alt={img.name} 
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      
+                      {/* Selection Overlay */}
+                      <div className={cn(
+                        "absolute inset-0 transition-all duration-300 flex items-center justify-center",
+                        checked ? "bg-secondary/20" : "bg-black/0 group-hover:bg-black/10"
+                      )}>
+                        <div className={cn(
+                          "w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300",
+                          checked ? "bg-secondary scale-100 opacity-100" : "bg-white/80 scale-0 opacity-0 group-hover:scale-75 group-hover:opacity-100"
+                        )}>
+                          <CheckCircle2 className={cn("w-5 h-5", checked ? "text-white" : "text-secondary")} />
+                        </div>
+                      </div>
+
+                      {/* Info Badge */}
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 pt-8 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        <span className="block truncate text-[11px] font-bold text-white">{img.name}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {!loading && currentFolders.length === 0 && displayLibraryImages.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-24 text-center">
+                <div className="w-20 h-20 rounded-full bg-gray-50 flex items-center justify-center mb-6 ring-8 ring-gray-50/50">
+                  <ImageIcon className="w-10 h-10 text-gray-300" />
+                </div>
+                <h3 className="text-base font-bold text-gray-900">No content here yet</h3>
+                <p className="text-sm text-gray-500 mt-2 max-w-[240px]">
+                  This folder is empty. Upload some beautiful images or create a subfolder.
+                </p>
+                <div className="flex gap-3 mt-8">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="h-9"
+                    onClick={() => setIsCreateFolderOpen(true)}
+                  >
+                    <FolderPlus className="w-4 h-4 mr-2" />
+                    New Folder
+                  </Button>
+                  <Button 
+                    variant="secondary" 
+                    size="sm" 
+                    className="h-9 bg-secondary text-white hover:bg-secondary/90"
+                    onClick={handlePickFiles}
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    Upload Image
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="flex items-center justify-between border-t border-gray-100 bg-white px-8 py-5">
+            <div className="flex items-center gap-2">
+              {selectedIds.size > 0 && (
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-secondary/5 rounded-full border border-secondary/10">
+                  <span className="text-xs font-bold text-secondary">{selectedIds.size} selected</span>
+                  <button 
+                    onClick={() => setSelectedIds(new Set())}
+                    className="text-secondary/50 hover:text-secondary transition-colors"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" onClick={onClose} className="h-10 px-8 font-semibold">
+                Cancel
+              </Button>
+              <Button
+                className="h-10 px-8 bg-secondary text-white hover:bg-secondary/90 font-bold shadow-lg shadow-secondary/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+                onClick={handleConfirm}
+                disabled={selectedIds.size === 0}
+              >
+                {okText}
+                {selectedIds.size > 1 ? ` (${selectedIds.size})` : ""}
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
-    </CommonModal>
+      </CommonModal>
+
+      <CreateFolderModal 
+        isOpen={isCreateFolderOpen} 
+        onClose={() => setIsCreateFolderOpen(false)} 
+        onSave={handleCreateFolder}
+        parentId={currentFolderId}
+      />
+    </>
   );
 }
