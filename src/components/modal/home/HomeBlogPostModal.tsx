@@ -56,8 +56,14 @@ const HomeBlogPostModal: React.FC<HomeBlogPostModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
+      const data = initialData as any;
       form.reset(
-        initialData || {
+        initialData ? {
+          ...initialData,
+          image: data?.cover?.url || data?.image || "",
+          imageId: data?.coverId || data?.imageId || "",
+          authorName: data?.authorName || (typeof data?.author === 'object' ? data?.author?.profile?.name : data?.author) || "Admin",
+        } : {
           title: "",
           slug: "",
           excerpt: "",

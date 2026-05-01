@@ -24,6 +24,11 @@ export async function getBlogById(id: string) {
   return res.json();
 }
 
+export async function getBlogBySlug(slug: string) {
+  const res = await fetchWithAuth(`/blog/${slug}`);
+  return res.json();
+}
+
 export async function updateBlog(id: string, data: any) {
   const res = await fetchWithAuth(`/blog/${id}`, {
     method: "PUT",

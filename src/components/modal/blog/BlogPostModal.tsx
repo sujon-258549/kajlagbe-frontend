@@ -55,18 +55,19 @@ const BlogPostModal: React.FC<BlogPostModalProps> = ({
 
   useEffect(() => {
     if (post) {
+      const data = post as any;
       form.reset({
-        id: post.id,
-        title: post.title,
-        slug: post.slug,
-        excerpt: post.excerpt,
-        content: post.content,
-        image: post.image,
-        date: post.date,
-        category: post.category,
-        authorName: post.author.name,
-        authorAvatar: post.author.avatar,
-        tags: post.tags.join(", "),
+        id: data.id,
+        title: data.title,
+        slug: data.slug,
+        excerpt: data.excerpt,
+        content: data.content,
+        image: data.cover?.url || data.image || "",
+        date: data.publishedAt || data.createdAt || data.date,
+        category: data.category,
+        authorName: data.authorName || (typeof data.author === 'object' ? data.author?.profile?.name : data.author) || "Admin",
+        authorAvatar: (typeof data.author === 'object' ? data.author?.profile?.photo : data.authorAvatar) || "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
+        tags: Array.isArray(data.tags) ? data.tags.join(", ") : data.tags || "",
       });
     } else {
       form.reset({
@@ -82,7 +83,7 @@ const BlogPostModal: React.FC<BlogPostModalProps> = ({
         }),
         category: "",
         authorName: "Admin",
-        authorAvatar: "https://placehold.co/100x100/154d2e/FFFFFF/png?text=A",
+        authorAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
         tags: "",
       });
     }

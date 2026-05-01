@@ -163,11 +163,11 @@
     background: transparent;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--primary) 90%, transparent);
+    background: color-mix(in srgb, var(--secondary) 90%, transparent);
     border-radius: 10px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
+    background: var(--secondary);
   }
 
   /* Text Stroke Utility */

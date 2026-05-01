@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { blogPosts as initialBlogPosts, BlogPost } from "@/data/blogData";
+import { useEffect, useMemo, useState } from "react";
+import { BlogPost } from "@/data/blogData";
 import BlogCard from "./BlogCard";
 import Pagination from "../common/Pagination";
 import BlogGridSkeleton from "./BlogGridSkeleton";
@@ -10,15 +10,25 @@ import { Button } from "@/components/ui/button";
 import { Plus, Edit } from "lucide-react";
 import BlogPostModal from "../modal/blog/BlogPostModal";
 import { BlogPostFormData } from "@/schemas/blog/post.schema";
+import { getAllBlogs } from "@/actions/blog.actions";
 
 export default function BlogList() {
-  const [posts, setPosts] = useState<BlogPost[]>(initialBlogPosts);
+  const [posts, setPosts] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingPost, setEditingPost] = useState<BlogPost | undefined>(
-    undefined,
-  );
+  const [editingPost, setEditingPost] = useState<any | undefined>(undefined);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      const res = await getAllBlogs();
+      if (res.success) {
+        setPosts(res.data);
+      }
+      setIsLoading(false);
+    };
+    fetchBlogs();
+  }, []);
 
   const postsPerPage = 6;
 

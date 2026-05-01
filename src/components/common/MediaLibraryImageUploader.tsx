@@ -87,7 +87,7 @@ function MediaLibraryImageUploaderSingle({
       <div className={cn("flex", className)}>
         {hasImage ? (
           <div
-            className="relative h-44 w-44 shrink-0 overflow-hidden rounded-2xl border-4 border-white bg-gray-50 shadow-xl ring-1 ring-gray-200 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
+            className="relative h-44 w-44 shrink-0 overflow-hidden rounded-lg border-4 border-white bg-gray-50 shadow-xl ring-1 ring-gray-200 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
           >
             <button
               type="button"
@@ -119,7 +119,7 @@ function MediaLibraryImageUploaderSingle({
             <button
               type="button"
               disabled={disabled}
-              className="absolute right-3 top-3 z-10 rounded-xl bg-red-500 p-2 shadow-lg text-white transition-all hover:bg-red-600 hover:scale-110 active:scale-90 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
+              className="absolute right-3 top-3 z-10 rounded-lg bg-red-500 p-2 shadow-lg text-white transition-all hover:bg-red-600 hover:scale-110 active:scale-90 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -230,7 +230,7 @@ function MediaLibraryImageUploaderMulti({
             {urls.map((u, idx) => (
               <div
                 key={`${u}-${idx}`}
-                className="relative h-36 w-36 shrink-0 overflow-hidden rounded-2xl border-2 border-white bg-gray-50 shadow-lg ring-1 ring-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-105"
+                className="relative h-36 w-36 shrink-0 overflow-hidden rounded-lg border-2 border-white bg-gray-50 shadow-lg ring-1 ring-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-105"
               >
                 <Image 
                   src={u} 
@@ -256,9 +256,9 @@ function MediaLibraryImageUploaderMulti({
               type="button"
               disabled={disabled}
               onClick={openPicker}
-              className="group flex h-36 w-36 shrink-0 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 text-center transition-all hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-inner active:scale-95 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
+              className="group flex h-36 w-36 shrink-0 flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-200 bg-gray-50/50 text-center transition-all hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-inner active:scale-95 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
             >
-              <div className="p-3 rounded-xl bg-white shadow-sm border border-gray-100 group-hover:border-secondary/20 transition-all group-hover:-translate-y-1">
+              <div className="p-3 rounded-lg bg-white shadow-sm border border-gray-100 group-hover:border-secondary/20 transition-all group-hover:-translate-y-1">
                 <Plus
                   className="w-6 h-6 text-gray-400 transition-colors group-hover:text-secondary"
                 />
@@ -271,11 +271,11 @@ function MediaLibraryImageUploaderMulti({
             type="button"
             disabled={disabled}
             onClick={openPicker}
-            className="group flex h-44 w-44 shrink-0 flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-4 text-center transition-all duration-300 hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-inner active:scale-95 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
+            className="group flex h-44 w-44 shrink-0 flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-gray-200 bg-gray-50/50 p-4 text-center transition-all duration-300 hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-inner active:scale-95 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
           >
             <div className="relative">
               <div className="absolute inset-0 bg-secondary/10 rounded-full blur-xl group-hover:bg-secondary/20 transition-all" />
-              <div className="relative p-4 rounded-2xl bg-white shadow-sm border border-gray-100 group-hover:border-secondary/20 transition-all group-hover:-translate-y-1">
+              <div className="relative p-4 rounded-lg bg-white shadow-sm border border-gray-100 group-hover:border-secondary/20 transition-all group-hover:-translate-y-1">
                 <Upload
                   className="w-8 h-8 text-gray-400 transition-colors duration-300 group-hover:text-secondary"
                 />

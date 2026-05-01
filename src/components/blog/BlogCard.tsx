@@ -16,7 +16,7 @@ export default function BlogCard({ post }: BlogCardProps) {
       <Link href={`/blog/${post.slug}`} className="block overflow-hidden">
         <div className="relative aspect-4/3 w-full">
           <Image
-            src={post.image}
+            src={(post as any)?.cover?.url || post.image || "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&q=80&w=800"}
             alt={post.title}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -36,21 +36,28 @@ export default function BlogCard({ post }: BlogCardProps) {
         <div className="flex items-center gap-3">
           <div className="relative w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden border border-gray-100">
             <Image
-              src={post.author.avatar}
-              alt={post.author.name}
+              src={(post.author as any)?.avatar || (post.author as any)?.profile?.photo || "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin"}
+              alt={(post.author as any)?.name || (post.author as any)?.profile?.name || "Author"}
               fill
               className="object-cover"
             />
           </div>
           <span className="text-xs md:text-sm font-bold text-slate-700">
-            {post.author.name}
+            {(post as any).authorName || 
+             (typeof post.author === 'object' ? ((post.author as any)?.profile?.name || (post.author as any)?.mobile) : post.author) || 
+             "Admin"}
           </span>
         </div>
 
         {/* Footer: Date & Read More */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
           <span className="text-xs md:text-sm font-medium text-slate-500">
-            {post.date}
+            {post.date || (post as any).publishedAt || (post as any).createdAt ? 
+              new Date((post as any).publishedAt || (post as any).createdAt || post.date).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric"
+              }) : "Unknown Date"}
           </span>
           <Link
             href={`/blog/${post.slug}`}

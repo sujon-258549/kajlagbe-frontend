@@ -70,6 +70,8 @@ export default function NewBlogSection() {
   });
   const [posts, setPosts] = useState<any[]>([]);
 
+  console.log("posts", posts);
+
   const data = { ...headerData, posts };
 
   useEffect(() => {
@@ -218,7 +220,7 @@ export default function NewBlogSection() {
               {/* Image container */}
               <div className="relative rounded-2xl overflow-hidden aspect-4/3 mb-6">
                 <Image
-                  src={post.image}
+                  src={post.cover?.url || post.image || "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&q=80&w=800"}
                   alt={post.title}
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -243,7 +245,9 @@ export default function NewBlogSection() {
                     <div className="border border-slate-300 rounded-full p-0.5">
                       <User className="w-3 h-3" />
                     </div>
-                    {post.authorName || post.author || "Admin"}
+                    {post.authorName || 
+                     (typeof post.author === 'object' ? ((post.author as any)?.profile?.name || (post.author as any)?.mobile) : post.author) || 
+                     "Admin"}
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="border border-slate-300 rounded-full p-0.5">
@@ -257,6 +261,10 @@ export default function NewBlogSection() {
                 <h3 className="text-xl md:text-[22px] font-bold text-[#002A3A] leading-snug group-hover:text-secondary transition-colors">
                   <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                 </h3>
+
+                <p className="text-slate-600 text-sm line-clamp-2 leading-relaxed">
+                  {post.description || post.excerpt}
+                </p>
 
                 {/* Read More Button */}
                 <Link
