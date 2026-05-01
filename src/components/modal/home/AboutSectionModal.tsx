@@ -80,7 +80,7 @@ const AboutSectionModal: React.FC<AboutSectionModalProps> = ({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="badge"
               render={({ field }) => (
                 <FormItem>
@@ -93,7 +93,7 @@ const AboutSectionModal: React.FC<AboutSectionModalProps> = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="rating"
               render={({ field }) => (
                 <FormItem>
@@ -106,7 +106,7 @@ const AboutSectionModal: React.FC<AboutSectionModalProps> = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="title"
               render={({ field }) => (
                 <FormItem className="md:col-span-2">
@@ -119,7 +119,7 @@ const AboutSectionModal: React.FC<AboutSectionModalProps> = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="image"
               render={({ field }) => (
                 <FormItem className="md:col-span-2">
@@ -139,7 +139,7 @@ const AboutSectionModal: React.FC<AboutSectionModalProps> = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="description"
               render={({ field }) => (
                 <FormItem className="md:col-span-2">
@@ -190,7 +190,7 @@ const AboutSectionModal: React.FC<AboutSectionModalProps> = ({
             </div>
 
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="buttonText"
               render={({ field }) => (
                 <FormItem>

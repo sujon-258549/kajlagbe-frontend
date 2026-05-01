@@ -8,148 +8,79 @@ import Heading5 from "../common/Headings/Heading5";
 import AdminOnly from "../common/auth/AdminOnly";
 import ServicesHeaderModal from "../modal/services/ServicesHeaderModal";
 import ServiceItemModal from "../modal/services/ServiceItemModal";
-import {
-  ServicesFormData,
-  ServiceItem,
-  ServicesHeaderFormData,
-} from "@/schemas/services/services.schema";
 import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 import { useEffect } from "react";
-
-const initialServices = [
-  {
-    title: "Home Repair & Maintenance",
-    slug: "home-repair-maintenance",
-    iconName: "fa-solid fa-screwdriver-wrench",
-  },
-  {
-    title: "Cleaning & Hygiene",
-    slug: "cleaning-hygiene",
-    iconName: "fa-solid fa-broom",
-  },
-  {
-    title: "Construction & Renovation",
-    slug: "construction-renovation",
-    iconName: "fa-solid fa-helmet-safety",
-  },
-  {
-    title: "Carpentry, Glass & Metal",
-    slug: "carpentry-glass-metal",
-    iconName: "fa-solid fa-axe",
-  },
-  {
-    title: "Plumbing Services",
-    slug: "plumbing-services",
-    iconName: "fa-solid fa-faucet-drip",
-  },
-  {
-    title: "Electrical Services",
-    slug: "electrical-services",
-    iconName: "fa-solid fa-bolt",
-  },
-  {
-    title: "Painting & Decorating",
-    slug: "painting-decorating",
-    iconName: "fa-solid fa-palette",
-  },
-  {
-    title: "Gardening & Landscaping",
-    slug: "gardening-landscaping",
-    iconName: "fa-solid fa-leaf",
-  },
-  {
-    title: "Pest Control",
-    slug: "pest-control",
-    iconName: "fa-solid fa-bug",
-  },
-  {
-    title: "Appliance Repair",
-    slug: "appliance-repair",
-    iconName: "fa-solid fa-microchip",
-  },
-  {
-    title: "HVAC Services",
-    slug: "hvac-services",
-    iconName: "fa-solid fa-temperature-half",
-  },
-  {
-    title: "Roofing & Gutters",
-    slug: "roofing-gutters",
-    iconName: "fa-solid fa-house",
-  },
-  {
-    title: "Flooring Installation",
-    slug: "flooring-installation",
-    iconName: "fa-solid fa-square",
-  },
-  {
-    title: "Home Security",
-    slug: "home-security",
-    iconName: "fa-solid fa-shield-halved",
-  },
-  {
-    title: "Smart Home Installation",
-    slug: "smart-home-installation",
-    iconName: "fa-solid fa-cpu",
-  },
-  {
-    title: "Moving Services",
-    slug: "moving-services",
-    iconName: "fa-solid fa-truck-moving",
-  },
-  {
-    title: "Junk Removal",
-    slug: "junk-removal",
-    iconName: "fa-solid fa-trash-can",
-  },
-  {
-    title: "Window Cleaning",
-    slug: "window-cleaning",
-    iconName: "fa-solid fa-wind",
-  },
-];
+import { ServicesHeaderFormData } from "@/schemas/services/services.schema";
+import { getAllSubCategory } from "@/actions/subCategory.actions";
+import { getAllCategory } from "@/actions/category.actions";
+import { TSubCategory } from "@/types/subCategory";
+import { TCategory } from "@/types/category";
+import SubCategoryModal from "../modal/category/SubCategoryModal";
 
 export default function Services() {
   const [isHeaderModalOpen, setIsHeaderModalOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [editingItem, setEditingItem] = useState<ServiceItem | undefined>(
-    undefined,
-  );
+  const [editingSubCategory, setEditingSubCategory] = useState<TSubCategory | null>(null);
+  const [categories, setCategories] = useState<TCategory[]>([]);
+  const [subCategories, setSubCategories] = useState<TSubCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const [servicesData, setServicesData] = useState<ServicesFormData>({
+  const [servicesData, setServicesData] = useState<ServicesHeaderFormData>({
     sectionTitle: "Our Services",
     sectionDescription:
       "Explore verified professionals across all essential categories — simple, fast, and reliable.",
     sectionBackgroundImage: "",
-    services: initialServices,
   });
 
-  useEffect(() => {
-    const fetchServicesData = async () => {
-      const res = await getSettingsMap("home");
-      if (res.success && res.data.home_services) {
-        setServicesData(res.data.home_services.value);
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const [settingsRes, subCatRes, catRes] = await Promise.all([
+        getSettingsMap("home"),
+        getAllSubCategory(),
+        getAllCategory(),
+      ]);
+
+      if (settingsRes.success && settingsRes.data.home_services) {
+        // We only take the header parts from the setting
+        const val = settingsRes.data.home_services.value;
+        setServicesData({
+          sectionTitle: val.sectionTitle || "Our Services",
+          sectionDescription: val.sectionDescription || "",
+          sectionBackgroundImage: val.sectionBackgroundImage || "",
+        });
       }
+
+      if (subCatRes.success) {
+        setSubCategories(subCatRes.data);
+      }
+
+      if (catRes.success) {
+        setCategories(catRes.data);
+      }
+    } catch (error) {
+      console.error("Error fetching services data:", error);
+    } finally {
       setIsLoading(false);
-    };
-    fetchServicesData();
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   const handleUpdateHeader = async (data: ServicesHeaderFormData) => {
     setIsUpdating(true);
     try {
-      const newData = { ...servicesData, ...data };
       const res = await upsertSetting({
         key: "home_services",
-        value: newData,
+        value: data, // Now we only save the header
         group: "home",
         description: "Homepage Services Section Settings",
       });
       if (res.success) {
-        setServicesData(newData);
+        setServicesData(data);
         setIsHeaderModalOpen(false);
       }
     } catch (error) {
@@ -159,41 +90,11 @@ export default function Services() {
     }
   };
 
-  const handleEditItem = (e: React.MouseEvent, index: number) => {
-    e.preventDefault(); // Prevent link navigation
+  const handleEditItem = (e: React.MouseEvent, subCat: TSubCategory) => {
+    e.preventDefault();
     e.stopPropagation();
-    setEditingIndex(index);
-    setEditingItem(servicesData.services[index]);
+    setEditingSubCategory(subCat);
     setIsItemModalOpen(true);
-  };
-
-  const handleSaveItem = async (newItem: ServiceItem) => {
-    if (editingIndex === null) return;
-    
-    setIsUpdating(true);
-    try {
-      const updatedServices = [...servicesData.services];
-      updatedServices[editingIndex] = newItem;
-      const newData = { ...servicesData, services: updatedServices };
-      
-      const res = await upsertSetting({
-        key: "home_services",
-        value: newData,
-        group: "home",
-        description: "Homepage Services Section Settings",
-      });
-      
-      if (res.success) {
-        setServicesData(newData);
-        setIsItemModalOpen(false);
-        setEditingIndex(null);
-        setEditingItem(undefined);
-      }
-    } catch (error) {
-      console.log("error", error);
-    } finally {
-      setIsUpdating(false);
-    }
   };
 
   return (
@@ -244,9 +145,24 @@ export default function Services() {
 
         {/* Services Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-          {servicesData.services.map((service, index) => (
+          <AdminOnly>
+            <button
+              onClick={() => {
+                setEditingSubCategory(null);
+                setIsItemModalOpen(true);
+              }}
+              className="group relative h-[180px] w-full overflow-hidden rounded-xl border-2 border-dashed border-secondary/30 flex flex-col items-center justify-center gap-3 hover:border-secondary transition-colors"
+            >
+              <div className="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+                <ArrowRight className="w-6 h-6 rotate-[-45deg]" />
+              </div>
+              <span className="font-semibold text-secondary">Add New Service</span>
+            </button>
+          </AdminOnly>
+
+          {subCategories.map((service) => (
             <Link
-              key={index}
+              key={service.id}
               href={`/services/${service.slug}`}
               className="group relative h-[180px] w-full overflow-hidden rounded-xl bg-secondary border border-white/10 transition-colors"
             >
@@ -254,7 +170,7 @@ export default function Services() {
               <div className="absolute top-3 right-3 z-30 opacity-0 group-hover:opacity-100 transition-opacity">
                 <AdminOnly>
                   <button
-                    onClick={(e) => handleEditItem(e, index)}
+                    onClick={(e) => handleEditItem(e, service)}
                     className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white text-white hover:text-secondary backdrop-blur-md transition-all shadow-lg"
                     title="Edit Service"
                   >
@@ -266,20 +182,31 @@ export default function Services() {
               {/* Background Image with Gradient Overlay */}
               <div className="absolute inset-0">
                 <div className="absolute inset-0 z-0 bg-secondary" />
+                {service.image && (
+                  <img
+                    src={service.image}
+                    alt={service.name}
+                    className="w-full h-full object-cover opacity-40 group-hover:scale-110 transition-transform duration-500"
+                  />
+                )}
                 <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent z-10" />
               </div>
 
               {/* Top Bar: Icon Left */}
               <div className="absolute top-3 left-3 z-20">
                 <div className="h-8 w-8 rounded-xl bg-white/90 backdrop-blur-sm flex items-center justify-center text-primary">
-                  <i className={`${service.iconName} text-lg`} />
+                  {service.icon ? (
+                    <i className={`${service.icon} text-lg`} />
+                  ) : (
+                    <ArrowRight className="h-4 w-4" />
+                  )}
                 </div>
               </div>
 
               {/* Bottom Content: Title & CTA */}
               <div className="absolute inset-x-0 bottom-0 z-20 p-3 flex flex-col gap-2">
-                <Heading5 className="text-white text-base font-bold leading-tight line-clamp-2">
-                  {service.title}
+                <Heading5 className="text-white line-clamp-2">
+                  {service.name}
                 </Heading5>
 
                 <div className="w-full h-px bg-white/20" />
@@ -307,16 +234,15 @@ export default function Services() {
         isLoading={isUpdating}
       />
 
-      <ServiceItemModal
+      <SubCategoryModal
         isOpen={isItemModalOpen}
         onClose={() => {
           setIsItemModalOpen(false);
-          setEditingIndex(null);
-          setEditingItem(undefined);
+          setEditingSubCategory(null);
         }}
-        item={editingItem}
-        onSave={handleSaveItem}
-        isLoading={isUpdating}
+        initialData={editingSubCategory}
+        categories={categories}
+        onSuccess={fetchData}
       />
     </section>
   );

@@ -1,9 +1,15 @@
 "use client";
 
-import { Check, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Check, X, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import AdminOnly from "../common/auth/AdminOnly";
+import PricingModal from "../modal/home/PricingModal";
+import { PricingFormData } from "@/schemas/home/pricing.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import Link from "next/link";
 
-const plans = [
+const initialPlans = [
   {
     name: "Basic Plan",
     price: "49",
@@ -15,8 +21,9 @@ const plans = [
       { text: "Priority Support", included: false },
       { text: "Advanced Tools", included: false },
     ],
-    color: "border-slate-200",
-    button: "outline",
+    recommended: false,
+    buttonText: "Get Started",
+    buttonLink: "#",
   },
   {
     name: "Professional",
@@ -29,9 +36,9 @@ const plans = [
       { text: "Custom Solutions", included: false },
       { text: "Dedicated Manager", included: false },
     ],
-    color: "border-secondary shadow-2xl scale-105 z-10",
-    button: "default",
     recommended: true,
+    buttonText: "Get Started",
+    buttonLink: "#",
   },
   {
     name: "Ultimate Elite",
@@ -44,36 +51,87 @@ const plans = [
       { text: "Custom Solutions", included: true },
       { text: "Dedicated Team", included: true },
     ],
-    color: "border-slate-200",
-    button: "outline",
+    recommended: false,
+    buttonText: "Get Started",
+    buttonLink: "#",
   },
 ];
 
 export default function PricingSection() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [data, setData] = useState<PricingFormData>({
+    tagline: "// Our Pricing Plans",
+    title: "Choose Your Perfect Plan",
+    description: "Flexible pricing options tailored to meet the needs of individuals and large-scale enterprises alike.",
+    plans: initialPlans,
+  });
+
+  useEffect(() => {
+    const fetchPricingData = async () => {
+      const res = await getSettingsMap("home");
+      if (res.success && res.data.home_pricing) {
+        setData(res.data.home_pricing.value);
+      }
+      setIsLoading(false);
+    };
+    fetchPricingData();
+  }, []);
+
+  const handleUpdate = async (newData: PricingFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "home_pricing",
+        value: newData,
+        group: "home",
+        description: "Homepage Pricing Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   return (
-    <section className="py-24 bg-slate-50 overflow-hidden">
-      <div className="main-container mx-auto px-6">
+    <section className="py-24 bg-slate-50 overflow-hidden relative group/section">
+      <div className="main-container mx-auto px-6 relative">
+        <AdminOnly>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="absolute top-0 right-4 md:right-6 z-30 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-slate-200 text-secondary opacity-0 group-hover/section:opacity-100 transition-all duration-500 hover:bg-secondary hover:text-white shadow-xl"
+            title="Edit Pricing"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </AdminOnly>
+
         <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
           <span className="text-secondary font-bold tracking-[0.2em] uppercase text-sm">
-            {"// Our Pricing Plans"}
+            {data.tagline}
           </span>
           <h2 className="text-3xl md:text-5xl font-bold text-black leading-tight">
-            Choose Your Perfect <span className="text-primary">Plan</span>
+            {data.title.split("Plan")[0]} <span className="text-primary">Plan</span>
           </h2>
           <p className="text-base md:text-lg text-slate-500 max-w-2xl mx-auto">
-            Flexible pricing options tailored to meet the needs of individuals
-            and large-scale enterprises alike.
+            {data.description}
           </p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8 items-stretch pt-6">
-          {plans.map((plan, index) => (
+          {data.plans.map((plan, index) => (
             <div
               key={index}
               className={`group bg-white rounded-2xl p-8 lg:p-10 border transition-all duration-300 relative flex flex-col h-full ${
                 plan.recommended
-                  ? "border-secondary scale-105 z-10 ring-4 ring-secondary/5"
-                  : "border-slate-200 hover:border-primary/30 hover:-translate-y-1"
+                  ? "border-secondary scale-105 z-10 ring-4 ring-secondary/5 shadow-2xl"
+                  : "border-slate-200 hover:border-primary/30 hover:-translate-y-1 shadow-sm"
               }`}
             >
               {plan.recommended && (
@@ -122,14 +180,24 @@ export default function PricingSection() {
               </div>
 
               <div className="pt-10">
-                <Button className="w-full rounded-xl font-bold tracking-wide transition-all shadow-lg shadow-secondary/20 hover:scale-105">
-                  Get Started
-                </Button>
+                <Link href={plan.buttonLink}>
+                  <Button className={`w-full rounded-xl font-bold tracking-wide transition-all shadow-lg hover:scale-105 ${plan.recommended ? 'bg-secondary hover:bg-secondary/90 text-white shadow-secondary/20' : 'bg-slate-900 hover:bg-black text-white shadow-slate-200'}`}>
+                    {plan.buttonText}
+                  </Button>
+                </Link>
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      <PricingModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialData={data}
+        onUpdate={handleUpdate}
+        isLoading={isUpdating}
+      />
     </section>
   );
 }

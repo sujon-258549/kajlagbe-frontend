@@ -72,7 +72,7 @@ const ServicesHeaderModal: React.FC<ServicesHeaderModalProps> = ({
 
             <div className="grid grid-cols-1 gap-4">
               <FormField
-                control={form.control}
+                control={form.control as any}
                 name="sectionTitle"
                 render={({ field }) => (
                   <FormItem>
@@ -85,7 +85,7 @@ const ServicesHeaderModal: React.FC<ServicesHeaderModalProps> = ({
                 )}
               />
               <FormField
-                control={form.control}
+                control={form.control as any}
                 name="sectionDescription"
                 render={({ field }) => (
                   <FormItem>
@@ -98,7 +98,7 @@ const ServicesHeaderModal: React.FC<ServicesHeaderModalProps> = ({
                 )}
               />
               <FormField
-                control={form.control}
+                control={form.control as any}
                 name="sectionBackgroundImage"
                 render={({ field }) => (
                   <FormItem>

@@ -21,7 +21,7 @@ const FormTextarea = React.forwardRef<HTMLTextAreaElement, FormTextareaProps>(
         <Textarea
           ref={ref}
           className={cn(
-            "min-h-[80px] transition-all duration-200 focus:ring-2 focus:ring-offset-1 focus:scale-[1.01]",
+            "min-h-[80px] transition-all duration-200 focus:ring-2 rounded-[6px] focus:ring-offset-1 focus:scale-[1.01]",
             error
               ? "border-red-500 focus-visible:ring-red-500/50"
               : "focus-visible:ring-secondary/50 border-slate-200 hover:border-secondary/50",

@@ -11,7 +11,6 @@ import FeaturedServicesModal from "../modal/home/FeaturedServicesModal";
 import { FeaturedServicesFormData } from "@/schemas/home/featuredServices.schema";
 import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 import { motion } from "motion/react";
-import Link from "next/link";
 interface ServiceItem {
   title: string;
   description: string;
@@ -138,7 +137,7 @@ export default function FeaturedServices() {
   };
 
   return (
-    <section className="py-20 md:py-32 bg-[#fafafa] group/section relative overflow-hidden">
+    <section className="pb-8 md:pb-12 bg-[#fafafa] group/section relative overflow-hidden">
       {/* Dynamic Background Elements */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -mr-64 -mt-64 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[120px] -ml-64 -mb-64 pointer-events-none" />
@@ -156,13 +155,13 @@ export default function FeaturedServices() {
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="h-[450px] bg-slate-100 rounded-[2.5rem] animate-pulse" />
-            <div className="h-[450px] bg-slate-100 rounded-[2.5rem] animate-pulse" />
-            <div className="md:col-span-2 h-[450px] bg-slate-100 rounded-[2.5rem] animate-pulse" />
+            <div className="h-[450px] bg-slate-100 rounded-xl animate-pulse" />
+            <div className="h-[450px] bg-slate-100 rounded-xl animate-pulse" />
+            <div className="md:col-span-2 h-[450px] bg-slate-100 rounded-xl animate-pulse" />
             {[...Array(4)].map((_, i) => (
               <div
                 key={i}
-                className="h-[450px] bg-slate-100 rounded-[2.5rem] animate-pulse"
+                className="h-[450px] bg-slate-100 rounded-xl animate-pulse"
               />
             ))}
           </div>
@@ -172,7 +171,7 @@ export default function FeaturedServices() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 auto-rows-fr"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-fr"
           >
             {/* Slot 1 */}
             <ServiceCard service={data.showcase[0]} variants={itemVariants} />
@@ -183,8 +182,10 @@ export default function FeaturedServices() {
             {/* Slot 3-4 Header Block */}
             <motion.div
               variants={itemVariants}
-              className="md:col-span-2 bg-white rounded-[2.5rem] p-10 lg:p-14 flex flex-col justify-center space-y-6 border border-slate-100 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden group/header"
+              className="md:col-span-2 h-full bg-white/40 backdrop-blur-[4px] rounded-xl p-6 lg:p-8 flex flex-col justify-center space-y-6 border border-primary shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] relative overflow-hidden group/header"
             >
+              {/* Glass Shine Effect */}
+              <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/10 to-transparent -translate-x-full group-hover/header:translate-x-full transition-transform duration-1000 pointer-events-none" />
               {/* Decorative Accent */}
               <div className="absolute top-0 right-0 p-8">
                 <Sparkles className="w-12 h-12 text-secondary/10 group-hover/header:rotate-12 transition-transform duration-500" />
@@ -197,16 +198,14 @@ export default function FeaturedServices() {
                     {data.tagline}
                   </span>
                 </div>
-                <Heading3 className="font-bold leading-[1.1] text-3xl md:text-4xl lg:text-5xl text-slate-900 mb-6">
-                  {data.mainTitle}
-                </Heading3>
+                <Heading3 className="mb-6">{data.mainTitle}</Heading3>
                 <p className="text-slate-500 text-base md:text-lg leading-relaxed max-w-lg mb-8">
                   {data.mainDescription}
                 </p>
                 <div>
                   <Button
                     size="lg"
-                    className="rounded-full px-10 h-14 bg-secondary hover:bg-secondary/90 text-white font-semibold transition-all duration-300 hover:shadow-2xl hover:shadow-secondary/30 group/btn"
+                    className="rounded-full  bg-secondary hover:bg-secondary/90 text-white font-semibold transition-all duration-300 hover:shadow-2xl hover:shadow-secondary/30 group/btn"
                   >
                     {data.buttonText}
                     <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover/btn:translate-x-1" />
@@ -241,6 +240,7 @@ export default function FeaturedServices() {
                 key={index + 2}
                 service={service}
                 variants={itemVariants}
+                isBottomRow={true}
               />
             ))}
           </motion.div>
@@ -267,58 +267,61 @@ export default function FeaturedServices() {
 interface ServiceCardProps {
   service: ServiceItem;
   variants: any; // motion variants are often typed as any or specific motion types
+  isBottomRow?: boolean;
 }
 
-function ServiceCard({ service, variants }: ServiceCardProps) {
+function ServiceCard({ service, variants, isBottomRow }: ServiceCardProps) {
   if (!service) return null;
 
   return (
     <motion.div
       variants={variants}
-      whileHover={{ y: -12 }}
-      className="relative group h-[450px] rounded-[2.5rem] overflow-hidden bg-slate-900 border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-500"
+      className={`relative group h-full rounded-xl overflow-hidden bg-slate-900 border border-white/10 shadow-xl transition-all duration-500 ${
+        isBottomRow ? "min-h-[350px]" : "min-h-[450px]"
+      }`}
     >
-      <Link href={service.link || "#"} className="block w-full h-full">
-        <CustomImage
-          src={service.image}
-          alt={service.title}
-          fill
-          wrapperClassName="w-full h-full"
-          className="object-cover opacity-90 transition-all duration-1000 group-hover:scale-110 group-hover:opacity-100"
-        />
+      <CustomImage
+        src={service.image}
+        alt={service.title}
+        fill
+        wrapperClassName="w-full h-full"
+        className="object-cover opacity-90 transition-all duration-1000 group-hover:scale-110 group-hover:opacity-100"
+      />
 
-        {/* Modern Gradient Overlay */}
-        <div className="absolute inset-0 bg-linear-to-t from-black/100 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
+      {/* Modern Gradient Overlay */}
+      <div className="absolute inset-0 bg-linear-to-t from-black/100 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
 
-        {/* Content Container */}
-        <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-10">
-          <div className="transform transition-all duration-500 group-hover:translate-y-[-10px]">
-            <div className="overflow-hidden mb-4">
-              <div className="w-12 h-1 bg-primary rounded-full transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
-            </div>
+      {/* Glass Shine Effect */}
+      <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
 
-            <Heading5 className="text-white font-bold text-2xl lg:text-3xl mb-3 leading-tight">
-              {service.title}
-            </Heading5>
+      {/* Content Container */}
+      <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8 bg-black/10 backdrop-blur-[1px]">
+        <div className="transform transition-all duration-500 group-hover:translate-y-[-10px]">
+          <div className="overflow-hidden mb-4">
+            <div className="w-12 h-1 bg-primary rounded-full transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
+          </div>
 
-            <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500 ease-in-out">
-              <div className="overflow-hidden">
-                <p className="text-white/70 text-sm md:text-base leading-relaxed line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 pb-2">
-                  {service.description}
-                </p>
-              </div>
-            </div>
+          <Heading5 className="text-white font-bold ">
+            {service.title}
+          </Heading5>
 
-            <div className="mt-4 flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all duration-500 delay-200">
-              Learn More
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-2" />
+          <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500 ease-in-out">
+            <div className="overflow-hidden">
+              <p className="text-white/70 text-sm md:text-base leading-relaxed line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 pb-2">
+                {service.description}
+              </p>
             </div>
           </div>
+
+          <div className="mt-4 flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all duration-500 delay-200">
+            Learn More
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-2" />
+          </div>
         </div>
-      </Link>
+      </div>
 
       {/* Hover border glow */}
-      <div className="absolute inset-0 border-2 border-primary/0 group-hover:border-primary/20 rounded-[2.5rem] transition-all duration-500 pointer-events-none" />
+      <div className="absolute inset-0 border-2 border-primary/0 group-hover:border-primary/20 rounded-xl transition-all duration-500 pointer-events-none" />
     </motion.div>
   );
 }

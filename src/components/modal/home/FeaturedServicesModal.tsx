@@ -106,7 +106,7 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
               Section Header
             </h3>
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="tagline"
               render={({ field }) => (
                 <FormItem>
@@ -119,7 +119,7 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="buttonText"
               render={({ field }) => (
                 <FormItem>
@@ -132,12 +132,12 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="mainTitle"
               render={({ field }) => (
                 <FormItem className="md:col-span-2">
                   <FormLabel>
-                    Main Title (HTML allowed for <br />)
+                    Main Title
                   </FormLabel>
                   <FormControl>
                     <FormInput
@@ -150,7 +150,7 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="mainDescription"
               render={({ field }) => (
                 <FormItem className="md:col-span-2">
@@ -185,7 +185,7 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
 
                 <div className="space-y-3">
                   <FormField
-                    control={form.control}
+                    control={form.control as any}
                     name={`showcase.${index}.title`}
                     render={({ field }) => (
                       <FormItem>
@@ -198,7 +198,7 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
                     )}
                   />
                   <FormField
-                    control={form.control}
+                    control={form.control as any}
                     name={`showcase.${index}.image`}
                     render={({ field }) => (
                       <FormItem>
@@ -218,7 +218,7 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
                     )}
                   />
                   <FormField
-                    control={form.control}
+                    control={form.control as any}
                     name={`showcase.${index}.link`}
                     render={({ field }) => (
                       <FormItem>
@@ -233,7 +233,7 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
                     )}
                   />
                   <FormField
-                    control={form.control}
+                    control={form.control as any}
                     name={`showcase.${index}.description`}
                     render={({ field }) => (
                       <FormItem>

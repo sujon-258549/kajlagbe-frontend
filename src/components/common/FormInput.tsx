@@ -39,7 +39,7 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
         <Input
           ref={ref}
           className={cn(
-            "transition-all duration-200 focus:ring-2 focus:ring-offset-1 focus:scale-[1.01]",
+            "transition-all duration-200 focus:ring-2 rounded-[6px] focus:ring-offset-1 focus:scale-[1.01]",
             sizeClasses[size],
             error
               ? "border-red-500 focus-visible:ring-red-500/50"

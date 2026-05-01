@@ -139,13 +139,13 @@ function MediaLibraryImageUploaderSingle({
             type="button"
             disabled={disabled}
             onClick={openPicker}
-            className="group flex h-44 w-44 shrink-0 flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-4 text-center transition-all duration-300 hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-inner active:scale-95 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
+            className="group flex h-36 w-36 shrink-0 flex-col items-center justify-center gap-4 rounded-md border border-dashed border-gray-300 bg-gray-70/100 p-4 text-center transition-all duration-300 hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-inner active:scale-95 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
           >
             <div className="relative">
               <div className="absolute inset-0 bg-secondary/10 rounded-full blur-xl group-hover:bg-secondary/20 transition-all" />
-              <div className="relative p-4 rounded-2xl bg-white shadow-sm border border-gray-100 group-hover:border-secondary/20 transition-all group-hover:-translate-y-1">
+              <div className="relative p-3 rounded-md bg-white shadow-sm border border-gray-100 group-hover:border-secondary/20 transition-all group-hover:-translate-y-1">
                 <Upload
-                  className="w-8 h-8 text-gray-400 transition-colors duration-300 group-hover:text-secondary"
+                  className="w-6 h-6 text-gray-400 transition-colors duration-300 group-hover:text-secondary"
                 />
               </div>
             </div>
@@ -271,7 +271,7 @@ function MediaLibraryImageUploaderMulti({
             type="button"
             disabled={disabled}
             onClick={openPicker}
-            className="group flex h-44 w-44 shrink-0 flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-4 text-center transition-all duration-300 hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-inner active:scale-95 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
+            className="group flex h-44 w-44 shrink-0 flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-4 text-center transition-all duration-300 hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-inner active:scale-95 focus:outline-none disabled:pointer-events-none disabled:opacity-60"
           >
             <div className="relative">
               <div className="absolute inset-0 bg-secondary/10 rounded-full blur-xl group-hover:bg-secondary/20 transition-all" />
