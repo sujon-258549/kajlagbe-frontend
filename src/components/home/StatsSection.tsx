@@ -80,7 +80,7 @@ export default function StatsSection() {
   };
 
   return (
-    <section className="py-10 md:py-16 lg:py-24 relative overflow-hidden bg-secondary text-white group/section">
+    <section className="py-8 md:py-12 lg:py-16 relative overflow-hidden bg-secondary text-white group/section">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <CustomImage

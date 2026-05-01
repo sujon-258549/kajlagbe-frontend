@@ -102,7 +102,7 @@ export default function FeaturedServices() {
   };
 
   return (
-    <section className="py-10 md:py-16 lg:py-24 bg-white group/section relative">
+    <section className="py-8 md:py-12 lg:py-16 bg-white group/section relative">
       <div className="main-container mx-auto px-4 md:px-6 relative">
         <AdminOnly>
           <button

@@ -92,7 +92,7 @@ export default function TestimonialSection() {
   };
 
   return (
-    <section className="py-10 md:py-16 lg:py-24 relative group/section overflow-hidden">
+    <section className="py-8 md:py-12 lg:py-16 relative group/section overflow-hidden">
       <div className="main-container relative">
         <AdminOnly>
           <button
