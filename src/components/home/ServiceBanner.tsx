@@ -43,7 +43,7 @@ export default function ServiceBanner() {
 
 
   return (
-    <section className="py-12 md:py-16 bg-[#F9F8F3] overflow-hidden group/section relative">
+    <section className="py-10 md:py-16 lg:py-24 bg-[#F9F8F3] overflow-hidden group/section relative">
       <AdminOnly>
         <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30 flex gap-2 opacity-0 -translate-y-2 pointer-events-none group-hover/section:opacity-100 group-hover/section:translate-y-0 group-hover/section:pointer-events-auto transition-all duration-300 ease-out">
           <button
