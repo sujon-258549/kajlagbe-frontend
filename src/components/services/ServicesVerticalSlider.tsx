@@ -2,11 +2,19 @@
 
 import { useState } from "react";
 import { ArrowRight, Plus, Edit } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import Heading3 from "../common/Headings/Heading3";
 import { Button } from "../ui/button";
 import AdminOnly from "../common/auth/AdminOnly";
 import ServiceSliderItemModal from "../modal/services/ServiceSliderItemModal";
 import ServicesSliderHeaderModal from "../modal/services/ServicesSliderHeaderModal";
+import {
+  getAllProjects,
+  createProject,
+  updateProject,
+  deleteProject,
+} from "@/actions/project.actions";
 import {
   ServiceSliderItem,
   ServiceSliderFormData,
@@ -33,7 +41,7 @@ const initialProjects = [
     number: "02",
   },
   {
-    id: 3,
+    id: "3",
     category: "Recycling",
     title: "The Power of Energy",
     image:
@@ -43,28 +51,45 @@ const initialProjects = [
 ];
 
 export default function ServicesVerticalSlider() {
-  const [data, setData] = useState<ServiceSliderFormData>({
+  const [headerData, setHeaderData] = useState({
     title: "Our Latest Projects",
-    projects: initialProjects,
   });
+  const [projects, setProjects] = useState<any[]>([]);
+
+  console.log("projects",projects)
 
   const [isHeaderModalOpen, setIsHeaderModalOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<ServiceSliderItem | undefined>(
+  const [editingItem, setEditingItem] = useState<any | undefined>(
     undefined,
   );
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    const fetchSliderData = async () => {
-      const res = await getSettingsMap("home");
-      if (res.success && res.data.home_service_slider) {
-        setData(res.data.home_service_slider.value);
+    const fetchData = async () => {
+      // 1. Fetch Header from SiteSettings
+      const settingsRes = await getSettingsMap("home");
+      if (settingsRes.success && settingsRes.data.home_project_header) {
+        setHeaderData(settingsRes.data.home_project_header.value);
+      }
+
+      // 2. Fetch Projects from Project table
+      const projectRes = await getAllProjects();
+      if (projectRes.success) {
+        // Handle both simple array and paginated response { data, meta }
+        const projectList = Array.isArray(projectRes.data) 
+          ? projectRes.data 
+          : projectRes.data?.data;
+          
+        setProjects(projectList || []);
+      } else {
+        // Fallback to initial projects if database is empty or error
+        setProjects(initialProjects);
       }
       setIsLoading(false);
     };
-    fetchSliderData();
+    fetchData();
   }, []);
 
   const handleAddItem = () => {
@@ -72,33 +97,31 @@ export default function ServicesVerticalSlider() {
     setIsItemModalOpen(true);
   };
 
-  const handleEditItem = (item: ServiceSliderItem) => {
+  const handleEditItem = (item: any) => {
     setEditingItem(item);
     setIsItemModalOpen(true);
   };
 
-  const handleSaveItem = async (updatedItem: ServiceSliderItem) => {
+  const handleSaveItem = async (updatedItem: any) => {
     setIsUpdating(true);
     try {
-      let updatedProjects;
-      if (editingItem) {
-        updatedProjects = data.projects.map((item) =>
-          item.id === editingItem.id ? updatedItem : item
-        );
+      let res;
+      if (editingItem?.id && typeof editingItem.id === 'string' && editingItem.id.length > 5) {
+        // Update existing project in DB
+        res = await updateProject(editingItem.id, updatedItem);
       } else {
-        updatedProjects = [...data.projects, { ...updatedItem, id: Date.now() }];
+        // Create new project in DB
+        // Remove temporary ID if it exists
+        const { id, ...payload } = updatedItem;
+        res = await createProject(payload);
       }
       
-      const newData = { ...data, projects: updatedProjects };
-      const res = await upsertSetting({
-        key: "home_service_slider",
-        value: newData,
-        group: "home",
-        description: "Homepage Service Slider Settings",
-      });
-      
       if (res.success) {
-        setData(newData);
+        // Refresh project list
+        const refreshRes = await getAllProjects();
+        if (refreshRes.success) {
+          setProjects(refreshRes.data);
+        }
         setIsItemModalOpen(false);
         setEditingItem(undefined);
       }
@@ -110,24 +133,21 @@ export default function ServicesVerticalSlider() {
   };
 
   const handleDeleteItem = async () => {
-    if (!editingItem) return;
+    if (!editingItem?.id) return;
     
     setIsUpdating(true);
     try {
-      const updatedProjects = data.projects.filter((item) => item.id !== editingItem.id);
-      const newData = { ...data, projects: updatedProjects };
-      const res = await upsertSetting({
-        key: "home_service_slider",
-        value: newData,
-        group: "home",
-        description: "Homepage Service Slider Settings",
-      });
-      
-      if (res.success) {
-        setData(newData);
-        setIsItemModalOpen(false);
-        setEditingItem(undefined);
+      if (typeof editingItem.id === 'string' && editingItem.id.length > 5) {
+        const res = await deleteProject(editingItem.id);
+        if (res.success) {
+          setProjects(prev => prev.filter(p => p.id !== editingItem.id));
+        }
+      } else {
+        // Local delete for initial mock data
+        setProjects(prev => prev.filter(p => p.id !== editingItem.id));
       }
+      setIsItemModalOpen(false);
+      setEditingItem(undefined);
     } catch (error) {
       console.log("error", error);
     } finally {
@@ -135,18 +155,17 @@ export default function ServicesVerticalSlider() {
     }
   };
 
-  const handleUpdateHeader = async (headerData: ServiceSliderHeaderFormData) => {
+  const handleUpdateHeader = async (headerFormData: ServiceSliderHeaderFormData) => {
     setIsUpdating(true);
     try {
-      const newData = { ...data, ...headerData };
       const res = await upsertSetting({
-        key: "home_service_slider",
-        value: newData,
+        key: "home_project_header",
+        value: headerFormData,
         group: "home",
-        description: "Homepage Service Slider Settings",
+        description: "Homepage Project Section Header",
       });
       if (res.success) {
-        setData(newData);
+        setHeaderData(headerFormData);
         setIsHeaderModalOpen(false);
       }
     } catch (error) {
@@ -155,6 +174,8 @@ export default function ServicesVerticalSlider() {
       setIsUpdating(false);
     }
   };
+
+  const displayProjects = projects.length > 0 ? projects : initialProjects;
 
   return (
     <section className="bg-white py-6 md:py-8 lg:py-12 group/section relative">
@@ -171,7 +192,7 @@ export default function ServicesVerticalSlider() {
 
         <div className="flex justify-between items-center mb-8">
           <Heading3 className="text-2xl font-bold text-secondary">
-            {data.title}
+            {headerData.title}
           </Heading3>
           <AdminOnly>
             <Button
@@ -185,7 +206,7 @@ export default function ServicesVerticalSlider() {
 
         {/* Sticky Container */}
         <div className="flex flex-col gap-10">
-          {data.projects.map((item, index) => (
+          {displayProjects.map((item, index) => (
             <div
               key={item.id}
               className="sticky top-20 md:top-32 w-full group/card"
@@ -204,10 +225,11 @@ export default function ServicesVerticalSlider() {
 
                 {/* Left Side: Image */}
                 <div className="w-full md:w-1/2 h-[250px] md:h-full relative overflow-hidden group/img">
-                  <img
-                    src={item.image}
+                  <Image
+                    src={item.image || "https://images.unsplash.com/photo-1542601906990-b4d3fb7d5b7e?auto=format&fit=crop&q=80&w=1200"}
                     alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110"
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover/img:scale-110"
                   />
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-secondary/10 group-hover/img:bg-transparent transition-colors duration-500" />
@@ -222,18 +244,27 @@ export default function ServicesVerticalSlider() {
                     </span>
                   </div>
 
-                  <h3 className="text-white text-2xl md:text-3xl lg:text-4xl font-bold mb-8 leading-tight">
+                  <h3 className="text-white text-2xl md:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
                     {item.title}
                   </h3>
 
-                  <button className="flex items-center group/btn w-fit">
+                  {item.description && (
+                    <p className="text-white/70 text-sm md:text-base mb-8 line-clamp-4">
+                      {item.description}
+                    </p>
+                  )}
+
+                  <Link 
+                    href={`/projects/${item.slug || item.id}`}
+                    className="flex items-center group/btn w-fit"
+                  >
                     <span className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white group-hover/btn:bg-white group-hover/btn:text-secondary transition-all duration-300">
                       <ArrowRight className="w-5 h-5" />
                     </span>
                     <span className="ml-4 text-white font-bold text-sm tracking-wide opacity-0 -translate-x-4 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all duration-500">
                       LEARN MORE
                     </span>
-                  </button>
+                  </Link>
 
                   {/* Background Number */}
                   <div className="absolute bottom-2 right-6 text-[#ffffff]/5 text-6xl md:text-8xl font-black select-none pointer-events-none">
@@ -249,7 +280,7 @@ export default function ServicesVerticalSlider() {
       <ServicesSliderHeaderModal
         isOpen={isHeaderModalOpen}
         onClose={() => setIsHeaderModalOpen(false)}
-        initialData={{ title: data.title }}
+        initialData={{ title: headerData.title }}
         onUpdate={handleUpdateHeader}
         isLoading={isUpdating}
       />

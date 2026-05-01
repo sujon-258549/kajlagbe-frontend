@@ -142,7 +142,7 @@ export default function FAQSection() {
 
             <motion.div
               whileHover={{ y: -5 }}
-              className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-2xl shadow-slate-200/50 border-2 border-dashed border-secondary relative overflow-hidden group"
+              className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-2xl shadow-slate-200/50 border border-dashed border-secondary relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 p-4 bg-secondary/5 rounded-bl-2xl">
                 <MessageSquare className="w-6 h-6 text-secondary group-hover:scale-110 transition-transform" />
@@ -153,7 +153,7 @@ export default function FAQSection() {
               <p className="text-slate-500 text-sm mb-5 leading-relaxed">
                 {data.ctaDescription}
               </p>
-              <button className="flex items-center gap-3 px-6 py-3 bg-secondary text-white font-bold rounded-xl hover:bg-secondary/90 transition-all shadow-lg shadow-secondary/25 cursor-pointer">
+              <button className="flex items-center gap-3 px-6 py-3 bg-secondary text-white font-bold rounded-[7px] hover:bg-secondary/90 transition-all shadow-lg shadow-secondary/25 cursor-pointer">
                 {data.ctaButtonText} <Phone className="w-4 h-4" />
               </button>
             </motion.div>

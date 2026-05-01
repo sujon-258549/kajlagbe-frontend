@@ -3,7 +3,8 @@
 import React, { useEffect } from "react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
+import RichTextEditor from "@/components/common/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -43,6 +44,9 @@ const ServiceSliderItemModal: React.FC<ServiceSliderItemModalProps> = ({
       id: 0,
       category: "",
       title: "",
+      slug: "",
+      description: "",
+      content: "",
       image: "",
       number: "01",
     },
@@ -56,6 +60,9 @@ const ServiceSliderItemModal: React.FC<ServiceSliderItemModalProps> = ({
         id: Date.now(),
         category: "",
         title: "",
+        slug: "",
+        description: "",
+        content: "",
         image: "",
         number: "",
       });
@@ -74,7 +81,7 @@ const ServiceSliderItemModal: React.FC<ServiceSliderItemModalProps> = ({
       title={item ? "Edit Project" : "Add New Project"}
       description="Update project details for the slider."
       showBackground={true}
-      maxWidth="xl"
+      maxWidth="4xl"
       footer={
         <div className="flex justify-between w-full">
           <div>
@@ -99,14 +106,20 @@ const ServiceSliderItemModal: React.FC<ServiceSliderItemModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-             <Button
-               type="submit"
-               form="slider-item-form"
-               className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
-               disabled={isLoading}
-             >
-               {isLoading ? (item ? "Updating..." : "Adding...") : (item ? "Update Project" : "Add Project")}
-             </Button>
+            <Button
+              type="submit"
+              form="slider-item-form"
+              className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
+              disabled={isLoading}
+            >
+              {isLoading
+                ? item
+                  ? "Updating..."
+                  : "Adding..."
+                : item
+                  ? "Update Project"
+                  : "Add Project"}
+            </Button>
           </div>
         </div>
       }
@@ -117,6 +130,26 @@ const ServiceSliderItemModal: React.FC<ServiceSliderItemModalProps> = ({
           onSubmit={form.handleSubmit(handleSubmit)}
           className="space-y-6"
         >
+          <FormField
+            control={form.control}
+            name="image"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Project Image</FormLabel>
+                <FormControl>
+                  <MediaLibraryImageUploader
+                    value={field.value}
+                    onChange={(url, id) => {
+                      field.onChange(url);
+                      if (id) form.setValue("imageId", id);
+                    }}
+                    className="w-full"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
@@ -146,17 +179,46 @@ const ServiceSliderItemModal: React.FC<ServiceSliderItemModalProps> = ({
             />
           </div>
 
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="Project Title" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Slug (Optional)</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="project-slug" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={form.control}
-            name="title"
+            name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Title / Tagline</FormLabel>
+                <FormLabel>Short Overview / Tagline</FormLabel>
                 <FormControl>
                   <textarea
                     {...field}
                     className="w-full min-h-[80px] p-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-secondary/50 focus:border-secondary transition-all text-sm outline-none"
-                    placeholder="Brief tagline..."
+                    placeholder="Brief overview..."
                   />
                 </FormControl>
                 <FormMessage />
@@ -166,12 +228,15 @@ const ServiceSliderItemModal: React.FC<ServiceSliderItemModalProps> = ({
 
           <FormField
             control={form.control}
-            name="image"
+            name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Project Image</FormLabel>
+                <FormLabel>Full Content / Case Study</FormLabel>
                 <FormControl>
-                  <ImageUpload {...field} />
+                  <RichTextEditor
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
