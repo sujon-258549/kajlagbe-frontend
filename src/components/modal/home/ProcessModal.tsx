@@ -63,13 +63,13 @@ const ProcessModal: React.FC<ProcessModalProps> = ({
       onClose={onClose}
       title="Edit Workflow Process"
       description="Customize the steps of your service workflow."
-      maxWidth="5xl"
+      maxWidth="4xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border p-4 rounded-xl bg-slate-50/50">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border border-gray-300 p-4 rounded-md bg-slate-50/50">
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="badge"
               render={({ field }) => (
                 <FormItem>
@@ -206,8 +206,8 @@ const ProcessModal: React.FC<ProcessModalProps> = ({
 
             <Button
               type="button"
-              variant="outline"
-              className="w-full border-dashed border-2 py-6 rounded-xl flex gap-2"
+              variant="dashed"
+              className="w-full py-6 flex gap-2"
               onClick={() =>
                 append({
                   number: (fields.length + 1).toString().padStart(2, "0"),

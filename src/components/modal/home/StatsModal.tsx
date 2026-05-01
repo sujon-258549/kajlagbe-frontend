@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -60,19 +60,20 @@ const StatsModal: React.FC<StatsModalProps> = ({
       onClose={onClose}
       title="Edit Statistics"
       description="Update counter values and labels."
+      maxWidth="4xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
-            control={form.control}
+            control={form.control as any}
             name="backgroundImage"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Background Image</FormLabel>
                 <FormControl>
-                  <ImageUpload
+                  <MediaLibraryImageUploader
                     value={field.value}
-                    onValueChange={field.onChange}
+                    onChange={(url) => field.onChange(url)}
                     className="aspect-video w-full"
                   />
                 </FormControl>
@@ -85,7 +86,7 @@ const StatsModal: React.FC<StatsModalProps> = ({
             {fields.map((field, index) => (
               <div
                 key={field.id}
-                className="p-4 border rounded-xl bg-slate-50 relative group grid grid-cols-2 gap-3"
+                className="p-4 border border-gray-300 rounded-md bg-slate-50 relative group grid grid-cols-2 gap-3"
               >
                 <div className="col-span-2 flex justify-between items-center mb-2">
                   <h4 className="font-bold text-secondary">Stat {index + 1}</h4>
@@ -101,7 +102,7 @@ const StatsModal: React.FC<StatsModalProps> = ({
                 </div>
 
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name={`stats.${index}.iconName`}
                   render={({ field }) => (
                     <FormItem>
@@ -114,7 +115,7 @@ const StatsModal: React.FC<StatsModalProps> = ({
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name={`stats.${index}.value`}
                   render={({ field }) => (
                     <FormItem>
@@ -127,7 +128,7 @@ const StatsModal: React.FC<StatsModalProps> = ({
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name={`stats.${index}.label`}
                   render={({ field }) => (
                     <FormItem>
@@ -140,7 +141,7 @@ const StatsModal: React.FC<StatsModalProps> = ({
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name={`stats.${index}.color`}
                   render={({ field }) => (
                     <FormItem>
@@ -160,8 +161,8 @@ const StatsModal: React.FC<StatsModalProps> = ({
 
             <Button
               type="button"
-              variant="outline"
-              className="w-full border-dashed border-2 py-6 rounded-xl flex gap-2"
+              variant="dashed"
+              className="w-full py-6 flex gap-2"
               onClick={() =>
                 append({
                   iconName: "fa-solid fa-check",

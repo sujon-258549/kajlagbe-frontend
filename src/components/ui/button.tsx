@@ -33,6 +33,8 @@ const buttonVariants = cva(
           "bg-secondary/10 text-secondary hover:bg-secondary/20",
         gradient:
           "bg-gradient-to-r from-primary to-orange-600 text-white hover:opacity-90 shadow-md border-0",
+        dashed:
+          "border-dashed border border-gray-300 bg-transparent hover:bg-slate-50 hover:border-secondary/50 hover:text-secondary transition-colors",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

@@ -74,7 +74,7 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
       onClose={onClose}
       title="Edit Featured Services"
       description="Update the grid display of featured services."
-      maxWidth="5xl"
+      maxWidth="4xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -101,7 +101,7 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
             </FormItem>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 border rounded-xl bg-slate-50/50">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 border border-gray-300 rounded-md bg-slate-50/50">
             <h3 className="md:col-span-2 font-bold text-lg text-secondary border-b pb-2">
               Section Header
             </h3>
@@ -175,7 +175,7 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
             {fields.map((field, index) => (
               <div
                 key={field.id}
-                className="p-4 border rounded-xl bg-white relative"
+                className="p-4 border border-gray-300 rounded-md bg-white relative"
               >
                 <div className="flex justify-between items-center mb-3">
                   <h4 className="font-semibold text-xs text-secondary">

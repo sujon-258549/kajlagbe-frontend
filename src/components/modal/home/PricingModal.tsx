@@ -108,7 +108,7 @@ const PricingModal: React.FC<PricingModalProps> = ({
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {planFields.map((planField, planIndex) => (
-              <div key={planField.id} className="p-5 border rounded-2xl bg-white shadow-sm space-y-4">
+              <div key={planField.id} className="p-5 border border-gray-300 rounded-md bg-white shadow-sm space-y-4">
                 <div className="flex justify-between items-center border-b pb-3">
                   <h4 className="font-bold text-secondary uppercase tracking-wider text-sm">Plan {planIndex + 1}</h4>
                   <FormField
@@ -254,9 +254,9 @@ const FeatureList = ({ planIndex, form }: { planIndex: number; form: any }) => {
       ))}
       <Button
         type="button"
-        variant="ghost"
+        variant="dashed"
         size="sm"
-        className="text-[10px] h-7 w-full border-dashed border border-slate-200 mt-1 hover:border-secondary hover:text-secondary text-slate-400"
+        className="text-[10px] h-7 w-full mt-1 flex gap-2 items-center justify-center"
         onClick={() => append({ text: "", included: true })}
       >
         <Plus className="h-3 w-3 mr-1" /> Add Feature
