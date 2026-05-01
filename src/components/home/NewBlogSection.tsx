@@ -162,7 +162,7 @@ export default function NewBlogSection() {
   };
 
   return (
-    <section className="md:py-20 py-12 relative group/section">
+    <section className="py-10 md:py-16 lg:py-24 relative group/section">
       <div className="main-container relative">
         <AdminOnly>
           <button

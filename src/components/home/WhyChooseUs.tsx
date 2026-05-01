@@ -75,7 +75,7 @@ export default function WhyChooseUs() {
   };
 
   return (
-    <section className=" md:py-20 pt-16 pb-10 relative group/section">
+    <section className="py-10 md:py-16 lg:py-24 relative group/section">
       <div className="main-container mx-auto px-4 relative">
         <AdminOnly>
           <button
