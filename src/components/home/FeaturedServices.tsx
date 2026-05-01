@@ -11,43 +11,57 @@ import FeaturedServicesModal from "../modal/home/FeaturedServicesModal";
 import { FeaturedServicesFormData } from "@/schemas/home/featuredServices.schema";
 import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 import { motion } from "motion/react";
+import Link from "next/link";
+interface ServiceItem {
+  title: string;
+  description: string;
+  image: string;
+  imageId?: string;
+  link: string;
+}
 
-const initialFeatured = [
+const initialFeatured: ServiceItem[] = [
   {
     title: "Custom T-Shirt Printing",
     description: "High-quality custom printing services.",
     image:
       "https://img.freepik.com/free-photo/colorful-t-shirts-arrangement_23-2149074824.jpg",
+    link: "#",
   },
   {
     title: "Business Card Design",
     description: "Creative business card designs.",
     image:
       "https://img.freepik.com/free-photo/business-card-mockup_53876-94088.jpg",
+    link: "#",
   },
   {
     title: "Personalized Mugs",
     description: "Quality, personalized products for your needs.",
     image:
       "https://img.freepik.com/free-photo/mockup-mugs-arrangement_23-2149139285.jpg",
+    link: "#",
   },
   {
     title: "Premium Water Bottles",
     description: "Quality, personalized products for your needs.",
     image:
       "https://img.freepik.com/free-photo/water-bottles-mockup_53876-95315.jpg",
+    link: "#",
   },
   {
     title: "Apparel & Hoodies",
     description: "Quality, personalized products for your needs.",
     image:
       "https://img.freepik.com/free-photo/hoodies-arranged_23-2149140501.jpg",
+    link: "#",
   },
   {
     title: "Customized Notebooks",
     description: "Quality, personalized products for your needs.",
     image:
       "https://img.freepik.com/free-photo/notebook-mockup-arrangement_53876-94051.jpg",
+    link: "#",
   },
 ];
 
@@ -119,7 +133,7 @@ export default function FeaturedServices() {
     visible: {
       y: 0,
       opacity: 1,
-      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as any },
     },
   };
 
@@ -249,7 +263,13 @@ export default function FeaturedServices() {
   );
 }
 
-function ServiceCard({ service, variants }: { service: any; variants: any }) {
+
+interface ServiceCardProps {
+  service: ServiceItem;
+  variants: any; // motion variants are often typed as any or specific motion types
+}
+
+function ServiceCard({ service, variants }: ServiceCardProps) {
   if (!service) return null;
 
   return (
@@ -258,42 +278,44 @@ function ServiceCard({ service, variants }: { service: any; variants: any }) {
       whileHover={{ y: -12 }}
       className="relative group h-[450px] rounded-[2.5rem] overflow-hidden bg-slate-900 border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-500"
     >
-      <CustomImage
-        src={service.image}
-        alt={service.title}
-        fill
-        wrapperClassName="w-full h-full"
-        className="object-cover opacity-90 transition-all duration-1000 group-hover:scale-110 group-hover:opacity-100"
-      />
+      <Link href={service.link || "#"} className="block w-full h-full">
+        <CustomImage
+          src={service.image}
+          alt={service.title}
+          fill
+          wrapperClassName="w-full h-full"
+          className="object-cover opacity-90 transition-all duration-1000 group-hover:scale-110 group-hover:opacity-100"
+        />
 
-      {/* Modern Gradient Overlay */}
-      <div className="absolute inset-0 bg-linear-to-t from-black/100 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
+        {/* Modern Gradient Overlay */}
+        <div className="absolute inset-0 bg-linear-to-t from-black/100 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
 
-      {/* Content Container */}
-      <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-10">
-        <div className="transform transition-all duration-500 group-hover:translate-y-[-10px]">
-          <div className="overflow-hidden mb-4">
-            <div className="w-12 h-1 bg-primary rounded-full transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
-          </div>
+        {/* Content Container */}
+        <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-10">
+          <div className="transform transition-all duration-500 group-hover:translate-y-[-10px]">
+            <div className="overflow-hidden mb-4">
+              <div className="w-12 h-1 bg-primary rounded-full transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
+            </div>
 
-          <Heading5 className="text-white font-bold text-2xl lg:text-3xl mb-3 leading-tight">
-            {service.title}
-          </Heading5>
+            <Heading5 className="text-white font-bold text-2xl lg:text-3xl mb-3 leading-tight">
+              {service.title}
+            </Heading5>
 
-          <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500 ease-in-out">
-            <div className="overflow-hidden">
-              <p className="text-white/70 text-sm md:text-base leading-relaxed line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 pb-2">
-                {service.description}
-              </p>
+            <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500 ease-in-out">
+              <div className="overflow-hidden">
+                <p className="text-white/70 text-sm md:text-base leading-relaxed line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 pb-2">
+                  {service.description}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all duration-500 delay-200">
+              Learn More
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-2" />
             </div>
           </div>
-
-          <div className="mt-4 flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all duration-500 delay-200">
-            Learn More
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-2" />
-          </div>
         </div>
-      </div>
+      </Link>
 
       {/* Hover border glow */}
       <div className="absolute inset-0 border-2 border-primary/0 group-hover:border-primary/20 rounded-[2.5rem] transition-all duration-500 pointer-events-none" />

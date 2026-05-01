@@ -105,7 +105,7 @@ export default function NewBlogSection() {
   const handleUpdatePost = async (postData: HomeBlogItemFormData) => {
     setIsUpdatingPost(true);
     try {
-      let updatedPosts = [...posts];
+      const updatedPosts = [...posts];
       if (editingIndex !== null) {
         updatedPosts[editingIndex] = postData;
       } else {

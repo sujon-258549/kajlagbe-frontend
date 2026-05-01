@@ -219,6 +219,21 @@ const FeaturedServicesModal: React.FC<FeaturedServicesModalProps> = ({
                   />
                   <FormField
                     control={form.control}
+                    name={`showcase.${index}.link`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs">
+                          Link URL
+                        </FormLabel>
+                        <FormControl>
+                          <FormInput size="sm" placeholder="#" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
                     name={`showcase.${index}.description`}
                     render={({ field }) => (
                       <FormItem>
