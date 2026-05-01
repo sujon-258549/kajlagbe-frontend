@@ -8,7 +8,9 @@ export const aboutMissionSchema = z.object({
     .max(100, "Title must not exceed 100 characters"),
   description: z.string().min(20, "Description must be at least 20 characters"),
   mainImage: z.string().min(1, "Main image is required"),
+  mainImageId: z.string().optional(),
   secondaryImage: z.string().min(1, "Secondary image is required"),
+  secondaryImageId: z.string().optional(),
   satisfactionRate: z.coerce
     .number()
     .min(0, "Rate must be positive")

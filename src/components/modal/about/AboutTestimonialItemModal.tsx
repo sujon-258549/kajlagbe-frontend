@@ -3,7 +3,6 @@
 import React, { useEffect } from "react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
-import ImageUpload from "@/components/common/ImageUpload";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -212,7 +211,10 @@ const AboutTestimonialItemModal: React.FC<AboutTestimonialItemModalProps> = ({
                 <FormControl>
                     <MediaLibraryImageUploader
                       value={field.value}
-                      onChange={(url) => field.onChange(url)}
+                      onChange={(url, id) => {
+                        field.onChange(url);
+                        if (id) form.setValue("imageId", id);
+                      }}
                       className="w-full"
                     />
                 </FormControl>

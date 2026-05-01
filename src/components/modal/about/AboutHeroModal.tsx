@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -26,7 +26,9 @@ interface AboutHeroModalProps {
   title: string;
   subtitle?: string;
   image: string;
+  imageId?: string;
   bgImage?: string;
+  bgImageId?: string;
   onUpdate?: (data: AboutHeroFormData) => void;
 }
 
@@ -36,7 +38,9 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
   title,
   subtitle,
   image,
+  imageId,
   bgImage,
+  bgImageId,
   onUpdate,
 }) => {
   const form = useForm<AboutHeroFormData>({
@@ -45,7 +49,9 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
       title: title,
       subtitle: subtitle || "",
       image: image,
+      imageId: imageId,
       bgImage: bgImage || "",
+      bgImageId: bgImageId,
     },
   });
 
@@ -54,9 +60,11 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
       title: title,
       subtitle: subtitle || "",
       image: image,
+      imageId: imageId,
       bgImage: bgImage || "",
+      bgImageId: bgImageId,
     });
-  }, [title, subtitle, image, bgImage, form, isOpen]);
+  }, [title, subtitle, image, imageId, bgImage, bgImageId, form, isOpen]);
   const onSubmit = (data: AboutHeroFormData) => {
     console.log("Hero Section Updated Data (Validated):", data);
     if (onUpdate) {
@@ -139,17 +147,14 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
                   <FormItem>
                     <FormLabel>Main Hero Image</FormLabel>
                     <FormControl>
-                      <ImageUpload
-                        className="bg-slate-50 border-slate-200"
-                        error={form.formState.errors.image}
-                        {...field}
+                      <MediaLibraryImageUploader
+                        value={field.value}
+                        onChange={(url, id) => {
+                          field.onChange(url);
+                          if (id) form.setValue("imageId", id);
+                        }}
                       />
                     </FormControl>
-                    {image && (
-                      <div className="mt-2 text-[10px] text-slate-400 truncate">
-                        Current: {image}
-                      </div>
-                    )}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -162,17 +167,14 @@ const AboutHeroModal: React.FC<AboutHeroModalProps> = ({
                   <FormItem>
                     <FormLabel>Background Image</FormLabel>
                     <FormControl>
-                      <ImageUpload
-                        className="bg-slate-50 border-slate-200"
-                        error={form.formState.errors.bgImage}
-                        {...field}
+                      <MediaLibraryImageUploader
+                        value={field.value}
+                        onChange={(url, id) => {
+                          field.onChange(url);
+                          if (id) form.setValue("bgImageId", id);
+                        }}
                       />
                     </FormControl>
-                    {bgImage && (
-                      <div className="mt-2 text-[10px] text-slate-400 truncate">
-                        Current: {bgImage}
-                      </div>
-                    )}
                     <FormMessage />
                   </FormItem>
                 )}

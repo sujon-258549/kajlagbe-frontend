@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, X } from "lucide-react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -133,7 +133,13 @@ const AboutFAQModal: React.FC<AboutFAQModalProps> = ({
               <FormItem>
                 <FormLabel>Sidebar Image</FormLabel>
                 <FormControl>
-                  <ImageUpload isSingle={true} {...field} />
+                  <MediaLibraryImageUploader
+                    value={field.value}
+                    onChange={(url, id) => {
+                      field.onChange(url);
+                      if (id) form.setValue("imageId", id);
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

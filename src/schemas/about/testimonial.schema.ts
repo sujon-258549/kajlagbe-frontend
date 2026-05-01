@@ -5,6 +5,7 @@ export const aboutTestimonialItemSchema = z.object({
   name: z.string().min(1, "Name is required"),
   role: z.string().min(1, "Role is required"),
   image: z.string().min(1, "Image is required"),
+  imageId: z.string().optional(),
   rating: z.number().min(1).max(5),
   content: z.string().min(1, "Content is required"),
   videoUrl: z.string().optional(),

@@ -8,6 +8,7 @@ export const aboutFAQSchema = z.object({
     .max(100, "Title must not exceed 100 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   image: z.string().min(1, "Sidebar image is required"),
+  imageId: z.string().optional(),
   items: z.array(
     z.object({
       question: z.string().min(5, "Question must be at least 5 characters"),

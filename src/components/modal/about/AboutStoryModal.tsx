@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, X } from "lucide-react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -134,10 +134,13 @@ const AboutStoryModal: React.FC<AboutStoryModalProps> = ({
                   <FormItem>
                     <FormLabel>Gallery Images (Select Multiple)</FormLabel>
                     <FormControl>
-                      <ImageUpload
-                        isSingle={false}
-                        className="bg-slate-50 border-slate-200"
-                        {...field}
+                      <MediaLibraryImageUploader
+                        isMulti
+                        value={field.value}
+                        onChange={(urls, ids) => {
+                          field.onChange(urls);
+                          if (ids) form.setValue("imageIds", ids);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />

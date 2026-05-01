@@ -54,7 +54,9 @@ export default function AboutHero() {
       subtitle={data.subtitle}
       breadcrumb="About Us"
       image={data.image}
+      imageId={data.imageId}
       bgImage={data.bgImage}
+      bgImageId={data.bgImageId}
       ModalComponent={AboutHeroModal}
       onUpdate={handleUpdate}
     />

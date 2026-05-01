@@ -11,7 +11,9 @@ interface CommonHeroProps {
   title?: string;
   subtitle?: string;
   image?: string;
+  imageId?: string;
   bgImage?: string;
+  bgImageId?: string;
   breadcrumb?: string;
   onUpdate?: (data: any) => void;
   ModalComponent?: React.ComponentType<{
@@ -20,7 +22,9 @@ interface CommonHeroProps {
     title: string;
     subtitle?: string;
     image: string;
+    imageId?: string;
     bgImage?: string;
+    bgImageId?: string;
     onUpdate?: (data: any) => void;
   }>;
 }
@@ -29,7 +33,9 @@ export default function CommonHero({
   title = "Page Title",
   subtitle,
   image = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2664&auto=format&fit=crop",
+  imageId,
   bgImage = "https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=2670&auto=format&fit=crop",
+  bgImageId,
   breadcrumb,
   ModalComponent,
   onUpdate,
@@ -136,7 +142,9 @@ export default function CommonHero({
             title={title}
             subtitle={subtitle}
             image={image}
+            imageId={imageId}
             bgImage={bgImage}
+            bgImageId={bgImageId}
             onUpdate={onUpdate}
           />
         </AdminOnly>

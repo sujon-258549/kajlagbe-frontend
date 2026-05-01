@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, X } from "lucide-react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -139,10 +139,12 @@ const AboutMissionModal: React.FC<AboutMissionModalProps> = ({
                   <FormItem>
                     <FormLabel>Main Image</FormLabel>
                     <FormControl>
-                      <ImageUpload
-                        isSingle={true}
-                        className="bg-slate-50 border-slate-200"
-                        {...field}
+                      <MediaLibraryImageUploader
+                        value={field.value}
+                        onChange={(url, id) => {
+                          field.onChange(url);
+                          if (id) form.setValue("mainImageId", id);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -159,10 +161,12 @@ const AboutMissionModal: React.FC<AboutMissionModalProps> = ({
                   <FormItem>
                     <FormLabel>Secondary Image</FormLabel>
                     <FormControl>
-                      <ImageUpload
-                        isSingle={true}
-                        className="bg-slate-50 border-slate-200"
-                        {...field}
+                      <MediaLibraryImageUploader
+                        value={field.value}
+                        onChange={(url, id) => {
+                          field.onChange(url);
+                          if (id) form.setValue("secondaryImageId", id);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />

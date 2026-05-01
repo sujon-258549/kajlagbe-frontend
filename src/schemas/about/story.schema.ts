@@ -5,6 +5,7 @@ export const aboutStorySchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   images: z.array(z.string()).min(2, "At least 2 images are required"),
+  imageIds: z.array(z.string()).optional(),
   organicPercentage: z.string().optional(),
   features: z
     .array(
