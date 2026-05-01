@@ -37,7 +37,7 @@ export default function AboutStory() {
   });
 
   return (
-    <section className="pt-5 pb-10 md:py-16 lg:py-24 overflow-hidden relative group/section">
+    <section className="py-6 md:py-8 lg:py-12 overflow-hidden relative group/section">
       <div className="main-container mx-auto px-4 relative">
         {/* Edit Button - Inside Container (Admin Only) */}
         <AdminOnly>
@@ -50,7 +50,7 @@ export default function AboutStory() {
           </button>
         </AdminOnly>
 
-        <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+        <div className="flex flex-col lg:flex-row items-center gap-6 md:gap-8 lg:gap-12">
           {/* Image Grid */}
           <div className="w-full lg:w-1/2 relative">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
