@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Sparkles, Leaf, Target, Edit } from "lucide-react";
 import Heading2 from "@/components/common/Headings/Heading2";
@@ -8,9 +8,12 @@ import Heading4 from "@/components/common/Headings/Heading4";
 import AdminOnly from "@/components/common/auth/AdminOnly";
 import AboutMissionModal from "@/components/modal/about/AboutMissionModal";
 import { AboutMissionFormData } from "@/schemas/about/mission.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 
 export default function AboutMission() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [, setIsLoading] = useState(true);
+  const [, setIsUpdating] = useState(false);
   const [data, setData] = useState<AboutMissionFormData>({
     badge: "About Us",
     title: "Born from love for real food and a desire to do better",
@@ -32,6 +35,37 @@ export default function AboutMission() {
       },
     ],
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSettingsMap("about");
+      if (res.success && res.data.about_mission) {
+        setData(res.data.about_mission.value);
+      }
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const handleUpdate = async (newData: AboutMissionFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "about_mission",
+        value: newData,
+        group: "about",
+        description: "About Page Mission Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsEditModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className="py-6 md:py-8 lg:py-12 bg-white overflow-hidden relative group/section">
@@ -181,7 +215,7 @@ export default function AboutMission() {
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           initialData={data}
-          onUpdate={(newData) => setData(newData)}
+          onUpdate={handleUpdate}
         />
       </AdminOnly>
     </section>

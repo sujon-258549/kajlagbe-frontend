@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Quote, Edit, Plus } from "lucide-react";
 import Image from "next/image";
 import AdminOnly from "@/components/common/auth/AdminOnly";
@@ -8,6 +8,7 @@ import AboutTestimonialsModal from "@/components/modal/about/AboutTestimonialsMo
 import AboutTestimonialItemModal from "@/components/modal/about/AboutTestimonialItemModal";
 import { AboutTestimonialsFormData } from "@/schemas/about/testimonials.schema";
 import { AboutTestimonialItem } from "@/schemas/about/testimonial.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 
 export default function AboutTestimonials() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -15,6 +16,8 @@ export default function AboutTestimonials() {
   const [editingItem, setEditingItem] = useState<
     AboutTestimonialItem | undefined
   >(undefined);
+  const [, setIsLoading] = useState(true);
+  const [, setIsUpdating] = useState(false);
 
   const [data, setData] = useState<AboutTestimonialsFormData>({
     badge: "TESTIMONIALS",
@@ -56,6 +59,44 @@ export default function AboutTestimonials() {
     ],
   });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSettingsMap("about");
+      if (res.success && res.data.about_testimonials) {
+        setData(res.data.about_testimonials.value);
+      }
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const persist = async (
+    newData: AboutTestimonialsFormData,
+    onSuccess?: () => void,
+  ) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "about_testimonials",
+        value: newData,
+        group: "about",
+        description: "About Page Testimonials Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        onSuccess?.();
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleUpdate = async (newData: AboutTestimonialsFormData) => {
+    await persist(newData, () => setIsEditModalOpen(false));
+  };
+
   const handleAddItem = () => {
     setEditingItem(undefined);
     setIsItemModalOpen(true);
@@ -66,35 +107,32 @@ export default function AboutTestimonials() {
     setIsItemModalOpen(true);
   };
 
-  const handleSaveItem = (itemData: AboutTestimonialItem) => {
-    if (editingItem) {
-      setData((prev) => ({
-        ...prev,
-        items: prev.items?.map((item) =>
-          item.id === editingItem.id ? itemData : item,
-        ),
-      }));
-    } else {
-      setData((prev) => ({
-        ...prev,
-        items: [...(prev.items || []), { ...itemData, id: Date.now() }],
-      }));
-    }
-    setIsItemModalOpen(false);
+  const handleSaveItem = async (itemData: AboutTestimonialItem) => {
+    const newData: AboutTestimonialsFormData = editingItem
+      ? {
+          ...data,
+          items: data.items?.map((item) =>
+            item.id === editingItem.id ? itemData : item,
+          ),
+        }
+      : {
+          ...data,
+          items: [...(data.items || []), { ...itemData, id: Date.now() }],
+        };
+    await persist(newData, () => setIsItemModalOpen(false));
   };
 
-  const handleDeleteItem = () => {
-    if (editingItem) {
-      setData((prev) => ({
-        ...prev,
-        items: prev.items?.filter((item) => item.id !== editingItem.id),
-      }));
-      setIsItemModalOpen(false);
-    }
+  const handleDeleteItem = async () => {
+    if (!editingItem) return;
+    const newData: AboutTestimonialsFormData = {
+      ...data,
+      items: data.items?.filter((item) => item.id !== editingItem.id),
+    };
+    await persist(newData, () => setIsItemModalOpen(false));
   };
 
   return (
-    <section className="py-10 md:py-16 lg:py-24 bg-[#f2f9ec] relative group/section">
+    <section className="py-6 md:py-8 lg:py-12 bg-[#f2f9ec] relative group/section">
       <div className="main-container mx-auto px-4 relative">
         {/* Section Action Buttons */}
         <AdminOnly>
@@ -148,7 +186,7 @@ export default function AboutTestimonials() {
 
               <div className="flex gap-1 mb-4 text-yellow-400">
                 {[...Array(t.rating)].map((_, i) => (
-                  <span key={i}>★</span>
+                  <span key={i}>â˜…</span>
                 ))}
               </div>
 
@@ -183,7 +221,7 @@ export default function AboutTestimonials() {
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           initialData={data}
-          onUpdate={(newData) => setData(newData)}
+          onUpdate={handleUpdate}
         />
         <AboutTestimonialItemModal
           isOpen={isItemModalOpen}

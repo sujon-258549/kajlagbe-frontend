@@ -1,14 +1,17 @@
-"use client";
+﻿"use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import Heading3 from "@/components/common/Headings/Heading3";
 import AdminOnly from "@/components/common/auth/AdminOnly";
 import AboutStatsModal from "@/components/modal/about/AboutStatsModal";
 import { Edit } from "lucide-react";
 import { AboutStatsFormData } from "@/schemas/about/stats.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 
 export default function AboutStats() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [, setIsLoading] = useState(true);
+  const [, setIsUpdating] = useState(false);
   const [data, setData] = useState<AboutStatsFormData>({
     items: [
       { value: "824", label: "Happy Clients" },
@@ -18,8 +21,39 @@ export default function AboutStats() {
     ],
   });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSettingsMap("about");
+      if (res.success && res.data.about_stats) {
+        setData(res.data.about_stats.value);
+      }
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const handleUpdate = async (newData: AboutStatsFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "about_stats",
+        value: newData,
+        group: "about",
+        description: "About Page Stats Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsEditModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   return (
-    <section className="py-10 md:py-12 bg-secondary text-white relative group/section">
+    <section className="py-6 md:py-8 lg:py-12 bg-secondary text-white relative group/section">
       <div className="main-container mx-auto px-4 relative">
         {/* Edit Button */}
         <AdminOnly>
@@ -50,7 +84,7 @@ export default function AboutStats() {
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           initialData={data}
-          onUpdate={(newData) => setData(newData)}
+          onUpdate={handleUpdate}
         />
       </AdminOnly>
     </section>

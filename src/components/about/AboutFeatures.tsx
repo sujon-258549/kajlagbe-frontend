@@ -1,15 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Edit } from "lucide-react";
 import Heading2 from "@/components/common/Headings/Heading2";
 import Heading3 from "@/components/common/Headings/Heading3";
 import AdminOnly from "@/components/common/auth/AdminOnly";
 import AboutFeaturesModal from "@/components/modal/about/AboutFeaturesModal";
 import { AboutFeaturesFormData } from "@/schemas/about/features.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 
 export default function AboutFeatures() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [, setIsLoading] = useState(true);
+  const [, setIsUpdating] = useState(false);
   const [data, setData] = useState<AboutFeaturesFormData>({
     badge: "OUR FEATURES",
     title: "Discover the love behind our food products sprout",
@@ -40,6 +43,37 @@ export default function AboutFeatures() {
       },
     ],
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSettingsMap("about");
+      if (res.success && res.data.about_features) {
+        setData(res.data.about_features.value);
+      }
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const handleUpdate = async (newData: AboutFeaturesFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "about_features",
+        value: newData,
+        group: "about",
+        description: "About Page Features Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsEditModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className="py-6 md:py-8 lg:py-12 bg-secondary relative group/section">
@@ -87,7 +121,7 @@ export default function AboutFeatures() {
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           initialData={data}
-          onUpdate={(newData) => setData(newData)}
+          onUpdate={handleUpdate}
         />
       </AdminOnly>
     </section>

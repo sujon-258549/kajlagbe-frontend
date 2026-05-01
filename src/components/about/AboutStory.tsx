@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Check, Edit } from "lucide-react";
 
@@ -10,9 +10,12 @@ import Heading4 from "@/components/common/Headings/Heading4";
 import AboutStoryModal from "@/components/modal/about/AboutStoryModal";
 import AdminOnly from "@/components/common/auth/AdminOnly";
 import { AboutStoryFormData } from "@/schemas/about/story.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 
 export default function AboutStory() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [, setIsLoading] = useState(true);
+  const [, setIsUpdating] = useState(false);
   const [data, setData] = useState<AboutStoryFormData>({
     badge: "About Us",
     title: "Pure is the only one farm that need no cover & extra fertilizer",
@@ -35,6 +38,37 @@ export default function AboutStory() {
       },
     ],
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSettingsMap("about");
+      if (res.success && res.data.about_story) {
+        setData(res.data.about_story.value);
+      }
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const handleUpdate = async (newData: AboutStoryFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "about_story",
+        value: newData,
+        group: "about",
+        description: "About Page Story Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsEditModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className="py-6 md:py-8 lg:py-12 overflow-hidden relative group/section">
@@ -129,7 +163,7 @@ export default function AboutStory() {
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           initialData={data}
-          onUpdate={(newData: AboutStoryFormData) => setData(newData)}
+          onUpdate={handleUpdate}
         />
       </AdminOnly>
     </section>

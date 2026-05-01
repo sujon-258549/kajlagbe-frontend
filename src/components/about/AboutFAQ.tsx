@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -13,9 +13,12 @@ import { Edit } from "lucide-react";
 import AdminOnly from "@/components/common/auth/AdminOnly";
 import AboutFAQModal from "@/components/modal/about/AboutFAQModal";
 import { AboutFAQFormData } from "@/schemas/about/faq.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 
 export default function AboutFAQ() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [, setIsLoading] = useState(true);
+  const [, setIsUpdating] = useState(false);
   const [data, setData] = useState<AboutFAQFormData>({
     badge: "LEARN MORE",
     title: "Learn more about our food, our process & our promise",
@@ -41,8 +44,39 @@ export default function AboutFAQ() {
     ],
   });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSettingsMap("about");
+      if (res.success && res.data.about_faq) {
+        setData(res.data.about_faq.value);
+      }
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const handleUpdate = async (newData: AboutFAQFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "about_faq",
+        value: newData,
+        group: "about",
+        description: "About Page FAQ Section Settings",
+      });
+      if (res.success) {
+        setData(newData);
+        setIsEditModalOpen(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   return (
-    <section className="py-10 md:py-16 lg:py-24 bg-slate-50 overflow-hidden relative group/section">
+    <section className="py-6 md:py-8 lg:py-12 bg-slate-50 overflow-hidden relative group/section">
       <div className="main-container mx-auto px-4 relative">
         {/* Edit Button */}
         <AdminOnly>
@@ -102,7 +136,7 @@ export default function AboutFAQ() {
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           initialData={data}
-          onUpdate={(newData) => setData(newData)}
+          onUpdate={handleUpdate}
         />
       </AdminOnly>
     </section>
