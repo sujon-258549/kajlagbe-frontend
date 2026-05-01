@@ -1,4 +1,4 @@
-import ServicesHero from "@/components/services/ServicesHero";
+﻿import ServicesHero from "@/components/services/ServicesHero";
 import Services from "@/components/home/Services";
 import ServicesTestimonial from "@/components/services/ServicesTestimonial";
 import ServicesPossible from "@/components/services/ServicesPossible";
@@ -16,7 +16,7 @@ export default function ServicesPage() {
     <div className="min-h-screen bg-white">
       <ServicesHero />
 
-      <div className="pb-6 md:pb-16">
+      <div className="pb-6 md:pb-8 lg:pb-12">
         <Services />
       </div>
 

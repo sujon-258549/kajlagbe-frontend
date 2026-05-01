@@ -77,7 +77,7 @@ export default function ContactPage() {
     try {
       const res = await createContact(data);
       if (res.success) {
-        toast.success("Message sent successfully! We will get back to you soon.");
+        toast.success(res.message || "আপনার মেসেজটি সফলভাবে পাঠানো হয়েছে। আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।");
         form.reset();
       } else {
         toast.error(res.message || "Failed to send message. Please try again.");
@@ -101,7 +101,7 @@ export default function ContactPage() {
 
       <div className="main-container">
         {/* 4. Bottom Section: Map & Form */}
-        <div className="grid lg:grid-cols-2 gap-0 mb-8 lg:mb-16 overflow-hidden rounded-3xl border border-gray-200">
+        <div className="grid lg:grid-cols-2 gap-0 my-6 md:my-8 lg:my-12 overflow-hidden rounded-3xl border border-gray-200">
           {/* Left: Google Map (Simulated) */}
           <div className="relative h-[500px] lg:h-auto w-full bg-slate-100 group/map">
             <AdminOnly>

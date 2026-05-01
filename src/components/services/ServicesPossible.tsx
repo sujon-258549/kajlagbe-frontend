@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -143,7 +143,7 @@ export default function ServicesPossible() {
   };
 
   return (
-    <section className="relative py-10 md:py-16 lg:py-24 bg-[#063022] overflow-hidden group/section">
+    <section className="relative py-6 md:py-8 lg:py-12 bg-[#063022] overflow-hidden group/section">
       {/* Background Image/Texture */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         {/* Wind turbine background placeholder */}

@@ -14,7 +14,7 @@ export default function BlogPage() {
     <main className="min-h-screen bg-white">
       <BlogHero />
 
-      <section className="py-10 md:py-16 lg:py-20">
+      <section className="py-6 md:py-8 lg:py-12">
         <div className="main-container">
           <BlogList />
         </div>

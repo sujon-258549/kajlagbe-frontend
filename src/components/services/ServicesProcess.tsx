@@ -1,4 +1,4 @@
-"use client"; // Force reload
+﻿"use client"; // Force reload
 
 import { useState, useEffect } from "react";
 import Heading2 from "@/components/common/Headings/Heading2";
@@ -102,7 +102,7 @@ export default function ServicesProcess() {
   };
 
   return (
-    <section className="pb-10 pt-0 md:py-16 lg:py-24 bg-white relative group/section">
+    <section className="py-6 md:py-8 lg:py-12 bg-white relative group/section">
       <div className="main-container relative">
         <AdminOnly>
           <button

@@ -114,7 +114,7 @@ export default function BlogShowcase() {
   return (
     <section
       id="gallery"
-      className="py-10 md:py-16 lg:py-20 bg-white font-outfit relative group/section"
+      className="py-6 md:py-8 lg:py-12 bg-white font-outfit relative group/section"
     >
       <div className="main-container relative">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">

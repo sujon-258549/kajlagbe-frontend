@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import Marquee from "react-fast-marquee";
@@ -186,7 +186,7 @@ export default function ServicesTestimonial() {
   };
 
   return (
-    <section className="relative py-10 md:py-16 lg:py-24 overflow-hidden group/section">
+    <section className="relative py-6 md:py-8 lg:py-12 overflow-hidden group/section">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <Image

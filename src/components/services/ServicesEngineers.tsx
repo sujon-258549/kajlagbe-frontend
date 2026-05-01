@@ -1,4 +1,4 @@
-"use client"; // Updated to fix build error
+﻿"use client"; // Updated to fix build error
 
 import { useState, useEffect } from "react";
 import { ArrowRight, Share2, Lightbulb, Edit, Plus } from "lucide-react";
@@ -135,7 +135,7 @@ export default function ServicesEngineers() {
   };
 
   return (
-    <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden relative group/section">
+    <section className="py-6 md:py-8 lg:py-12 bg-white overflow-hidden relative group/section">
       <div className="main-container relative">
         <AdminOnly>
           <button

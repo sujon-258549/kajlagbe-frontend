@@ -1,4 +1,4 @@
-"use client"; // Force reload
+﻿"use client"; // Force reload
 
 import { useState, useEffect } from "react";
 import { ArrowRight, User, Tag, Lightbulb, Edit, Plus } from "lucide-react";
@@ -135,7 +135,7 @@ export default function ServicesBlog() {
   };
 
   return (
-    <section className="py-20 bg-white relative group/section">
+    <section className="py-6 md:py-8 lg:py-12 bg-white relative group/section">
       <div className="main-container relative">
         <AdminOnly>
           <button

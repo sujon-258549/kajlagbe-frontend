@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Edit } from "lucide-react";
@@ -71,7 +71,7 @@ export default function ContactInfo() {
   };
 
   return (
-    <section className="my-16 space-y-20 relative group/section">
+    <section className="my-6 md:my-8 lg:my-12 space-y-12 relative group/section">
       <div className="main-container mx-auto px-4 relative">
         {/* Edit Button */}
         <AdminOnly>

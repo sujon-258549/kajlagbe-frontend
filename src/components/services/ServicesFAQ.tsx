@@ -1,4 +1,4 @@
-"use client"; // Force reload
+﻿"use client"; // Force reload
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -70,7 +70,7 @@ export default function ServicesFAQ() {
   };
 
   return (
-    <section className="py-10 md:py-16 lg:py-24 bg-secondary relative group/section">
+    <section className="py-6 md:py-8 lg:py-12 bg-secondary relative group/section">
       <div className="main-container relative">
         <AdminOnly>
           <button

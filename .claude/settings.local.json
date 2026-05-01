@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npm run *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(findstr /N /R \"py- pt- pb-\" c:\\\\sujon\\\\kajlagbe\\\\kajlagbe-frontend\\\\src\\\\components\\\\contact\\\\ContactInfo.tsx)"
     ]
   }
 }
