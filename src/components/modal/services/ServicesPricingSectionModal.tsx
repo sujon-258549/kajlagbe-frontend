@@ -28,12 +28,13 @@ interface ServicesPricingSectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData: PricingSectionFormData;
-  onUpdate: (data: PricingSectionFormData) => void;
+  onUpdate: (data: PricingSectionFormData) => any;
+  isLoading?: boolean;
 }
 
 const ServicesPricingSectionModal: React.FC<
   ServicesPricingSectionModalProps
-> = ({ isOpen, onClose, initialData, onUpdate }) => {
+> = ({ isOpen, onClose, initialData, onUpdate, isLoading = false }) => {
   const form = useForm<PricingSectionFormData>({
     resolver: zodResolver(pricingSectionSchema),
     defaultValues: initialData,
@@ -43,9 +44,11 @@ const ServicesPricingSectionModal: React.FC<
     form.reset(initialData);
   }, [initialData, form, isOpen]);
 
-  const handleSubmit = (data: PricingSectionFormData) => {
-    onUpdate(data);
-    onClose();
+  const handleSubmit = async (data: PricingSectionFormData) => {
+    const success = await onUpdate(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   return (
@@ -93,8 +96,12 @@ const ServicesPricingSectionModal: React.FC<
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

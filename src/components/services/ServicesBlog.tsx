@@ -1,7 +1,7 @@
-"use client";
+"use client"; // Force reload
 
-import { useState } from "react";
-import { ArrowRight, User, Tag, Lightbulb, Edit } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowRight, User, Tag, Lightbulb, Edit, Plus } from "lucide-react";
 import CustomImage from "../common/CustomImage";
 import Heading2 from "../common/Headings/Heading2";
 import Heading5 from "../common/Headings/Heading5";
@@ -14,82 +14,124 @@ import {
   ServicesBlogFormData,
   ServicesBlogHeaderFormData,
 } from "@/schemas/services/blog.schema";
-
-const initialBlogs = [
-  {
-    id: 1,
-    date: "24",
-    month: "Jan",
-    author: "Admin",
-    category: "Solar",
-    title: "From Trash to Treasure: Inspiring Recycling Stories",
-    image:
-      "https://images.unsplash.com/photo-1542601906990-b4d3fb7d5b7e?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 2,
-    date: "09",
-    month: "Feb",
-    author: "Admin",
-    category: "Solar",
-    title: "Water Conservation: Small Changes, Big Impact",
-    image:
-      "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 3,
-    date: "17",
-    month: "Mar",
-    author: "Admin",
-    category: "Solar",
-    title: "The Power of One: How Individual Actions Save the Planet",
-    image:
-      "https://images.unsplash.com/photo-1591193686104-fddba4d0e4d8?auto=format&fit=crop&q=80&w=800",
-  },
-];
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { toast } from "react-toastify";
 
 export default function ServicesBlog() {
   const [data, setData] = useState<ServicesBlogFormData>({
     tagline: "News & Blog",
     title: "Our Daily Update",
-    blogs: initialBlogs,
+    blogs: [],
   });
 
   const [isHeaderModalOpen, setIsHeaderModalOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<ServicesBlogItem | undefined>(
-    undefined,
-  );
+  const [editingItem, setEditingItem] = useState<ServicesBlogItem | undefined>(undefined);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSettingsMap("services_blog");
+      if (res.success && res.data.blog_data) {
+        setData(res.data.blog_data.value);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleAddBlog = () => {
+    setEditingItem(undefined);
+    setIsItemModalOpen(true);
+  };
 
   const handleEditItem = (item: ServicesBlogItem) => {
     setEditingItem(item);
     setIsItemModalOpen(true);
   };
 
-  const handleSaveItem = (updatedItem: ServicesBlogItem) => {
-    if (editingItem) {
-      setData((prev) => ({
-        ...prev,
-        blogs: prev.blogs.map((item) =>
-          item.id === editingItem.id ? updatedItem : item,
-        ),
-      }));
+  const handleSaveItem = async (updatedItem: ServicesBlogItem) => {
+    setIsUpdating(true);
+    try {
+      let newBlogs;
+      if (editingItem) {
+        newBlogs = data.blogs.map((item) => (item.id === editingItem.id ? updatedItem : item));
+      } else {
+        newBlogs = [{ ...updatedItem, id: Date.now() }, ...data.blogs];
+      }
+
+      const newData = { ...data, blogs: newBlogs };
+      const res = await upsertSetting({
+        key: "blog_data",
+        value: newData,
+        group: "services_blog",
+        description: "Services Blog Settings",
+      });
+
+      if (res.success) {
+        setData(newData);
+        toast.success(editingItem ? "Blog updated!" : "Blog added!");
+        return true;
+      } else {
+        toast.error(res.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error saving blog");
+      return false;
+    } finally {
+      setIsUpdating(false);
     }
-    setIsItemModalOpen(false);
   };
 
-  const handleDeleteItem = () => {
-    if (editingItem) {
-      setData((prev) => ({
-        ...prev,
-        blogs: prev.blogs.filter((item) => item.id !== editingItem.id),
-      }));
-      setIsItemModalOpen(false);
+  const handleDeleteItem = async () => {
+    if (!editingItem) return;
+    setIsUpdating(true);
+    try {
+      const newBlogs = data.blogs.filter((item) => item.id !== editingItem.id);
+      const newData = { ...data, blogs: newBlogs };
+      const res = await upsertSetting({
+        key: "blog_data",
+        value: newData,
+        group: "services_blog",
+      });
+      if (res.success) {
+        setData(newData);
+        toast.success("Blog deleted!");
+        setIsItemModalOpen(false);
+        setEditingItem(undefined);
+      } else {
+        toast.error(res.message);
+      }
+    } catch (error) {
+      toast.error("Error deleting blog");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
-  const handleUpdateHeader = (headerData: ServicesBlogHeaderFormData) => {
-    setData((prev) => ({ ...prev, ...headerData }));
+  const handleUpdateHeader = async (headerData: ServicesBlogHeaderFormData) => {
+    setIsUpdating(true);
+    try {
+      const newData = { ...data, ...headerData };
+      const res = await upsertSetting({
+        key: "blog_data",
+        value: newData,
+        group: "services_blog",
+      });
+      if (res.success) {
+        setData(newData);
+        toast.success("Header updated!");
+        return true;
+      } else {
+        toast.error(res.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error updating header");
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -106,7 +148,15 @@ export default function ServicesBlog() {
         </AdminOnly>
 
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 relative">
+          <AdminOnly>
+            <Button
+              onClick={handleAddBlog}
+              className="absolute -top-12 left-1/2 -translate-x-1/2 bg-primary hover:bg-secondary text-white rounded-full"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Add Post
+            </Button>
+          </AdminOnly>
           <div className="flex items-center justify-center gap-2 text-[#fbbf24] font-medium mb-3">
             <Lightbulb className="w-5 h-5" />
             <span className="uppercase tracking-wider text-sm text-slate-500">
@@ -186,6 +236,7 @@ export default function ServicesBlog() {
         onClose={() => setIsHeaderModalOpen(false)}
         initialData={{ tagline: data.tagline, title: data.title }}
         onUpdate={handleUpdateHeader}
+        isLoading={isUpdating}
       />
 
       <ServicesBlogModal
@@ -194,6 +245,7 @@ export default function ServicesBlog() {
         item={editingItem}
         onSave={handleSaveItem}
         onDelete={handleDeleteItem}
+        isLoading={isUpdating}
       />
     </section>
   );

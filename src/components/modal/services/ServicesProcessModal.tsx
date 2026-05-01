@@ -5,7 +5,7 @@ import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import {
   Form,
@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { Plus, Trash2 } from "lucide-react";
 
 // Schema for Process Steps
 export const processSchema = z.object({
@@ -38,7 +39,8 @@ interface ServicesProcessModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData: ProcessFormData;
-  onUpdate: (data: ProcessFormData) => void;
+  onUpdate: (data: ProcessFormData) => any;
+  isLoading?: boolean;
 }
 
 const ServicesProcessModal: React.FC<ServicesProcessModalProps> = ({
@@ -46,19 +48,27 @@ const ServicesProcessModal: React.FC<ServicesProcessModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<ProcessFormData>({
     resolver: zodResolver(processSchema),
     defaultValues: initialData,
   });
 
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "steps",
+  });
+
   useEffect(() => {
     form.reset(initialData);
   }, [initialData, form, isOpen]);
 
-  const handleSubmit = (data: ProcessFormData) => {
-    onUpdate(data);
-    onClose();
+  const handleSubmit = async (data: ProcessFormData) => {
+    const success = await onUpdate(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   return (
@@ -105,13 +115,41 @@ const ServicesProcessModal: React.FC<ServicesProcessModalProps> = ({
           </div>
 
           <div className="space-y-4">
-            {form.watch("steps").map((_, index) => (
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-bold">Process Steps</h3>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  append({
+                    number: String(fields.length + 1).padStart(2, "0"),
+                    title: "",
+                    description: "",
+                    icon: "Clipboard",
+                  })
+                }
+              >
+                <Plus className="w-4 h-4 mr-2" /> Add Step
+              </Button>
+            </div>
+
+            {fields.map((field, index) => (
               <div
-                key={index}
+                key={field.id}
                 className="p-4 border rounded-lg bg-gray-50 relative space-y-3"
               >
                 <div className="flex justify-between items-center mb-2">
                   <FormLabel className="font-bold">Step {index + 1}</FormLabel>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-500 hover:text-red-700 p-0 h-auto"
+                    onClick={() => remove(index)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
                 </div>
 
                 <div className="grid grid-cols-12 gap-4">
@@ -186,12 +224,16 @@ const ServicesProcessModal: React.FC<ServicesProcessModalProps> = ({
             ))}
           </div>
 
-          <div className="flex justify-end gap-3">
+          <div className="flex justify-end gap-3 pt-4 border-t">
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

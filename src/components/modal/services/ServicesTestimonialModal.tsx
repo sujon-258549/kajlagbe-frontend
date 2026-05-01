@@ -82,7 +82,7 @@ const ServicesTestimonialModal: React.FC<ServicesTestimonialModalProps> = ({
       description={
         item ? "Edit the testimonial details." : "Add a new testimonial."
       }
-      maxWidth="lg"
+      maxWidth="3xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
@@ -153,13 +153,13 @@ const ServicesTestimonialModal: React.FC<ServicesTestimonialModalProps> = ({
               <FormItem>
                 <FormLabel>Author Image</FormLabel>
                 <FormControl>
-                  <MediaLibraryImageUploader
-                    value={field.value}
-                    onChange={(val, url) => {
-                      field.onChange(val);
-                      if (url) form.setValue("image", url);
-                    }}
-                  />
+                    <MediaLibraryImageUploader
+                      value={form.watch("image")}
+                      onChange={(url, id) => {
+                        form.setValue("image", url || "");
+                        field.onChange(id || "");
+                      }}
+                    />
                 </FormControl>
                 <FormMessage />
               </FormItem>

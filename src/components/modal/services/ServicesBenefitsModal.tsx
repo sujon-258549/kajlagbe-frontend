@@ -5,7 +5,7 @@ import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import {
   Form,
@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import FormTextarea from "@/components/common/FormTextarea";
+import { Plus, Trash2 } from "lucide-react";
 
 // Schema for Benefits
 export const benefitsSchema = z.object({
@@ -37,7 +38,8 @@ interface ServicesBenefitsModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData: BenefitsFormData;
-  onUpdate: (data: BenefitsFormData) => void;
+  onUpdate: (data: BenefitsFormData) => any;
+  isLoading?: boolean;
 }
 
 const ServicesBenefitsModal: React.FC<ServicesBenefitsModalProps> = ({
@@ -45,19 +47,27 @@ const ServicesBenefitsModal: React.FC<ServicesBenefitsModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<BenefitsFormData>({
     resolver: zodResolver(benefitsSchema),
     defaultValues: initialData,
   });
 
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "items",
+  });
+
   useEffect(() => {
     form.reset(initialData);
   }, [initialData, form, isOpen]);
 
-  const handleSubmit = (data: BenefitsFormData) => {
-    onUpdate(data);
-    onClose();
+  const handleSubmit = async (data: BenefitsFormData) => {
+    const success = await onUpdate(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   return (
@@ -105,15 +115,42 @@ const ServicesBenefitsModal: React.FC<ServicesBenefitsModalProps> = ({
               />
             </div>
 
-            {form.watch("items").map((_, index) => (
+            <div className="flex justify-between items-center px-1">
+              <h3 className="font-bold text-lg">Benefits Items</h3>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  append({
+                    title: "",
+                    desc: "",
+                    icon: "fa-solid fa-star",
+                  })
+                }
+              >
+                <Plus className="w-4 h-4 mr-2" /> Add Benefit
+              </Button>
+            </div>
+
+            {fields.map((field, index) => (
               <div
-                key={index}
+                key={field.id}
                 className="p-4 border rounded-lg bg-gray-50 relative space-y-3"
               >
                 <div className="flex justify-between items-center mb-2">
                   <FormLabel className="font-bold">
                     Benefit {index + 1}
                   </FormLabel>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-500 hover:text-red-700 p-0 h-auto"
+                    onClick={() => remove(index)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -168,12 +205,16 @@ const ServicesBenefitsModal: React.FC<ServicesBenefitsModalProps> = ({
             ))}
           </div>
 
-          <div className="flex justify-end gap-3">
+          <div className="flex justify-end gap-3 pt-4 border-t">
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

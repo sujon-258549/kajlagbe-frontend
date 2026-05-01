@@ -1,7 +1,7 @@
-"use client";
+"use client"; // Force reload
 
-import { useState } from "react";
-import { Check, Edit } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Check, Edit, Plus, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Heading2 from "@/components/common/Headings/Heading2";
 import AdminOnly from "../common/auth/AdminOnly";
@@ -11,64 +11,118 @@ import ServicesPricingSectionModal, {
 import ServicesPricingCardModal, {
   PricingCardFormData,
 } from "../modal/services/ServicesPricingCardModal";
-
-const initialPlans = [
-  {
-    name: "Standard",
-    price: "49",
-    features: [
-      "Garden design consultation",
-      "Soil health analysis",
-      "Basic planting plan",
-      "1 month support",
-    ],
-    recommended: false,
-  },
-  {
-    name: "Premium",
-    price: "99",
-    features: [
-      "Everything in Standard",
-      "Full landscape design",
-      "Irrigation system setup",
-      "3 months support",
-      "Seasonal maintenance guide",
-    ],
-    recommended: true,
-  },
-  {
-    name: "Professional",
-    price: "199",
-    features: [
-      "Everything in Premium",
-      "Monthly on-site visits",
-      "Pest control monitoring",
-      "Harvest assistance",
-      "Priority expert support",
-    ],
-    recommended: false,
-  },
-];
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { toast } from "react-toastify";
 
 export default function ServicesPricing() {
   const [sectionData, setSectionData] = useState<PricingSectionFormData>({
     tagline: "PRICING PLANS",
     title: "Choose the right plan for your farm",
   });
-  const [plans, setPlans] = useState<PricingCardFormData[]>(initialPlans);
+  const [plans, setPlans] = useState<PricingCardFormData[]>([]);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSettingsMap("services_pricing");
+      if (res.success) {
+        if (res.data.pricing_section) {
+          setSectionData(res.data.pricing_section.value);
+        }
+        if (res.data.pricing_plans) {
+          setPlans(res.data.pricing_plans.value);
+        }
+      }
+    };
+    fetchData();
+  }, []);
 
   const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
   const [editingCardIndex, setEditingCardIndex] = useState<number | null>(null);
 
-  const handleSectionUpdate = (data: PricingSectionFormData) => {
-    setSectionData(data);
+  const handleAddPlan = () => {
+    setEditingCardIndex(-1); // -1 means new plan
   };
 
-  const handleCardUpdate = (data: PricingCardFormData) => {
-    if (editingCardIndex !== null) {
+  const handleSectionUpdate = async (data: PricingSectionFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "pricing_section",
+        value: data,
+        group: "services_pricing",
+        description: "Services Pricing Section Settings",
+      });
+      if (res.success) {
+        setSectionData(data);
+        toast.success("Section updated!");
+        return true;
+      } else {
+        toast.error(res.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error updating section");
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleCardUpdate = async (data: PricingCardFormData) => {
+    if (editingCardIndex === null) return false;
+    setIsUpdating(true);
+    try {
       const updatedPlans = [...plans];
-      updatedPlans[editingCardIndex] = data;
-      setPlans(updatedPlans);
+      if (editingCardIndex === -1) {
+        updatedPlans.push(data);
+      } else {
+        updatedPlans[editingCardIndex] = data;
+      }
+
+      const res = await upsertSetting({
+        key: "pricing_plans",
+        value: updatedPlans,
+        group: "services_pricing",
+        description: "Services Pricing Plans",
+      });
+
+      if (res.success) {
+        setPlans(updatedPlans);
+        toast.success(editingCardIndex === -1 ? "Plan added!" : "Plan updated!");
+        return true;
+      } else {
+        toast.error(res.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error saving plan");
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleDeletePlan = async (idx: number) => {
+    if (!confirm("Are you sure you want to delete this plan?")) return;
+    setIsUpdating(true);
+    try {
+      const updatedPlans = plans.filter((_, i) => i !== idx);
+      const res = await upsertSetting({
+        key: "pricing_plans",
+        value: updatedPlans,
+        group: "services_pricing",
+      });
+      if (res.success) {
+        setPlans(updatedPlans);
+        toast.success("Plan deleted!");
+      } else {
+        toast.error(res.message);
+      }
+    } catch (error) {
+      toast.error("Error deleting plan");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -86,6 +140,14 @@ export default function ServicesPricing() {
         </AdminOnly>
 
         <div className="text-center max-w-2xl mx-auto mb-16 relative group/header">
+          <AdminOnly>
+            <Button
+              onClick={handleAddPlan}
+              className="absolute -top-12 left-1/2 -translate-x-1/2 bg-[#86b86b] hover:bg-primary text-white rounded-full"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Add Plan
+            </Button>
+          </AdminOnly>
           <span className="text-[#86b86b] font-bold text-sm tracking-uppercase mb-2 block">
             {sectionData.tagline}
           </span>
@@ -103,13 +165,22 @@ export default function ServicesPricing() {
               }`}
             >
               <AdminOnly>
-                <button
-                  onClick={() => setEditingCardIndex(idx)}
-                  className="absolute top-4 right-4 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 opacity-0 group-hover/card:opacity-100 transition-all hover:bg-primary hover:text-white"
-                  title="Edit Card"
-                >
-                  <Edit className="w-4 h-4" />
-                </button>
+                <div className="absolute top-4 right-4 z-50 flex gap-2 opacity-0 group-hover/card:opacity-100 transition-all">
+                  <button
+                    onClick={() => setEditingCardIndex(idx)}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white"
+                    title="Edit Card"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDeletePlan(idx)}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-600 hover:text-white"
+                    title="Delete Card"
+                  >
+                    <Trash className="w-4 h-4" />
+                  </button>
+                </div>
               </AdminOnly>
 
               {plan.recommended && (
@@ -170,14 +241,20 @@ export default function ServicesPricing() {
         onClose={() => setIsSectionModalOpen(false)}
         initialData={sectionData}
         onUpdate={handleSectionUpdate}
+        isLoading={isUpdating}
       />
 
       {editingCardIndex !== null && (
         <ServicesPricingCardModal
-          isOpen={true} // It's controlled by the index being non-null
+          isOpen={true}
           onClose={() => setEditingCardIndex(null)}
-          initialData={plans[editingCardIndex]}
+          initialData={
+            editingCardIndex === -1
+              ? { name: "", price: "", features: [], recommended: false }
+              : plans[editingCardIndex]
+          }
           onUpdate={handleCardUpdate}
+          isLoading={isUpdating}
         />
       )}
     </section>

@@ -26,7 +26,9 @@ interface ServicesHeroModalProps {
   title: string;
   subtitle?: string;
   image: string;
+  imageId?: string;
   bgImage?: string;
+  bgImageId?: string;
   onUpdate?: (data: ServicesHeroFormData) => any;
   isLoading?: boolean;
 }
@@ -37,7 +39,9 @@ const ServicesHeroModal: React.FC<ServicesHeroModalProps> = ({
   title,
   subtitle,
   image,
+  imageId,
   bgImage,
+  bgImageId,
   onUpdate,
   isLoading = false,
 }) => {
@@ -47,7 +51,9 @@ const ServicesHeroModal: React.FC<ServicesHeroModalProps> = ({
       title: title,
       subtitle: subtitle || "",
       image: image,
+      imageId: "",
       bgImage: bgImage || "",
+      bgImageId: "",
     },
   });
 
@@ -56,9 +62,11 @@ const ServicesHeroModal: React.FC<ServicesHeroModalProps> = ({
       title: title,
       subtitle: subtitle || "",
       image: image,
+      imageId: imageId || "",
       bgImage: bgImage || "",
+      bgImageId: bgImageId || "",
     });
-  }, [title, subtitle, image, bgImage, form, isOpen]);
+  }, [title, subtitle, image, imageId, bgImage, bgImageId, form, isOpen]);
 
   const onSubmit = async (data: ServicesHeroFormData) => {
     if (onUpdate) {
@@ -140,7 +148,10 @@ const ServicesHeroModal: React.FC<ServicesHeroModalProps> = ({
                     <FormControl>
                       <MediaLibraryImageUploader 
                         value={field.value} 
-                        onChange={field.onChange} 
+                        onChange={(url, id) => {
+                          field.onChange(url);
+                          if (id) form.setValue("imageId", id);
+                        }} 
                       />
                     </FormControl>
                     <FormMessage />
@@ -157,7 +168,10 @@ const ServicesHeroModal: React.FC<ServicesHeroModalProps> = ({
                     <FormControl>
                       <MediaLibraryImageUploader 
                         value={field.value} 
-                        onChange={field.onChange} 
+                        onChange={(url, id) => {
+                          field.onChange(url);
+                          if (id) form.setValue("bgImageId", id);
+                        }} 
                       />
                     </FormControl>
                     <FormMessage />

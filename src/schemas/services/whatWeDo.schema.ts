@@ -5,6 +5,7 @@ export const whatWeDoItemSchema = z.object({
   title: z.string().min(1, "Title is required"),
   number: z.string().min(1, "Number is required"),
   image: z.string().min(1, "Image is required"),
+  imageId: z.string().optional(),
 });
 
 export const whatWeDoSchema = z.object({

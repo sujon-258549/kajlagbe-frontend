@@ -1,6 +1,6 @@
-"use client";
+"use client"; // Force reload
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Play, X, Edit } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -17,29 +17,13 @@ import AdminOnly from "../common/auth/AdminOnly";
 import ServicesFAQModal, {
   FAQFormData,
 } from "../modal/services/ServicesFAQModal";
-
-const initialFaqs = [
-  {
-    q: "Do you offer organic farming solutions?",
-    a: "Yes, we specialize in 100% organic farming methods that avoid synthetic pesticides and fertilizers.",
-  },
-  {
-    q: "Can I customize my service package?",
-    a: "Absolutely! We understand every farm is unique. Contact us to create a tailored plan.",
-  },
-  {
-    q: "What areas do you service?",
-    a: "We currently serve major agricultural regions in the state. Please check our coverage map or call us.",
-  },
-  {
-    q: "Do you provide soil testing?",
-    a: "Yes, comprehensive soil health analysis is included in our Standard and above plans.",
-  },
-];
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { toast } from "react-toastify";
 
 export default function ServicesFAQ() {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [faqData, setFaqData] = useState<FAQFormData>({
     subtitle: "FAQ",
     title: "Frequently Asked Questions",
@@ -47,11 +31,42 @@ export default function ServicesFAQ() {
     videoTitle: "Our Organic Promise",
     videoDescription:
       "Watch how we maintain the highest standards in every harvest.",
-    faqs: initialFaqs.map((f) => ({ id: f.q, q: f.q, a: f.a })),
+    faqs: [],
   });
 
-  const handleUpdate = (data: FAQFormData) => {
-    setFaqData(data);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSettingsMap("services_faq");
+      if (res.success && res.data.faq_data) {
+        setFaqData(res.data.faq_data.value);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleUpdate = async (data: FAQFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "faq_data",
+        value: data,
+        group: "services_faq",
+        description: "Services FAQ Settings",
+      });
+      if (res.success) {
+        setFaqData(data);
+        toast.success("FAQ updated!");
+        return true;
+      } else {
+        toast.error(res.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error updating FAQ");
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -185,6 +200,7 @@ export default function ServicesFAQ() {
         onClose={() => setIsModalOpen(false)}
         initialData={faqData}
         onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
     </section>
   );

@@ -5,6 +5,7 @@ export const serviceEngineerItemSchema = z.object({
   name: z.string().min(1, "Name is required"),
   role: z.string().min(1, "Role is required"),
   image: z.string().min(1, "Image is required"),
+  imageId: z.string().optional(),
 });
 
 export const serviceEngineerSchema = z.object({

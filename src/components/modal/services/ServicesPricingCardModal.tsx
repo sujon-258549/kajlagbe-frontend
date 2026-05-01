@@ -31,7 +31,8 @@ interface ServicesPricingCardModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData: PricingCardFormData;
-  onUpdate: (data: PricingCardFormData) => void;
+  onUpdate: (data: PricingCardFormData) => any;
+  isLoading?: boolean;
 }
 
 const ServicesPricingCardModal: React.FC<ServicesPricingCardModalProps> = ({
@@ -39,6 +40,7 @@ const ServicesPricingCardModal: React.FC<ServicesPricingCardModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<PricingCardFormData>({
     resolver: zodResolver(pricingCardSchema) as any,
@@ -49,9 +51,11 @@ const ServicesPricingCardModal: React.FC<ServicesPricingCardModalProps> = ({
     form.reset(initialData);
   }, [initialData, form, isOpen]);
 
-  const handleSubmit = (data: PricingCardFormData) => {
-    onUpdate(data);
-    onClose();
+  const handleSubmit = async (data: PricingCardFormData) => {
+    const success = await onUpdate(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   const handleFeatureChange = (featureIndex: number, value: string) => {
@@ -168,8 +172,12 @@ const ServicesPricingCardModal: React.FC<ServicesPricingCardModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

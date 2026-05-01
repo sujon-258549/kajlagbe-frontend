@@ -39,7 +39,8 @@ interface ServicesFAQModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData: FAQFormData;
-  onUpdate: (data: FAQFormData) => void;
+  onUpdate: (data: FAQFormData) => any;
+  isLoading?: boolean;
 }
 
 const ServicesFAQModal: React.FC<ServicesFAQModalProps> = ({
@@ -47,6 +48,7 @@ const ServicesFAQModal: React.FC<ServicesFAQModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<FAQFormData>({
     resolver: zodResolver(faqSchema),
@@ -57,9 +59,11 @@ const ServicesFAQModal: React.FC<ServicesFAQModalProps> = ({
     form.reset(initialData);
   }, [initialData, form, isOpen]);
 
-  const handleSubmit = (data: FAQFormData) => {
-    onUpdate(data);
-    onClose();
+  const handleSubmit = async (data: FAQFormData) => {
+    const success = await onUpdate(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   return (
@@ -202,12 +206,16 @@ const ServicesFAQModal: React.FC<ServicesFAQModalProps> = ({
             ))}
           </div>
 
-          <div className="flex justify-end gap-3">
+          <div className="flex justify-end gap-3 pt-4 border-t">
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

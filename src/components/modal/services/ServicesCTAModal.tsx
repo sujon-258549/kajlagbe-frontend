@@ -30,7 +30,8 @@ interface ServicesCTAModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData: CTAFormData;
-  onUpdate: (data: CTAFormData) => void;
+  onUpdate: (data: CTAFormData) => any;
+  isLoading?: boolean;
 }
 
 const ServicesCTAModal: React.FC<ServicesCTAModalProps> = ({
@@ -38,6 +39,7 @@ const ServicesCTAModal: React.FC<ServicesCTAModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<CTAFormData>({
     resolver: zodResolver(ctaSchema),
@@ -48,9 +50,11 @@ const ServicesCTAModal: React.FC<ServicesCTAModalProps> = ({
     form.reset(initialData);
   }, [initialData, form, isOpen]);
 
-  const handleSubmit = (data: CTAFormData) => {
-    onUpdate(data);
-    onClose();
+  const handleSubmit = async (data: CTAFormData) => {
+    const success = await onUpdate(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   return (
@@ -124,12 +128,16 @@ const ServicesCTAModal: React.FC<ServicesCTAModalProps> = ({
             />
           </div>
 
-          <div className="flex justify-end gap-3">
+          <div className="flex justify-end gap-3 pt-4 border-t">
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

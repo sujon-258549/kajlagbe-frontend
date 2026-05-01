@@ -33,11 +33,17 @@ const ServicesTestimonialSectionModal: React.FC<
 > = ({ isOpen, onClose, initialData, onUpdate, isLoading = false }) => {
   const form = useForm<ServicesTestimonialSectionData>({
     resolver: zodResolver(ServicesTestimonialSectionSchema),
-    defaultValues: initialData,
+    defaultValues: {
+      ...initialData,
+      backgroundImageId: initialData.backgroundImageId || "",
+    },
   });
 
   useEffect(() => {
-    form.reset(initialData);
+    form.reset({
+      ...initialData,
+      backgroundImageId: initialData.backgroundImageId || "",
+    });
   }, [initialData, form, isOpen]);
 
   const handleSubmit = async (data: ServicesTestimonialSectionData) => {
@@ -86,14 +92,17 @@ const ServicesTestimonialSectionModal: React.FC<
 
           <FormField
             control={form.control}
-            name="backgroundImage"
+            name="backgroundImageId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Background Image</FormLabel>
                 <FormControl>
                   <MediaLibraryImageUploader
-                    value={field.value}
-                    onChange={(val, url) => field.onChange(url)}
+                    value={form.watch("backgroundImage")}
+                    onChange={(url, id) => {
+                      form.setValue("backgroundImage", url || "");
+                      field.onChange(id || "");
+                    }}
                   />
                 </FormControl>
                 <FormMessage />

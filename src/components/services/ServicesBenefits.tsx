@@ -1,51 +1,78 @@
-"use client";
+"use client"; // Force reload
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Heading3 from "@/components/common/Headings/Heading3";
 import { Edit } from "lucide-react";
 import AdminOnly from "../common/auth/AdminOnly";
 import ServicesBenefitsModal, {
   BenefitsFormData,
 } from "../modal/services/ServicesBenefitsModal";
-
-const initialBenefits = [
-  {
-    icon: "fa-solid fa-shield-check",
-    title: "Certified Quality",
-    desc: "We guarantee the highest standard of organic certification.",
-  },
-  {
-    icon: "fa-solid fa-chart-line",
-    title: "Increased Yield",
-    desc: "Optimized farming techniques for maximum harvest output.",
-  },
-  {
-    icon: "fa-solid fa-users",
-    title: "Expert Team",
-    desc: "Decades of combined experience in agricultural science.",
-  },
-  {
-    icon: "fa-solid fa-clock",
-    title: "Timely Delivery",
-    desc: "Efficient processes ensuring on-time project completion.",
-  },
-];
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { toast } from "react-toastify";
 
 export default function ServicesBenefits() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [benefitsData, setBenefitsData] = useState<BenefitsFormData>({
     sectionTitle: "WHY CHOOSE US",
     sectionDesc: "We bring excellence to every field we touch",
-    items: initialBenefits.map((b) => ({
-      id: b.title,
-      title: b.title,
-      desc: b.desc,
-      icon: b.icon,
-    })),
+    items: [
+      {
+        title: "Qualified Team",
+        desc: "Our team consists of highly skilled and certified professionals in their fields.",
+        icon: "fa-solid fa-users-gear",
+      },
+      {
+        title: "Quality Service",
+        desc: "We are committed to delivering the highest quality service to our clients.",
+        icon: "fa-solid fa-shield-halved",
+      },
+      {
+        title: "Modern Tech",
+        desc: "We use the latest technologies and tools to ensure the best results.",
+        icon: "fa-solid fa-microchip",
+      },
+      {
+        title: "Expertise Support",
+        desc: "We provide round-the-clock support to help you with any issues or questions.",
+        icon: "fa-solid fa-headset",
+      },
+    ],
   });
 
-  const handleUpdate = (data: BenefitsFormData) => {
-    setBenefitsData(data);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSettingsMap("services_benefits");
+      if (res.success && res.data.benefits_data) {
+        setBenefitsData(res.data.benefits_data.value);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleUpdate = async (data: BenefitsFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "benefits_data",
+        value: data,
+        group: "services_benefits",
+        description: "Services Benefits Settings",
+      });
+      if (res.success) {
+        setBenefitsData(data);
+        toast.success("Benefits updated!");
+        return true;
+      } else {
+        toast.error(res.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error updating benefits");
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -99,6 +126,7 @@ export default function ServicesBenefits() {
         onClose={() => setIsModalOpen(false)}
         initialData={benefitsData}
         onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
     </section>
   );

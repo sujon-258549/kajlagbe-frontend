@@ -46,7 +46,7 @@ export default function RootLayout({
           <Header />
           <main className="min-h-screen">{children}</main>
           <Footer />
-          <ToastContainer position="top-right" autoClose={3000} />
+          <ToastContainer position="bottom-right" autoClose={3000} />
         </AuthProvider>
       </body>
     </html>

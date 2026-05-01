@@ -7,7 +7,9 @@ export const servicesHeroSchema = z.object({
     .max(100, { message: "Title must not exceed 100 characters." }),
   subtitle: z.string().optional(),
   image: z.string().min(1, { message: "Hero image is required." }),
+  imageId: z.string().optional(),
   bgImage: z.string().optional(),
+  bgImageId: z.string().optional(),
 });
 
 export type ServicesHeroFormData = z.infer<typeof servicesHeroSchema>;

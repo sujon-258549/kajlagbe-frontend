@@ -25,7 +25,7 @@ interface ServiceSliderItemModalProps {
   isOpen: boolean;
   onClose: () => void;
   item?: ServiceSliderItem;
-  onSave: (data: ServiceSliderItem) => void;
+  onSave: (data: ServiceSliderItem) => any;
   onDelete?: () => void;
   isLoading?: boolean;
 }
@@ -48,13 +48,17 @@ const ServiceSliderItemModal: React.FC<ServiceSliderItemModalProps> = ({
       description: "",
       content: "",
       image: "",
+      imageId: "",
       number: "01",
     },
   });
 
   useEffect(() => {
     if (item) {
-      form.reset(item);
+      form.reset({
+        ...item,
+        imageId: item.imageId || "",
+      });
     } else {
       form.reset({
         id: Date.now(),
@@ -64,14 +68,17 @@ const ServiceSliderItemModal: React.FC<ServiceSliderItemModalProps> = ({
         description: "",
         content: "",
         image: "",
+        imageId: "",
         number: "",
       });
     }
   }, [item, form, isOpen]);
 
-  const handleSubmit = (data: ServiceSliderItem) => {
-    onSave(data);
-    onClose();
+  const handleSubmit = async (data: ServiceSliderItem) => {
+    const success = await onSave(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   return (
@@ -141,7 +148,10 @@ const ServiceSliderItemModal: React.FC<ServiceSliderItemModalProps> = ({
                     value={field.value}
                     onChange={(url, id) => {
                       field.onChange(url);
-                      if (id) form.setValue("imageId", id);
+                      // Only set imageId if the field exists in the form
+                      if (id && "imageId" in form.getValues()) {
+                        (form as any).setValue("imageId", id);
+                      }
                     }}
                     className="w-full"
                   />

@@ -25,7 +25,7 @@ export default function UserMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none">
         <div className="flex items-center gap-3 cursor-pointer group">
-          <Avatar className="h-10 w-10 border-2 border-transparent group-hover:border-secondary transition-all">
+          <Avatar className="h-10 w-10 border  border-secondary transition-all">
             <AvatarImage src={profilePhoto} alt={userName} />
           </Avatar>
         </div>

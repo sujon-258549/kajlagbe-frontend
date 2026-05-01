@@ -29,12 +29,13 @@ interface ServicesEngineersSectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData: EngineersSectionFormData;
-  onUpdate: (data: EngineersSectionFormData) => void;
+  onUpdate: (data: EngineersSectionFormData) => any;
+  isLoading?: boolean;
 }
 
 const ServicesEngineersSectionModal: React.FC<
   ServicesEngineersSectionModalProps
-> = ({ isOpen, onClose, initialData, onUpdate }) => {
+> = ({ isOpen, onClose, initialData, onUpdate, isLoading = false }) => {
   const form = useForm<EngineersSectionFormData>({
     resolver: zodResolver(engineersSectionSchema),
     defaultValues: initialData,
@@ -44,9 +45,11 @@ const ServicesEngineersSectionModal: React.FC<
     form.reset(initialData);
   }, [initialData, form, isOpen]);
 
-  const handleSubmit = (data: EngineersSectionFormData) => {
-    onUpdate(data);
-    onClose();
+  const handleSubmit = async (data: EngineersSectionFormData) => {
+    const success = await onUpdate(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   return (
@@ -110,8 +113,12 @@ const ServicesEngineersSectionModal: React.FC<
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

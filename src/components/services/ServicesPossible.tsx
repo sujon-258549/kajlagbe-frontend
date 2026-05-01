@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, Leaf, Edit, Plus } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -18,94 +18,37 @@ import ServicesPossibleSectionModal, {
   PossibleSectionFormData,
 } from "../modal/services/ServicesPossibleSectionModal";
 import { WhatWeDoItem } from "@/schemas/services/whatWeDo.schema";
-
-const initialServices = [
-  {
-    id: 1,
-    title: "Solar Collection",
-    number: "1",
-    image:
-      "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 2,
-    title: "Solar Recycling",
-    number: "2",
-    image:
-      "https://images.unsplash.com/photo-1548613053-220e753443af?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 3,
-    title: "Renewable Power",
-    number: "3",
-    image:
-      "https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 4,
-    title: "Forest Protection",
-    number: "4",
-    image:
-      "https://images.unsplash.com/photo-1542601906990-b4d3fb7d5b7e?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 5,
-    title: "Wind Energy",
-    number: "5",
-    image:
-      "https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 6,
-    title: "Solar Collection",
-    number: "6",
-    image:
-      "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 7,
-    title: "Solar Recycling",
-    number: "7",
-    image:
-      "https://images.unsplash.com/photo-1548613053-220e753443af?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 8,
-    title: "Renewable Power",
-    number: "8",
-    image:
-      "https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 9,
-    title: "Forest Protection",
-    number: "9",
-    image:
-      "https://images.unsplash.com/photo-1542601906990-b4d3fb7d5b7e?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 10,
-    title: "Wind Energy",
-    number: "10",
-    image:
-      "https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?auto=format&fit=crop&q=80&w=600",
-  },
-];
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { toast } from "react-toastify";
 
 export default function ServicesPossible() {
-  const [services, setServices] = useState<WhatWeDoItem[]>(initialServices);
-  const [sectionData, setSectionData] = useState<PossibleSectionFormData>({
+  const [services, setServices] = useState<WhatWeDoItem[]>([]);
+  const [sectionData, setSectionData] = useState<PossibleSectionFormData & { backgroundImage?: string }>({
     tagline: "What We Do",
     title: "It's All Possible, We Can\nDo it Together",
-    description:
-      "Advanced cameras combined with a large display fast performance, and highly calibrated.",
+    description: "Advanced cameras combined with a large display fast performance, and highly calibrated.",
+    backgroundImage: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&q=80&w=2000"
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<WhatWeDoItem | undefined>(
-    undefined,
-  );
+  const [editingItem, setEditingItem] = useState<WhatWeDoItem | undefined>(undefined);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSettingsMap("services_possible");
+      if (res.success) {
+        if (res.data.possible_section) {
+          setSectionData(res.data.possible_section.value);
+        }
+        if (res.data.possible_items) {
+          setServices(res.data.possible_items.value);
+        }
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleAddItem = () => {
     setEditingItem(undefined);
@@ -117,26 +60,86 @@ export default function ServicesPossible() {
     setIsModalOpen(true);
   };
 
-  const handleSaveItem = (data: WhatWeDoItem) => {
-    if (editingItem) {
-      setServices((prev) =>
-        prev.map((item) => (item.id === editingItem.id ? data : item)),
-      );
-    } else {
-      setServices((prev) => [{ ...data, id: Date.now() }, ...prev]);
+  const handleSaveItem = async (data: WhatWeDoItem) => {
+    setIsUpdating(true);
+    try {
+      let newServices;
+      if (editingItem) {
+        newServices = services.map((item) => (item.id === editingItem.id ? data : item));
+      } else {
+        newServices = [{ ...data, id: Date.now() }, ...services];
+      }
+
+      const res = await upsertSetting({
+        key: "possible_items",
+        value: newServices,
+        group: "services_possible",
+        description: "Services Possible Items",
+      });
+
+      if (res.success) {
+        setServices(newServices);
+        toast.success(editingItem ? "Item updated!" : "Item added!");
+        return true;
+      } else {
+        toast.error(res.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error saving item");
+      return false;
+    } finally {
+      setIsUpdating(false);
     }
-    setIsModalOpen(false);
   };
 
-  const handleDeleteItem = () => {
-    if (editingItem) {
-      setServices((prev) => prev.filter((item) => item.id !== editingItem.id));
-      setIsModalOpen(false);
+  const handleDeleteItem = async () => {
+    if (!editingItem) return;
+    setIsUpdating(true);
+    try {
+      const newServices = services.filter((item) => item.id !== editingItem.id);
+      const res = await upsertSetting({
+        key: "possible_items",
+        value: newServices,
+        group: "services_possible",
+      });
+      if (res.success) {
+        setServices(newServices);
+        toast.success("Item deleted!");
+        setIsModalOpen(false);
+      } else {
+        toast.error(res.message);
+      }
+    } catch (error) {
+      toast.error("Error deleting item");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
-  const handleSectionUpdate = (data: PossibleSectionFormData) => {
-    setSectionData(data);
+  const handleSectionUpdate = async (data: PossibleSectionFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "possible_section",
+        value: data,
+        group: "services_possible",
+        description: "Services Possible Section Settings",
+      });
+      if (res.success) {
+        setSectionData(data);
+        toast.success("Section updated!");
+        return true;
+      } else {
+        toast.error(res.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error updating section");
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -156,7 +159,7 @@ export default function ServicesPossible() {
         <AdminOnly>
           <button
             onClick={() => setIsSectionModalOpen(true)}
-            className="absolute top-0 right-4 md:right-6 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
+            className="absolute top-0 right-16 md:right-20 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white opacity-0 group-hover/section:opacity-100 transition-all hover:bg-white hover:text-secondary shadow-lg backdrop-blur-md"
             title="Edit Section Details"
           >
             <Edit className="w-4 h-4" />

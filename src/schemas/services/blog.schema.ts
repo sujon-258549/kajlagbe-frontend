@@ -8,6 +8,7 @@ export const servicesBlogItemSchema = z.object({
   category: z.string().min(1, "Category is required"),
   title: z.string().min(1, "Title is required"),
   image: z.string().min(1, "Image is required"),
+  imageId: z.string().optional(),
 });
 
 export const servicesBlogHeaderSchema = z.object({

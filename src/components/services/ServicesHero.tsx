@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import CommonHero from "@/components/common/CommonHero";
 import ServicesHeroModal from "@/components/modal/services/ServicesHeroModal";
@@ -12,7 +14,9 @@ export default function ServicesHero() {
     subtitle: "Services",
     image:
       "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg",
+    imageId: "",
     bgImage: "",
+    bgImageId: "",
   });
 
   useEffect(() => {
@@ -56,7 +60,9 @@ export default function ServicesHero() {
       title={data.title}
       subtitle={data.subtitle}
       image={data.image}
+      imageId={data.imageId}
       bgImage={data.bgImage}
+      bgImageId={data.bgImageId}
       ModalComponent={ServicesHeroModal}
       onUpdate={handleUpdate}
       isLoading={isUpdating}

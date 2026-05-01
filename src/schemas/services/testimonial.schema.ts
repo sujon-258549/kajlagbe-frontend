@@ -20,6 +20,7 @@ export const ServicesTestimonialSectionSchema = z.object({
   subtitle: z.string().min(1, "Subtitle is required"),
   title: z.string().min(1, "Title is required"),
   backgroundImage: z.string().min(1, "Background image is required"),
+  backgroundImageId: z.string().optional(),
 });
 
 export type ServicesTestimonialSectionData = z.infer<

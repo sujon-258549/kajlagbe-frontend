@@ -44,18 +44,23 @@ const WhatWeDoModal: React.FC<WhatWeDoModalProps> = ({
       title: "",
       number: "1",
       image: "",
+      imageId: "",
     },
   });
 
   useEffect(() => {
     if (item) {
-      form.reset(item);
+      form.reset({
+        ...item,
+        imageId: item.imageId || "",
+      });
     } else {
       form.reset({
         id: Date.now(),
         title: "",
         number: "",
         image: "",
+        imageId: "",
       });
     }
   }, [item, form, isOpen]);
@@ -156,7 +161,10 @@ const WhatWeDoModal: React.FC<WhatWeDoModalProps> = ({
                 <FormControl>
                   <MediaLibraryImageUploader 
                     value={field.value} 
-                    onChange={(id, url) => field.onChange(url)} 
+                    onChange={(url, id) => {
+                      field.onChange(url);
+                      if (id) form.setValue("imageId", id);
+                    }} 
                   />
                 </FormControl>
                 <FormMessage />

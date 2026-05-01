@@ -23,7 +23,8 @@ interface ServicesBlogHeaderModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData: ServicesBlogHeaderFormData;
-  onUpdate: (data: ServicesBlogHeaderFormData) => void;
+  onUpdate: (data: ServicesBlogHeaderFormData) => any;
+  isLoading?: boolean;
 }
 
 const ServicesBlogHeaderModal: React.FC<ServicesBlogHeaderModalProps> = ({
@@ -31,6 +32,7 @@ const ServicesBlogHeaderModal: React.FC<ServicesBlogHeaderModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<ServicesBlogHeaderFormData>({
     resolver: zodResolver(servicesBlogHeaderSchema),
@@ -43,9 +45,11 @@ const ServicesBlogHeaderModal: React.FC<ServicesBlogHeaderModalProps> = ({
     }
   }, [initialData, form, isOpen]);
 
-  const handleSubmit = (data: ServicesBlogHeaderFormData) => {
-    onUpdate(data);
-    onClose();
+  const handleSubmit = async (data: ServicesBlogHeaderFormData) => {
+    const success = await onUpdate(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   return (
@@ -91,8 +95,12 @@ const ServicesBlogHeaderModal: React.FC<ServicesBlogHeaderModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white px-8">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

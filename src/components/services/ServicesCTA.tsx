@@ -1,6 +1,6 @@
-"use client";
+"use client"; // Force reload
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Heading2 from "@/components/common/Headings/Heading2";
 import { ArrowRight, Edit } from "lucide-react";
@@ -8,9 +8,12 @@ import AdminOnly from "../common/auth/AdminOnly";
 import ServicesCTAModal, {
   CTAFormData,
 } from "../modal/services/ServicesCTAModal";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { toast } from "react-toastify";
 
 export default function ServicesCTA() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [ctaData, setCtaData] = useState<CTAFormData>({
     title: "Ready to transform your land into a thriving harvest?",
     description:
@@ -19,8 +22,39 @@ export default function ServicesCTA() {
     secondaryButtonText: "Contact Us",
   });
 
-  const handleUpdate = (data: CTAFormData) => {
-    setCtaData(data);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSettingsMap("services_cta");
+      if (res.success && res.data.cta_data) {
+        setCtaData(res.data.cta_data.value);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleUpdate = async (data: CTAFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "cta_data",
+        value: data,
+        group: "services_cta",
+        description: "Services CTA Settings",
+      });
+      if (res.success) {
+        setCtaData(data);
+        toast.success("CTA updated!");
+        return true;
+      } else {
+        toast.error(res.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error updating CTA");
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -70,6 +104,7 @@ export default function ServicesCTA() {
         onClose={() => setIsModalOpen(false)}
         initialData={ctaData}
         onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
     </section>
   );

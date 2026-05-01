@@ -37,6 +37,7 @@ export default function ServicesTestimonial() {
     subtitle: "Testimonials",
     title: "What People Saying",
     backgroundImage: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&q=80&w=2000",
+    backgroundImageId: "",
   });
   const [editingItem, setEditingItem] = useState<ServicesTestimonialItem | undefined>(undefined);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -46,7 +47,11 @@ export default function ServicesTestimonial() {
       // Fetch reviews
       const reviewsRes = await getAllReviews();
       if (reviewsRes.success) {
-        setTestimonials(reviewsRes.data);
+        if (Array.isArray(reviewsRes.data)) {
+          setTestimonials(reviewsRes.data);
+        } else if (reviewsRes.data?.data && Array.isArray(reviewsRes.data.data)) {
+          setTestimonials(reviewsRes.data.data);
+        }
       }
 
       // Fetch section settings
@@ -76,24 +81,35 @@ export default function ServicesTestimonial() {
   const handleSaveItem = async (data: ServicesTestimonialItem) => {
     setIsUpdating(true);
     try {
+      // Clean up data
+      const payload: any = { ...data };
+      if (!payload.imageId) delete payload.imageId;
+      if (!payload.image) delete payload.image;
+      if (payload.id === "") delete payload.id;
+
       let res;
       if (editingItem?.id) {
-        res = await updateReview(editingItem.id, data);
+        res = await updateReview(editingItem.id, payload);
       } else {
-        res = await createReview(data);
+        res = await createReview(payload);
       }
 
       if (res.success) {
         toast.success(editingItem ? "Review updated!" : "Review added!");
         // Refresh testimonials
         const reviewsRes = await getAllReviews();
-        if (reviewsRes.success) setTestimonials(reviewsRes.data);
+        if (reviewsRes.success && Array.isArray(reviewsRes.data)) {
+          setTestimonials(reviewsRes.data);
+        } else if (reviewsRes.success && reviewsRes.data?.data && Array.isArray(reviewsRes.data.data)) {
+           setTestimonials(reviewsRes.data.data);
+        }
         return true;
       } else {
         toast.error(res.message || "Something went wrong");
         return false;
       }
     } catch (error) {
+      console.error("Save Error:", error);
       toast.error("Error saving review");
       return false;
     } finally {

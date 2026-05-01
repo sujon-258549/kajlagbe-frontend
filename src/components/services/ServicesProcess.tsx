@@ -1,6 +1,6 @@
-"use client";
+"use client"; // Force reload
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Heading2 from "@/components/common/Headings/Heading2";
 import Heading4 from "@/components/common/Headings/Heading4";
 import { Edit } from "lucide-react";
@@ -9,50 +9,76 @@ import AdminOnly from "../common/auth/AdminOnly";
 import ServicesProcessModal, {
   ProcessFormData,
 } from "../modal/services/ServicesProcessModal";
-
-const initialSteps = [
-  {
-    icon: "Clipboard",
-    number: "01",
-    title: "Consultation",
-    description: "We discuss your needs and assess your land's potential.",
-  },
-  {
-    icon: "PenTool",
-    number: "02",
-    title: "Planning",
-    description: "Expert garden design and crop selection tailored to you.",
-  },
-  {
-    icon: "Sprout",
-    number: "03",
-    title: "Planting",
-    description: "Our team prepares the soil and plants with care.",
-  },
-  {
-    icon: "Trees",
-    number: "04",
-    title: "Maintenance",
-    description: "Ongoing care to ensure your harvest thrives.",
-  },
-];
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { toast } from "react-toastify";
 
 export default function ServicesProcess() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [processData, setProcessData] = useState<ProcessFormData>({
     subtitle: "HOW WE WORK",
     title: "Our proven process for perfect results",
-    steps: initialSteps.map((s) => ({
-      id: s.title,
-      number: s.number,
-      title: s.title,
-      description: s.description,
-      icon: s.icon,
-    })),
+    steps: [
+      {
+        number: "01",
+        title: "Project Research",
+        description: "We start by understanding your requirements and researching the best approach.",
+        icon: "Search",
+      },
+      {
+        number: "02",
+        title: "Strategic Plan",
+        description: "We create a detailed roadmap and strategy for your project's success.",
+        icon: "ClipboardCheck",
+      },
+      {
+        number: "03",
+        title: "Execution",
+        description: "Our team executes the plan with precision and high-quality standards.",
+        icon: "Cpu",
+      },
+      {
+        number: "04",
+        title: "Final Delivery",
+        description: "We deliver the final results and ensure everything meets your expectations.",
+        icon: "Truck",
+      },
+    ],
   });
 
-  const handleUpdate = (data: ProcessFormData) => {
-    setProcessData(data);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSettingsMap("services_process");
+      if (res.success && res.data.process_data) {
+        setProcessData(res.data.process_data.value);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleUpdate = async (data: ProcessFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "process_data",
+        value: data,
+        group: "services_process",
+        description: "Services Process Settings",
+      });
+      if (res.success) {
+        setProcessData(data);
+        toast.success("Process updated!");
+        return true;
+      } else {
+        toast.error(res.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error updating process");
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const renderIcon = (iconName: string) => {
@@ -129,6 +155,7 @@ export default function ServicesProcess() {
         onClose={() => setIsModalOpen(false)}
         initialData={processData}
         onUpdate={handleUpdate}
+        isLoading={isUpdating}
       />
     </section>
   );

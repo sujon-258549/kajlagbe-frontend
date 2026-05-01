@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -24,8 +24,9 @@ interface ServiceEngineerItemModalProps {
   isOpen: boolean;
   onClose: () => void;
   item?: ServiceEngineerItem;
-  onSave: (data: ServiceEngineerItem) => void;
+  onSave: (data: ServiceEngineerItem) => Promise<any>;
   onDelete?: () => void;
+  isLoading?: boolean;
 }
 
 const ServiceEngineerItemModal: React.FC<ServiceEngineerItemModalProps> = ({
@@ -34,6 +35,7 @@ const ServiceEngineerItemModal: React.FC<ServiceEngineerItemModalProps> = ({
   item,
   onSave,
   onDelete,
+  isLoading = false,
 }) => {
   const form = useForm<ServiceEngineerItem>({
     resolver: zodResolver(serviceEngineerItemSchema),
@@ -42,25 +44,32 @@ const ServiceEngineerItemModal: React.FC<ServiceEngineerItemModalProps> = ({
       name: "",
       role: "",
       image: "",
+      imageId: "",
     },
   });
 
   useEffect(() => {
     if (item) {
-      form.reset(item);
+      form.reset({
+        ...item,
+        imageId: item.imageId || "",
+      });
     } else {
       form.reset({
         id: Date.now(),
         name: "",
         role: "",
         image: "",
+        imageId: "",
       });
     }
   }, [item, form, isOpen]);
 
-  const handleSubmit = (data: ServiceEngineerItem) => {
-    onSave(data);
-    onClose();
+  const handleSubmit = async (data: ServiceEngineerItem) => {
+    const success = await onSave(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   return (
@@ -78,6 +87,7 @@ const ServiceEngineerItemModal: React.FC<ServiceEngineerItemModalProps> = ({
               <Button
                 type="button"
                 variant="destructive"
+                disabled={isLoading}
                 onClick={() => {
                   if (
                     confirm("Are you sure you want to delete this engineer?")
@@ -98,9 +108,10 @@ const ServiceEngineerItemModal: React.FC<ServiceEngineerItemModalProps> = ({
             <Button
               type="submit"
               form="engineer-item-form"
+              disabled={isLoading}
               className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
             >
-              {item ? "Update Engineer" : "Add Engineer"}
+              {isLoading ? "Saving..." : item ? "Update Engineer" : "Add Engineer"}
             </Button>
           </div>
         </div>
@@ -148,7 +159,13 @@ const ServiceEngineerItemModal: React.FC<ServiceEngineerItemModalProps> = ({
               <FormItem>
                 <FormLabel>Profile Image</FormLabel>
                 <FormControl>
-                  <ImageUpload {...field} />
+                  <MediaLibraryImageUploader 
+                    value={field.value} 
+                    onChange={(url, id) => {
+                      field.onChange(url);
+                      if (id) form.setValue("imageId", id);
+                    }} 
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

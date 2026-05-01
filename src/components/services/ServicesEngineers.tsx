@@ -1,7 +1,7 @@
-"use client";
+"use client"; // Updated to fix build error
 
-import { useState } from "react";
-import { ArrowRight, Share2, Lightbulb, Edit } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowRight, Share2, Lightbulb, Edit, Plus } from "lucide-react";
 import CustomImage from "../common/CustomImage";
 import Heading2 from "../common/Headings/Heading2";
 import { Button } from "../ui/button";
@@ -11,55 +11,11 @@ import ServicesEngineersSectionModal, {
   EngineersSectionFormData,
 } from "../modal/services/ServicesEngineersSectionModal";
 import { ServiceEngineerItem } from "@/schemas/services/engineers.schema";
-
-const initialEngineers = [
-  {
-    id: 1,
-    name: "Penelope Miller",
-    role: "Team Manager",
-    image:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400",
-  },
-  {
-    id: 2,
-    name: "Denial Pasha",
-    role: "Team Manager",
-    image:
-      "https://images.unsplash.com/photo-1573496359-7013acad27dc?auto=format&fit=crop&q=80&w=400",
-  },
-  {
-    id: 3,
-    name: "Joshua Sendu",
-    role: "CEO-Founder",
-    image:
-      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400",
-  },
-  {
-    id: 4,
-    name: "John Maxwell",
-    role: "Co-Founder",
-    image:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400",
-  },
-  {
-    id: 5,
-    name: "Sarah Jenkins",
-    role: "Senior Engineer",
-    image:
-      "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=400",
-  },
-  {
-    id: 6,
-    name: "Michael Chen",
-    role: "Project Lead",
-    image:
-      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400",
-  },
-];
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { toast } from "react-toastify";
 
 export default function ServicesEngineers() {
-  const [engineers, setEngineers] =
-    useState<ServiceEngineerItem[]>(initialEngineers);
+  const [engineers, setEngineers] = useState<ServiceEngineerItem[]>([]);
   const [sectionData, setSectionData] = useState<EngineersSectionFormData>({
     tagline: "Econest Workers",
     title: "Our Professionals Engineers",
@@ -68,26 +24,114 @@ export default function ServicesEngineers() {
 
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<
-    ServiceEngineerItem | undefined
-  >(undefined);
+  const [editingItem, setEditingItem] = useState<ServiceEngineerItem | undefined>(undefined);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSettingsMap("services_engineers");
+      if (res.success) {
+        if (res.data.engineers_section) {
+          setSectionData(res.data.engineers_section.value);
+        }
+        if (res.data.engineers_items) {
+          setEngineers(res.data.engineers_items.value);
+        }
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleAddItem = () => {
+    setEditingItem(undefined);
+    setIsItemModalOpen(true);
+  };
 
   const handleEditItem = (item: ServiceEngineerItem) => {
     setEditingItem(item);
     setIsItemModalOpen(true);
   };
 
-  const handleSaveItem = (data: ServiceEngineerItem) => {
-    if (editingItem) {
-      setEngineers((prev) =>
-        prev.map((item) => (item.id === editingItem.id ? data : item)),
-      );
+  const handleSaveItem = async (data: ServiceEngineerItem) => {
+    setIsUpdating(true);
+    try {
+      let newEngineers;
+      if (editingItem) {
+        newEngineers = engineers.map((item) => (item.id === editingItem.id ? data : item));
+      } else {
+        newEngineers = [{ ...data, id: Date.now() }, ...engineers];
+      }
+
+      const res = await upsertSetting({
+        key: "engineers_items",
+        value: newEngineers,
+        group: "services_engineers",
+        description: "Services Engineers Items",
+      });
+
+      if (res.success) {
+        setEngineers(newEngineers);
+        toast.success(editingItem ? "Engineer updated!" : "Engineer added!");
+        return true;
+      } else {
+        toast.error(res.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error saving engineer");
+      return false;
+    } finally {
+      setIsUpdating(false);
     }
-    setIsItemModalOpen(false);
   };
 
-  const handleSectionUpdate = (data: EngineersSectionFormData) => {
-    setSectionData(data);
+  const handleDeleteItem = async () => {
+    if (!editingItem) return;
+    setIsUpdating(true);
+    try {
+      const newEngineers = engineers.filter((item) => item.id !== editingItem.id);
+      const res = await upsertSetting({
+        key: "engineers_items",
+        value: newEngineers,
+        group: "services_engineers",
+      });
+      if (res.success) {
+        setEngineers(newEngineers);
+        toast.success("Engineer deleted!");
+        setIsItemModalOpen(false);
+      } else {
+        toast.error(res.message);
+      }
+    } catch (error) {
+      toast.error("Error deleting engineer");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleSectionUpdate = async (data: EngineersSectionFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "engineers_section",
+        value: data,
+        group: "services_engineers",
+        description: "Services Engineers Section Settings",
+      });
+      if (res.success) {
+        setSectionData(data);
+        toast.success("Section updated!");
+        return true;
+      } else {
+        toast.error(res.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error updating section");
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -142,10 +186,20 @@ export default function ServicesEngineers() {
               {sectionData.title}
             </Heading2>
 
-            <Button size="xl" className="mx-auto lg:mx-0 hidden lg:flex">
-              {sectionData.exploreText || "Explore More"}
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+            <div className="flex flex-col gap-4 mt-8 lg:flex">
+              <AdminOnly>
+                <Button 
+                  onClick={handleAddItem}
+                  className="bg-secondary hover:bg-[#063022] text-white rounded-full w-fit mx-auto lg:mx-0"
+                >
+                  <Plus className="w-4 h-4 mr-2" /> Add Engineer
+                </Button>
+              </AdminOnly>
+              <Button size="xl" className="mx-auto lg:mx-0 hidden lg:flex">
+                {sectionData.exploreText || "Explore More"}
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
           </div>
 
           {/* Right Grid */}
@@ -204,6 +258,7 @@ export default function ServicesEngineers() {
         onClose={() => setIsSectionModalOpen(false)}
         initialData={sectionData}
         onUpdate={handleSectionUpdate}
+        isLoading={isUpdating}
       />
 
       <ServiceEngineerItemModal
@@ -211,6 +266,8 @@ export default function ServicesEngineers() {
         onClose={() => setIsItemModalOpen(false)}
         item={editingItem}
         onSave={handleSaveItem}
+        onDelete={handleDeleteItem}
+        isLoading={isUpdating}
       />
     </section>
   );

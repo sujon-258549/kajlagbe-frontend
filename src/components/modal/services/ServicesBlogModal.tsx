@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 
 // Schema for Blog Items
 export const blogItemSchema = z.object({
@@ -26,6 +26,7 @@ export const blogItemSchema = z.object({
   category: z.string().min(1, "Category is required"),
   title: z.string().min(1, "Title is required"),
   image: z.string().min(1, "Image is required"),
+  imageId: z.string().optional(),
 });
 
 export type BlogItem = z.infer<typeof blogItemSchema>;
@@ -34,8 +35,9 @@ interface ServicesBlogModalProps {
   isOpen: boolean;
   onClose: () => void;
   item?: BlogItem;
-  onSave: (data: BlogItem) => void;
+  onSave: (data: BlogItem) => any;
   onDelete?: () => void;
+  isLoading?: boolean;
 }
 
 const ServicesBlogModal: React.FC<ServicesBlogModalProps> = ({
@@ -44,6 +46,7 @@ const ServicesBlogModal: React.FC<ServicesBlogModalProps> = ({
   item,
   onSave,
   onDelete,
+  isLoading = false,
 }) => {
   const form = useForm<BlogItem>({
     resolver: zodResolver(blogItemSchema),
@@ -55,6 +58,7 @@ const ServicesBlogModal: React.FC<ServicesBlogModalProps> = ({
       category: "General",
       title: "",
       image: "",
+      imageId: "",
     },
   });
 
@@ -71,14 +75,17 @@ const ServicesBlogModal: React.FC<ServicesBlogModalProps> = ({
           category: "General",
           title: "",
           image: "",
+          imageId: "",
         });
       }
     }
   }, [item, isOpen, form]);
 
-  const handleSubmit = (data: BlogItem) => {
-    onSave(data);
-    onClose();
+  const handleSubmit = async (data: BlogItem) => {
+    const success = await onSave(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
@@ -176,7 +183,13 @@ const ServicesBlogModal: React.FC<ServicesBlogModalProps> = ({
                 <FormItem>
                   <FormLabel>Featured Image</FormLabel>
                   <FormControl>
-                    <ImageUpload {...field} />
+                    <MediaLibraryImageUploader
+                      value={field.value}
+                      onChange={(url, id) => {
+                        field.onChange(url);
+                        if (id) form.setValue("imageId", id);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -189,6 +202,7 @@ const ServicesBlogModal: React.FC<ServicesBlogModalProps> = ({
                   type="button"
                   variant="destructive"
                   onClick={() => setDeleteConfirmOpen(true)}
+                  disabled={isLoading}
                 >
                   Delete Post
                 </Button>
@@ -199,8 +213,12 @@ const ServicesBlogModal: React.FC<ServicesBlogModalProps> = ({
                 <Button variant="outline" onClick={onClose} type="button">
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-secondary text-white">
-                  Save Changes
+                <Button 
+                  type="submit" 
+                  className="bg-secondary text-white"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Saving..." : "Save Changes"}
                 </Button>
               </div>
             </div>
@@ -222,12 +240,13 @@ const ServicesBlogModal: React.FC<ServicesBlogModalProps> = ({
           </Button>
           <Button
             variant="destructive"
-            onClick={() => {
-              if (onDelete) onDelete();
+            disabled={isLoading}
+            onClick={async () => {
+              if (onDelete) await onDelete();
               setDeleteConfirmOpen(false);
             }}
           >
-            Delete
+            {isLoading ? "Deleting..." : "Delete"}
           </Button>
         </div>
       </CommonModal>
