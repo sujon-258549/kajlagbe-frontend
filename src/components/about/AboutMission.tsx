@@ -34,7 +34,7 @@ export default function AboutMission() {
   });
 
   return (
-    <section className="py-10 md:py-16 lg:py-24 bg-white overflow-hidden relative group/section">
+    <section className="py-6 md:py-8 lg:py-12 bg-white overflow-hidden relative group/section">
       <div className="main-container mx-auto px-4 relative">
         {/* Edit Button */}
         <AdminOnly>
@@ -47,7 +47,7 @@ export default function AboutMission() {
           </button>
         </AdminOnly>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center">
           {/* Left Side: Image Collage */}
           <div className="relative">
             <div className="grid grid-cols-12 gap-4">
@@ -126,7 +126,7 @@ export default function AboutMission() {
               {data.description}
             </p>
 
-            <div className="space-y-8 md:space-y-10 pt-4">
+            <div className="space-y-6 md:space-y-8 pt-2">
               {data.features.map((feature, index) => (
                 <div
                   key={index}
