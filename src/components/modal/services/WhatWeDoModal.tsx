@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -24,8 +24,9 @@ interface WhatWeDoModalProps {
   isOpen: boolean;
   onClose: () => void;
   item?: WhatWeDoItem;
-  onSave: (data: WhatWeDoItem) => void;
+  onSave: (data: WhatWeDoItem) => Promise<any>;
   onDelete?: () => void;
+  isLoading?: boolean;
 }
 
 const WhatWeDoModal: React.FC<WhatWeDoModalProps> = ({
@@ -34,6 +35,7 @@ const WhatWeDoModal: React.FC<WhatWeDoModalProps> = ({
   item,
   onSave,
   onDelete,
+  isLoading = false,
 }) => {
   const form = useForm<WhatWeDoItem>({
     resolver: zodResolver(whatWeDoItemSchema),
@@ -58,9 +60,11 @@ const WhatWeDoModal: React.FC<WhatWeDoModalProps> = ({
     }
   }, [item, form, isOpen]);
 
-  const handleSubmit = (data: WhatWeDoItem) => {
-    onSave(data);
-    onClose();
+  const handleSubmit = async (data: WhatWeDoItem) => {
+    const success = await onSave(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   return (
@@ -78,6 +82,7 @@ const WhatWeDoModal: React.FC<WhatWeDoModalProps> = ({
               <Button
                 type="button"
                 variant="destructive"
+                disabled={isLoading}
                 onClick={() => {
                   if (
                     confirm("Are you sure you want to delete this category?")
@@ -98,9 +103,10 @@ const WhatWeDoModal: React.FC<WhatWeDoModalProps> = ({
             <Button
               type="submit"
               form="what-we-do-form"
+              disabled={isLoading}
               className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
             >
-              {item ? "Update Category" : "Add Category"}
+              {isLoading ? "Saving..." : item ? "Update Category" : "Add Category"}
             </Button>
           </div>
         </div>
@@ -148,7 +154,10 @@ const WhatWeDoModal: React.FC<WhatWeDoModalProps> = ({
               <FormItem>
                 <FormLabel>Image</FormLabel>
                 <FormControl>
-                  <ImageUpload {...field} />
+                  <MediaLibraryImageUploader 
+                    value={field.value} 
+                    onChange={(id, url) => field.onChange(url)} 
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

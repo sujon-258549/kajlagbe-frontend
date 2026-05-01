@@ -1,11 +1,14 @@
 import { z } from "zod";
 
 export const blogShowcaseItemSchema = z.object({
-  id: z.number(),
+  id: z.any(),
   number: z.string().min(1, "Number is required"),
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   image: z.string().min(1, "Image is required"),
+  imageId: z.string().optional(),
+  status: z.boolean().optional(),
+  order: z.number().optional(),
 });
 
 export const blogShowcaseSchema = z.object({

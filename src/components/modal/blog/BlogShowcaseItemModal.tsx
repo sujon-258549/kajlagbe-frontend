@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -26,6 +26,7 @@ interface BlogShowcaseItemModalProps {
   item?: BlogShowcaseItem;
   onSave: (data: BlogShowcaseItem) => void;
   onDelete?: () => void;
+  isLoading?: boolean;
 }
 
 const BlogShowcaseItemModal: React.FC<BlogShowcaseItemModalProps> = ({
@@ -34,43 +35,50 @@ const BlogShowcaseItemModal: React.FC<BlogShowcaseItemModalProps> = ({
   item,
   onSave,
   onDelete,
+  isLoading = false,
 }) => {
   const form = useForm<BlogShowcaseItem>({
     resolver: zodResolver(blogShowcaseItemSchema),
     defaultValues: {
-      id: 0,
       number: "01",
       title: "",
       description: "",
       image: "",
+      imageId: "",
     },
   });
 
   useEffect(() => {
     if (item) {
-      form.reset(item);
+      form.reset({
+        id: item.id,
+        number: item.number || "",
+        title: item.title || "",
+        description: item.description || "",
+        image: item.image || "",
+        imageId: item.imageId || "",
+      });
     } else {
       form.reset({
-        id: Date.now(),
         number: "",
         title: "",
         description: "",
         image: "",
+        imageId: "",
       });
     }
   }, [item, form, isOpen]);
 
   const handleSubmit = (data: BlogShowcaseItem) => {
     onSave(data);
-    onClose();
   };
 
   return (
     <CommonModal
       isOpen={isOpen}
       onClose={onClose}
-      title={item ? "Edit Showcase Item" : "Add Showcase Item"}
-      description="Update the showcase item details."
+      title={item ? "Edit Gallery Item" : "Add Gallery Item"}
+      description="Update the gallery item details."
       showBackground={true}
       maxWidth="xl"
       footer={
@@ -80,10 +88,10 @@ const BlogShowcaseItemModal: React.FC<BlogShowcaseItemModalProps> = ({
               <Button
                 type="button"
                 variant="destructive"
+                disabled={isLoading}
                 onClick={() => {
                   if (confirm("Are you sure you want to delete this item?")) {
                     onDelete();
-                    onClose();
                   }
                 }}
               >
@@ -92,15 +100,21 @@ const BlogShowcaseItemModal: React.FC<BlogShowcaseItemModalProps> = ({
             )}
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" onClick={onClose} type="button">
+            <Button
+              variant="outline"
+              onClick={onClose}
+              type="button"
+              disabled={isLoading}
+            >
               Cancel
             </Button>
             <Button
               type="submit"
               form="showcase-item-form"
+              disabled={isLoading}
               className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
             >
-              {item ? "Update Item" : "Add Item"}
+              {isLoading ? "Saving..." : item ? "Update Item" : "Add Item"}
             </Button>
           </div>
         </div>
@@ -166,7 +180,13 @@ const BlogShowcaseItemModal: React.FC<BlogShowcaseItemModalProps> = ({
               <FormItem>
                 <FormLabel>Image</FormLabel>
                 <FormControl>
-                  <ImageUpload value={field.value} onChange={field.onChange} />
+                  <MediaLibraryImageUploader
+                    value={field.value}
+                    onChange={(url, id) => {
+                      field.onChange(url);
+                      if (id) form.setValue("imageId", id);
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

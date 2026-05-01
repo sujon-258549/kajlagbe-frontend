@@ -22,6 +22,7 @@ import {
 } from "@/schemas/services/slider.schema";
 import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 const initialProjects = [
   {
@@ -117,16 +118,21 @@ export default function ServicesVerticalSlider() {
       }
       
       if (res.success) {
+        toast.success(editingItem ? "Project updated successfully!" : "Project created successfully!");
         // Refresh project list
         const refreshRes = await getAllProjects();
         if (refreshRes.success) {
-          setProjects(refreshRes.data);
+          const list = Array.isArray(refreshRes.data) ? refreshRes.data : refreshRes.data?.data;
+          setProjects(list || []);
         }
         setIsItemModalOpen(false);
         setEditingItem(undefined);
+      } else {
+        toast.error(res.message || "Failed to save project.");
       }
     } catch (error) {
       console.log("error", error);
+      toast.error("An error occurred while saving the project.");
     } finally {
       setIsUpdating(false);
     }
@@ -140,16 +146,23 @@ export default function ServicesVerticalSlider() {
       if (typeof editingItem.id === 'string' && editingItem.id.length > 5) {
         const res = await deleteProject(editingItem.id);
         if (res.success) {
+          toast.success("Project deleted successfully!");
           setProjects(prev => prev.filter(p => p.id !== editingItem.id));
+          setIsItemModalOpen(false);
+          setEditingItem(undefined);
+        } else {
+          toast.error(res.message || "Failed to delete project.");
         }
       } else {
         // Local delete for initial mock data
+        toast.success("Project removed locally.");
         setProjects(prev => prev.filter(p => p.id !== editingItem.id));
+        setIsItemModalOpen(false);
+        setEditingItem(undefined);
       }
-      setIsItemModalOpen(false);
-      setEditingItem(undefined);
     } catch (error) {
       console.log("error", error);
+      toast.error("An error occurred while deleting the project.");
     } finally {
       setIsUpdating(false);
     }
@@ -165,11 +178,15 @@ export default function ServicesVerticalSlider() {
         description: "Homepage Project Section Header",
       });
       if (res.success) {
+        toast.success("Header updated successfully!");
         setHeaderData(headerFormData);
         setIsHeaderModalOpen(false);
+      } else {
+        toast.error(res.message || "Failed to update header.");
       }
     } catch (error) {
       console.log("error", error);
+      toast.error("An error occurred while updating the header.");
     } finally {
       setIsUpdating(false);
     }

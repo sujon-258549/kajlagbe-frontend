@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -27,7 +27,8 @@ interface ContactHeroModalProps {
   subtitle?: string;
   image: string;
   bgImage?: string;
-  onUpdate?: (data: ContactHeroFormData) => void;
+  onUpdate?: (data: ContactHeroFormData) => any;
+  isLoading?: boolean;
 }
 
 const ContactHeroModal: React.FC<ContactHeroModalProps> = ({
@@ -38,6 +39,7 @@ const ContactHeroModal: React.FC<ContactHeroModalProps> = ({
   image,
   bgImage,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<ContactHeroFormData>({
     resolver: zodResolver(contactHeroSchema),
@@ -58,11 +60,15 @@ const ContactHeroModal: React.FC<ContactHeroModalProps> = ({
     });
   }, [title, subtitle, image, bgImage, form, isOpen]);
 
-  const onSubmit = (data: ContactHeroFormData) => {
+  const onSubmit = async (data: ContactHeroFormData) => {
     if (onUpdate) {
-      onUpdate(data);
+      const success = await onUpdate(data);
+      if (success === true) {
+        onClose();
+      }
+    } else {
+      onClose();
     }
-    onClose();
   };
 
   return (
@@ -81,9 +87,10 @@ const ContactHeroModal: React.FC<ContactHeroModalProps> = ({
           <Button
             type="submit"
             form="contact-hero-form"
+            disabled={isLoading}
             className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
           >
-            Update Hero
+            {isLoading ? "Updating..." : "Update Hero"}
           </Button>
         </div>
       }
@@ -131,7 +138,10 @@ const ContactHeroModal: React.FC<ContactHeroModalProps> = ({
                   <FormItem>
                     <FormLabel>Main Hero Image</FormLabel>
                     <FormControl>
-                      <ImageUpload {...field} />
+                      <MediaLibraryImageUploader 
+                        value={field.value} 
+                        onChange={field.onChange} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -145,7 +155,10 @@ const ContactHeroModal: React.FC<ContactHeroModalProps> = ({
                   <FormItem>
                     <FormLabel>Background Image</FormLabel>
                     <FormControl>
-                      <ImageUpload {...field} />
+                      <MediaLibraryImageUploader 
+                        value={field.value} 
+                        onChange={field.onChange} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

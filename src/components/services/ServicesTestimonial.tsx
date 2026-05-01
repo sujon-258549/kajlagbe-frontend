@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import Marquee from "react-fast-marquee";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight, Play, Trash2 } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import CustomImage from "../common/CustomImage";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminOnly from "../common/auth/AdminOnly";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit } from "lucide-react";
@@ -22,69 +22,46 @@ import {
   ServicesTestimonialItem,
   ServicesTestimonialSectionData,
 } from "@/schemas/services/testimonial.schema";
-import Heading1 from "../common/Headings/Heading1";
 import Heading2 from "../common/Headings/Heading2";
-
-const initialTestimonials = [
-  {
-    id: 1,
-    name: "Penelope Miller",
-    role: "Sr. Volunteer",
-    title: "Forest Cleaning",
-    content:
-      "I was very impressed 😉 involves providing of advice and guidance on energy-related for matters. Understand the advantages hiring professionals to design and maintain your garden. 🏡",
-    image:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=300&h=300",
-  },
-  {
-    id: 2,
-    name: "Matthew Emily",
-    role: "Sr. Volunteer",
-    title: "Tree Plantation",
-    content:
-      "I was very impressed 😍 involves providing of advice and guidance on energy-related for matters. Understand the advantages hiring professionals to design and maintain your garden. 🌳",
-    image:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=300&h=300",
-  },
-  {
-    id: 3,
-    name: "Sarah Jenkins",
-    role: "Community Lead",
-    title: "Urban Gardening",
-    content:
-      "Exceptional service and dedication. The team provided insightful advice on sustainable practices that transformed our community garden project completely. 🌱",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=300&h=300",
-  },
-];
-
-const initialPartners = [
-  { name: "Disrupt" },
-  { name: "Air Peace" },
-  { name: "Arik" },
-  { name: "Transit" },
-  { name: "Spectranet" },
-  { name: "Kudi" },
-];
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { getAllReviews, createReview, updateReview, deleteReview } from "@/actions/review.actions";
+import { toast } from "react-toastify";
 
 export default function ServicesTestimonial() {
-  const [testimonials, setTestimonials] = useState<ServicesTestimonialItem[]>(
-    initialTestimonials as ServicesTestimonialItem[],
-  );
-  const [partners, setPartners] = useState(initialPartners);
+  const [testimonials, setTestimonials] = useState<ServicesTestimonialItem[]>([]);
+  const [partners, setPartners] = useState<{ name: string }[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
   const [isPartnersModalOpen, setIsPartnersModalOpen] = useState(false);
-  const [sectionData, setSectionData] =
-    useState<ServicesTestimonialSectionData>({
-      subtitle: "Testimonials",
-      title: "What People Saying",
-      backgroundImage:
-        "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&q=80&w=2000",
-    });
-  const [editingItem, setEditingItem] = useState<
-    ServicesTestimonialItem | undefined
-  >(undefined);
+  const [sectionData, setSectionData] = useState<ServicesTestimonialSectionData>({
+    subtitle: "Testimonials",
+    title: "What People Saying",
+    backgroundImage: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&q=80&w=2000",
+  });
+  const [editingItem, setEditingItem] = useState<ServicesTestimonialItem | undefined>(undefined);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // Fetch reviews
+      const reviewsRes = await getAllReviews();
+      if (reviewsRes.success) {
+        setTestimonials(reviewsRes.data);
+      }
+
+      // Fetch section settings
+      const settingsRes = await getSettingsMap("services_testimonials");
+      if (settingsRes.success) {
+        if (settingsRes.data.testimonial_section) {
+          setSectionData(settingsRes.data.testimonial_section.value);
+        }
+        if (settingsRes.data.partners) {
+          setPartners(settingsRes.data.partners.value);
+        }
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleAddItem = () => {
     setEditingItem(undefined);
@@ -96,28 +73,100 @@ export default function ServicesTestimonial() {
     setIsModalOpen(true);
   };
 
-  const handleSaveItem = (data: ServicesTestimonialItem) => {
-    if (editingItem) {
-      setTestimonials((prev) =>
-        prev.map((item) => (item.id === editingItem.id ? data : item)),
-      );
-    } else {
-      setTestimonials((prev) => [{ ...data, id: Date.now() }, ...prev]);
+  const handleSaveItem = async (data: ServicesTestimonialItem) => {
+    setIsUpdating(true);
+    try {
+      let res;
+      if (editingItem?.id) {
+        res = await updateReview(editingItem.id, data);
+      } else {
+        res = await createReview(data);
+      }
+
+      if (res.success) {
+        toast.success(editingItem ? "Review updated!" : "Review added!");
+        // Refresh testimonials
+        const reviewsRes = await getAllReviews();
+        if (reviewsRes.success) setTestimonials(reviewsRes.data);
+        return true;
+      } else {
+        toast.error(res.message || "Something went wrong");
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error saving review");
+      return false;
+    } finally {
+      setIsUpdating(false);
     }
-    setIsModalOpen(false);
   };
 
-  const handleDeleteItem = () => {
-    if (editingItem) {
-      setTestimonials((prev) =>
-        prev.filter((item) => item.id !== editingItem.id),
-      );
-      setIsModalOpen(false);
+  const handleDeleteItem = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this review?")) return;
+    setIsUpdating(true);
+    try {
+      const res = await deleteReview(id);
+      if (res.success) {
+        toast.success("Review deleted!");
+        setTestimonials((prev) => prev.filter((item) => item.id !== id));
+      } else {
+        toast.error(res.message || "Failed to delete");
+      }
+    } catch (error) {
+      toast.error("Error deleting review");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
-  const handlePartnersUpdate = (data: ServicesPartnersData) => {
-    setPartners(data.partners);
+  const handleSectionUpdate = async (data: ServicesTestimonialSectionData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "testimonial_section",
+        value: data,
+        group: "services_testimonials",
+        description: "Services Testimonial Section Settings",
+      });
+      if (res.success) {
+        setSectionData(data);
+        toast.success("Section updated!");
+        return true;
+      } else {
+        toast.error(res.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error updating section");
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handlePartnersUpdate = async (data: ServicesPartnersData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "partners",
+        value: data.partners,
+        group: "services_testimonials",
+        description: "Services Page Partners",
+      });
+      if (res.success) {
+        setPartners(data.partners);
+        toast.success("Partners updated!");
+        return true;
+      } else {
+        toast.error(res.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error("Error updating partners");
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -131,7 +180,6 @@ export default function ServicesTestimonial() {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-[#0f392ea8] mix-blend-multiply" />
-        {/* Dark green overlay matching the image */}
         <div className="absolute inset-0 bg-linear-to-r from-[#0d2e25] to-[#0f392e]/80" />
       </div>
 
@@ -178,28 +226,37 @@ export default function ServicesTestimonial() {
               640: { slidesPerView: 1.5 },
               1024: { slidesPerView: 2 },
             }}
-            loop={true}
+            loop={testimonials.length > 2}
             autoplay={{ delay: 5000 }}
             className="services-testimonial-swiper"
           >
             {testimonials.map((item) => (
               <SwiperSlide key={item.id}>
                 <div className="bg-white/90 backdrop-blur-sm border border-white/20 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-6 items-center md:items-start group hover:shadow-2xl transition-shadow duration-300 h-full relative">
-                  {/* Edit Button */}
+                  {/* Action Buttons */}
                   <AdminOnly>
-                    <button
-                      onClick={() => handleEditItem(item)}
-                      className="absolute top-4 right-10 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-secondary text-white hover:scale-110 transition-transform"
-                      title="Edit Testimonial"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
+                    <div className="absolute top-4 right-4 z-50 flex gap-2">
+                      <button
+                        onClick={() => handleEditItem(item)}
+                        className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary text-white hover:scale-110 transition-transform shadow-md"
+                        title="Edit Testimonial"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => item.id && handleDeleteItem(item.id)}
+                        className="w-8 h-8 flex items-center justify-center rounded-full bg-red-500 text-white hover:scale-110 transition-transform shadow-md"
+                        title="Delete Testimonial"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </AdminOnly>
 
-                  {/* Image Container with Play Button */}
+                  {/* Image Container */}
                   <div className="relative w-full md:w-1/3 shrink-0 aspect-3/4 rounded-xl overflow-hidden bg-secondary">
                     <CustomImage
-                      src={item.image}
+                      src={item.image || ""}
                       alt={item.name}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
@@ -263,26 +320,27 @@ export default function ServicesTestimonial() {
               </button>
             </AdminOnly>
           </div>
-          <Marquee
-            gradient={false}
-            speed={50}
-            pauseOnHover={true}
-            className="opacity-70 grayscale hover:grayscale-0 transition-all duration-500"
-          >
-            <div className="flex items-center gap-16 px-8">
-              {partners.map((partner, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center gap-2 group cursor-pointer"
-                >
-                  {/* Using text placeholder styled as logo since we don't have real logos */}
-                  <div className="text-white/80 font-bold text-lg md:text-2xl group-hover:text-white transition-colors bg-white/10 px-6 py-3 rounded-lg backdrop-blur-sm border border-white/5 whitespace-nowrap">
-                    {partner.name}
+          {partners.length > 0 && (
+            <Marquee
+              gradient={false}
+              speed={50}
+              pauseOnHover={true}
+              className="opacity-70 grayscale hover:grayscale-0 transition-all duration-500"
+            >
+              <div className="flex items-center gap-16 px-8">
+                {partners.map((partner, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-2 group cursor-pointer"
+                  >
+                    <div className="text-white/80 font-bold text-lg md:text-2xl group-hover:text-white transition-colors bg-white/10 px-6 py-3 rounded-lg backdrop-blur-sm border border-white/5 whitespace-nowrap">
+                      {partner.name}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </Marquee>
+                ))}
+              </div>
+            </Marquee>
+          )}
         </div>
       </div>
       <ServicesTestimonialModal
@@ -290,19 +348,21 @@ export default function ServicesTestimonial() {
         onClose={() => setIsModalOpen(false)}
         item={editingItem}
         onSave={handleSaveItem}
-        onDelete={handleDeleteItem}
+        isLoading={isUpdating}
       />
       <ServicesTestimonialSectionModal
         isOpen={isSectionModalOpen}
         onClose={() => setIsSectionModalOpen(false)}
         initialData={sectionData}
-        onUpdate={(data) => setSectionData(data)}
+        onUpdate={handleSectionUpdate}
+        isLoading={isUpdating}
       />
       <ServicesPartnersModal
         isOpen={isPartnersModalOpen}
         onClose={() => setIsPartnersModalOpen(false)}
         initialData={{ partners }}
         onUpdate={handlePartnersUpdate}
+        isLoading={isUpdating}
       />
     </section>
   );

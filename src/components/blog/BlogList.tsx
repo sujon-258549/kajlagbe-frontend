@@ -1,16 +1,21 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { BlogPost } from "@/data/blogData";
 import BlogCard from "./BlogCard";
 import Pagination from "../common/Pagination";
 import BlogGridSkeleton from "./BlogGridSkeleton";
 import AdminOnly from "../common/auth/AdminOnly";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit } from "lucide-react";
-import BlogPostModal from "../modal/blog/BlogPostModal";
+import { Plus, Edit, FileText } from "lucide-react";
+import HomeBlogPostModal from "../modal/home/HomeBlogPostModal";
 import { BlogPostFormData } from "@/schemas/blog/post.schema";
-import { getAllBlogs } from "@/actions/blog.actions";
+import { toast } from "react-toastify";
+import {
+  getAllBlogs,
+  createBlog,
+  updateBlog,
+  deleteBlog,
+} from "@/actions/blog.actions";
 
 export default function BlogList() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -18,21 +23,26 @@ export default function BlogList() {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<any | undefined>(undefined);
-
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      const res = await getAllBlogs();
-      if (res.success) {
-        setPosts(res.data);
-      }
-      setIsLoading(false);
-    };
-    fetchBlogs();
-  }, []);
+  const [isSaving, setIsSaving] = useState(false);
 
   const postsPerPage = 6;
 
-  // Calculate pagination
+  const fetchBlogs = async () => {
+    const res = await getAllBlogs();
+    if (res.success) {
+      const list = Array.isArray(res.data) ? res.data : res.data?.data || [];
+      setPosts(list);
+    }
+  };
+
+  useEffect(() => {
+    const init = async () => {
+      await fetchBlogs();
+      setIsLoading(false);
+    };
+    init();
+  }, []);
+
   const totalPages = Math.ceil(posts.length / postsPerPage);
 
   const currentPosts = useMemo(() => {
@@ -42,13 +52,7 @@ export default function BlogList() {
   }, [currentPage, posts]);
 
   const handlePageChange = (page: number) => {
-    setIsLoading(true);
     setCurrentPage(page);
-
-    // Simulate loading for better UX feel
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
   };
 
   const handleAddPost = () => {
@@ -56,54 +60,87 @@ export default function BlogList() {
     setIsModalOpen(true);
   };
 
-  const handleEditPost = (post: BlogPost) => {
+  const handleEditPost = (post: any) => {
     setEditingPost(post);
     setIsModalOpen(true);
   };
 
-  const handleSavePost = (data: BlogPostFormData) => {
-    if (editingPost) {
-      // Edit existing
-      const updatedPosts = posts.map((p) =>
-        p.id === editingPost.id
-          ? {
-              ...p,
-              ...data,
-              tags: (data.tags || "").split(",").map((t) => t.trim()).filter(Boolean),
-              author: {
-                name: data.authorName || "Admin",
-                avatar: data.authorAvatar || "",
-              },
-            }
-          : p,
-      );
-      setPosts(updatedPosts);
-    } else {
-      // Add new
-      const newPost: any = {
-        id: Date.now().toString(),
-        ...data,
-        tags: (data.tags || "").split(",").map((t) => t.trim()).filter(Boolean),
-        author: {
-          name: data.authorName || "Admin",
-          avatar: data.authorAvatar || "",
-        },
+  const handleSavePost = async (data: BlogPostFormData) => {
+    setIsSaving(true);
+    try {
+      const payload: any = {
+        title: data.title,
+        slug: data.slug,
+        excerpt: data.excerpt,
+        content: data.content,
+        coverId: data.imageId || undefined,
+        category: data.category,
+        authorName: data.authorName,
+        tags: (data.tags || "")
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
       };
-      setPosts([newPost, ...posts]);
+
+      const res = editingPost?.id
+        ? await updateBlog(editingPost.id, payload)
+        : await createBlog(payload);
+
+        console.log(' blog res-------------------', res)
+      if (res.success) {
+        toast.success(
+          editingPost
+            ? "Blog updated successfully!"
+            : "Blog created successfully!",
+        );
+        await fetchBlogs();
+        setIsModalOpen(false);
+        setEditingPost(undefined);
+      } else {
+        toast.error(res.message || "Something went wrong!");
+      }
+    } catch (error) {
+      console.log("error", error);
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setIsSaving(false);
     }
-    setIsModalOpen(false);
   };
 
-  const handleDeletePost = () => {
-    if (editingPost) {
-      const updatedPosts = posts.filter((p) => p.id !== editingPost.id);
-      setPosts(updatedPosts);
-      setIsModalOpen(false);
+  const handleDeletePost = async () => {
+    if (!editingPost?.id) return;
+    setIsSaving(true);
+    try {
+      const res = await deleteBlog(editingPost.id);
+      if (res.success) {
+        toast.success("Blog deleted successfully!");
+        await fetchBlogs();
+        setIsModalOpen(false);
+        setEditingPost(undefined);
+      } else {
+        toast.error(res.message || "Failed to delete blog.");
+      }
+    } catch (error) {
+      console.log("error", error);
+      toast.error("Failed to delete blog.");
+    } finally {
+      setIsSaving(false);
     }
   };
+
+  const hasPosts = posts.length > 0;
+
+  const initialModalData = editingPost
+    ? ({
+        ...editingPost,
+        tags: Array.isArray(editingPost.tags)
+          ? editingPost.tags.join(", ")
+          : editingPost.tags || "",
+      } as any)
+    : undefined;
 
   return (
-    <div className="space-y-8 min-h-[600px] relative">
+    <div className="space-y-8 relative">
       <AdminOnly>
         <div className="flex justify-end items-center mb-6">
           <Button
@@ -117,8 +154,29 @@ export default function BlogList() {
 
       {isLoading ? (
         <BlogGridSkeleton />
+      ) : !hasPosts ? (
+        <div className="flex flex-col items-center justify-center py-16 md:py-24 px-4 rounded-3xl border border-dashed border-slate-200 bg-slate-50/40 text-center min-h-[400px]">
+          <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-secondary/10 flex items-center justify-center mb-5">
+            <FileText className="w-7 h-7 md:w-8 md:h-8 text-secondary" />
+          </div>
+          <h3 className="text-lg md:text-xl font-bold text-secondary mb-2">
+            No blog posts yet
+          </h3>
+          <p className="text-slate-500 text-sm md:text-base max-w-md">
+            Stay tuned — fresh stories, recipes, and organic living tips are on
+            the way.
+          </p>
+          <AdminOnly>
+            <Button
+              onClick={handleAddPost}
+              className="mt-6 bg-secondary hover:bg-secondary/90 text-white gap-2 font-bold"
+            >
+              <Plus className="w-4 h-4" /> Write First Post
+            </Button>
+          </AdminOnly>
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {currentPosts.map((post, index) => (
             <div key={post.id} className="relative group/blog-card">
               <BlogCard post={post} index={index} />
@@ -136,22 +194,27 @@ export default function BlogList() {
         </div>
       )}
 
-      <div className="flex justify-center md:-my-0 -my-3">
-        {totalPages > 1 && (
+      {hasPosts && totalPages > 1 && (
+        <div className="flex justify-center">
           <Pagination
             totalPages={totalPages}
             currentPage={currentPage}
             onPageChange={handlePageChange}
           />
-        )}
-      </div>
+        </div>
+      )}
 
-      <BlogPostModal
+      <HomeBlogPostModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        post={editingPost}
-        onSave={handleSavePost}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingPost(undefined);
+        }}
+        initialData={initialModalData}
+        onUpdate={handleSavePost}
         onDelete={handleDeletePost}
+        isNew={!editingPost}
+        isLoading={isSaving}
       />
     </div>
   );

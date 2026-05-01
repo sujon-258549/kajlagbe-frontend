@@ -31,7 +31,8 @@ interface ServicesPartnersModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData: ServicesPartnersData;
-  onUpdate: (data: ServicesPartnersData) => void;
+  onUpdate: (data: ServicesPartnersData) => any;
+  isLoading?: boolean;
 }
 
 const ServicesPartnersModal: React.FC<ServicesPartnersModalProps> = ({
@@ -39,6 +40,7 @@ const ServicesPartnersModal: React.FC<ServicesPartnersModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<ServicesPartnersData>({
     resolver: zodResolver(servicesPartnersSchema),
@@ -49,9 +51,11 @@ const ServicesPartnersModal: React.FC<ServicesPartnersModalProps> = ({
     form.reset(initialData);
   }, [initialData, form, isOpen]);
 
-  const handleSubmit = (data: ServicesPartnersData) => {
-    onUpdate(data);
-    onClose();
+  const handleSubmit = async (data: ServicesPartnersData) => {
+    const success = await onUpdate(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   const partners = form.watch("partners");
@@ -127,8 +131,12 @@ const ServicesPartnersModal: React.FC<ServicesPartnersModalProps> = ({
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

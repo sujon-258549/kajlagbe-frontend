@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import {
   blogShowcaseSchema,
   BlogShowcaseFormData,
@@ -149,9 +149,16 @@ const BlogShowcaseModal: React.FC<BlogShowcaseModalProps> = ({
                       <FormItem>
                         <FormLabel>Showcase Image</FormLabel>
                         <FormControl>
-                          <ImageUpload
+                          <MediaLibraryImageUploader
                             value={field.value}
-                            onChange={field.onChange}
+                            onChange={(url, id) => {
+                              field.onChange(url);
+                              if (id)
+                                form.setValue(
+                                  `items.${index}.imageId`,
+                                  id,
+                                );
+                            }}
                           />
                         </FormControl>
                         <FormMessage />

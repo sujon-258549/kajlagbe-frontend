@@ -1,13 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Edit } from "lucide-react";
 import AdminOnly from "@/components/common/auth/AdminOnly";
 import ContactInfoModal from "@/components/modal/contact/ContactInfoModal";
 import { ContactInfoFormData } from "@/schemas/contact/info.schema";
+import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { toast } from "react-toastify";
 
 export default function ContactInfo() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<ContactInfoFormData>({
     cards: [
       {
@@ -32,6 +35,40 @@ export default function ContactInfo() {
       },
     ],
   });
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      const res = await getSettingsMap("contact");
+      if (res.success && res.data.contact_info) {
+        setData(res.data.contact_info.value);
+      }
+    };
+    fetchInfo();
+  }, []);
+
+  const handleUpdate = async (newData: ContactInfoFormData) => {
+    setIsUpdating(true);
+    try {
+      const res = await upsertSetting({
+        key: "contact_info",
+        value: newData,
+        group: "contact",
+        description: "Contact Page Info Cards",
+      });
+      if (res.success) {
+        setData(newData);
+        toast.success("Contact info updated successfully!");
+        setIsEditModalOpen(false);
+      } else {
+        toast.error(res.message || "Failed to update contact info.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred.");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className="my-16 space-y-20 relative group/section">
@@ -74,7 +111,8 @@ export default function ContactInfo() {
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           initialData={data}
-          onUpdate={(newData: ContactInfoFormData) => setData(newData)}
+          onUpdate={handleUpdate}
+          isLoading={isUpdating}
         />
       </AdminOnly>
     </section>

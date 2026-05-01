@@ -25,6 +25,7 @@ interface ContactInfoModalProps {
   onClose: () => void;
   initialData: ContactInfoFormData;
   onUpdate: (data: ContactInfoFormData) => void;
+  isLoading?: boolean;
 }
 
 const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
@@ -32,6 +33,7 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<ContactInfoFormData>({
     resolver: zodResolver(contactInfoSchema) as any,
@@ -65,9 +67,10 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
           <Button
             type="submit"
             form="contact-info-form"
+            disabled={isLoading}
             className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
           >
-            Update Info
+            {isLoading ? "Updating..." : "Update Info"}
           </Button>
         </div>
       }

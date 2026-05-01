@@ -29,12 +29,13 @@ interface ServicesPossibleSectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData: PossibleSectionFormData;
-  onUpdate: (data: PossibleSectionFormData) => void;
+  onUpdate: (data: PossibleSectionFormData) => any;
+  isLoading?: boolean;
 }
 
 const ServicesPossibleSectionModal: React.FC<
   ServicesPossibleSectionModalProps
-> = ({ isOpen, onClose, initialData, onUpdate }) => {
+> = ({ isOpen, onClose, initialData, onUpdate, isLoading = false }) => {
   const form = useForm<PossibleSectionFormData>({
     resolver: zodResolver(possibleSectionSchema),
     defaultValues: initialData,
@@ -44,9 +45,11 @@ const ServicesPossibleSectionModal: React.FC<
     form.reset(initialData);
   }, [initialData, form, isOpen]);
 
-  const handleSubmit = (data: PossibleSectionFormData) => {
-    onUpdate(data);
-    onClose();
+  const handleSubmit = async (data: PossibleSectionFormData) => {
+    const success = await onUpdate(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   return (
@@ -114,8 +117,12 @@ const ServicesPossibleSectionModal: React.FC<
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

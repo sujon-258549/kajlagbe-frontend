@@ -15,7 +15,8 @@ interface CommonHeroProps {
   bgImage?: string;
   bgImageId?: string;
   breadcrumb?: string;
-  onUpdate?: (data: any) => void;
+  onUpdate?: (data: any) => any;
+  isLoading?: boolean;
   ModalComponent?: React.ComponentType<{
     isOpen: boolean;
     onClose: () => void;
@@ -25,7 +26,8 @@ interface CommonHeroProps {
     imageId?: string;
     bgImage?: string;
     bgImageId?: string;
-    onUpdate?: (data: any) => void;
+    onUpdate?: (data: any) => any;
+    isLoading?: boolean;
   }>;
 }
 
@@ -39,6 +41,7 @@ export default function CommonHero({
   breadcrumb,
   ModalComponent,
   onUpdate,
+  isLoading = false,
 }: CommonHeroProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -146,6 +149,7 @@ export default function CommonHero({
             bgImage={bgImage}
             bgImageId={bgImageId}
             onUpdate={onUpdate}
+            isLoading={isLoading}
           />
         </AdminOnly>
       )}

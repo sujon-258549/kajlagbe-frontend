@@ -14,16 +14,15 @@ export default function BlogPage() {
     <main className="min-h-screen bg-white">
       <BlogHero />
 
-      <section className="py-4 md:py-16 lg:py-20">
+      <section className="py-10 md:py-16 lg:py-20">
         <div className="main-container">
           <BlogList />
         </div>
       </section>
 
-        <ServicesVerticalSlider />
-      <div className="-mt-10 md:-mt-24">
+      <ServicesVerticalSlider />
+
       <BlogShowcase />
-      </div>
     </main>
   );
 }

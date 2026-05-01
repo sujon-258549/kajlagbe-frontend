@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import CommonModal from "@/components/modal/common/CommonModal"; // Adjust path if needed
+import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import {
   ServicesTestimonialItemSchema,
   ServicesTestimonialItem,
@@ -25,8 +25,8 @@ interface ServicesTestimonialModalProps {
   isOpen: boolean;
   onClose: () => void;
   item?: ServicesTestimonialItem;
-  onSave: (data: ServicesTestimonialItem) => void;
-  onDelete?: () => void;
+  onSave: (data: ServicesTestimonialItem) => Promise<any>;
+  isLoading?: boolean;
 }
 
 const ServicesTestimonialModal: React.FC<ServicesTestimonialModalProps> = ({
@@ -34,7 +34,7 @@ const ServicesTestimonialModal: React.FC<ServicesTestimonialModalProps> = ({
   onClose,
   item,
   onSave,
-  onDelete,
+  isLoading = false,
 }) => {
   const form = useForm<ServicesTestimonialItem>({
     resolver: zodResolver(ServicesTestimonialItemSchema),
@@ -44,12 +44,17 @@ const ServicesTestimonialModal: React.FC<ServicesTestimonialModalProps> = ({
       title: "",
       content: "",
       image: "",
+      imageId: "",
     },
   });
 
   useEffect(() => {
     if (item) {
-      form.reset(item);
+      form.reset({
+        ...item,
+        image: item.image || "",
+        imageId: item.imageId || "",
+      });
     } else {
       form.reset({
         name: "",
@@ -57,13 +62,16 @@ const ServicesTestimonialModal: React.FC<ServicesTestimonialModalProps> = ({
         title: "",
         content: "",
         image: "",
+        imageId: "",
       });
     }
   }, [item, form, isOpen]);
 
-  const handleSubmit = (data: ServicesTestimonialItem) => {
-    onSave(data);
-    onClose();
+  const handleSubmit = async (data: ServicesTestimonialItem) => {
+    const success = await onSave(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   return (
@@ -140,14 +148,17 @@ const ServicesTestimonialModal: React.FC<ServicesTestimonialModalProps> = ({
 
           <FormField
             control={form.control}
-            name="image"
+            name="imageId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Author Image</FormLabel>
                 <FormControl>
-                  <ImageUpload
-                    value={field.value ? [field.value] : []}
-                    onValueChange={(val) => field.onChange(val)}
+                  <MediaLibraryImageUploader
+                    value={field.value}
+                    onChange={(val, url) => {
+                      field.onChange(val);
+                      if (url) form.setValue("image", url);
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -155,20 +166,17 @@ const ServicesTestimonialModal: React.FC<ServicesTestimonialModalProps> = ({
             )}
           />
 
-          <div className="flex justify-between pt-4 border-t">
-            {item && onDelete && (
-              <Button type="button" variant="destructive" onClick={onDelete}>
-                Delete
-              </Button>
-            )}
-            <div className="flex gap-2 ml-auto">
-              <Button variant="outline" onClick={onClose} type="button">
-                Cancel
-              </Button>
-              <Button type="submit" className="bg-secondary text-white">
-                {item ? "Save Changes" : "Add Testimonial"}
-              </Button>
-            </div>
+          <div className="flex justify-end pt-4 border-t gap-2">
+            <Button variant="outline" onClick={onClose} type="button">
+              Cancel
+            </Button>
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : item ? "Save Changes" : "Add Testimonial"}
+            </Button>
           </div>
         </form>
       </Form>

@@ -145,7 +145,7 @@ export default function ServicesPossible() {
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         {/* Wind turbine background placeholder */}
         <Image
-          src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&q=80&w=2000"
+          src={sectionData.backgroundImage || "https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&q=80&w=2000"}
           alt="Wind Turbines"
           fill
           className="object-cover grayscale"
@@ -315,6 +315,7 @@ export default function ServicesPossible() {
         onClose={() => setIsSectionModalOpen(false)}
         initialData={sectionData}
         onUpdate={handleSectionUpdate}
+        isLoading={isUpdating}
       />
 
       <WhatWeDoModal
@@ -323,6 +324,7 @@ export default function ServicesPossible() {
         item={editingItem}
         onSave={handleSaveItem}
         onDelete={handleDeleteItem}
+        isLoading={isUpdating}
       />
     </section>
   );

@@ -25,6 +25,7 @@ interface ContactMarqueeModalProps {
   onClose: () => void;
   initialData: ContactMarqueeFormData;
   onUpdate: (data: ContactMarqueeFormData) => void;
+  isLoading?: boolean;
 }
 
 const ContactMarqueeModal: React.FC<ContactMarqueeModalProps> = ({
@@ -32,6 +33,7 @@ const ContactMarqueeModal: React.FC<ContactMarqueeModalProps> = ({
   onClose,
   initialData,
   onUpdate,
+  isLoading = false,
 }) => {
   const form = useForm<ContactMarqueeFormData>({
     resolver: zodResolver(contactMarqueeSchema),
@@ -64,9 +66,10 @@ const ContactMarqueeModal: React.FC<ContactMarqueeModalProps> = ({
           <Button
             type="submit"
             form="contact-marquee-form"
+            disabled={isLoading}
             className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
           >
-            Update Ticker
+            {isLoading ? "Updating..." : "Update Ticker"}
           </Button>
         </div>
       }

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import CommonModal from "@/components/modal/common/CommonModal"; // Adjust path if needed
+import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import {
   ServicesTestimonialSectionData,
   ServicesTestimonialSectionSchema,
@@ -24,12 +24,13 @@ interface ServicesTestimonialSectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData: ServicesTestimonialSectionData;
-  onUpdate: (data: ServicesTestimonialSectionData) => void;
+  onUpdate: (data: ServicesTestimonialSectionData) => any;
+  isLoading?: boolean;
 }
 
 const ServicesTestimonialSectionModal: React.FC<
   ServicesTestimonialSectionModalProps
-> = ({ isOpen, onClose, initialData, onUpdate }) => {
+> = ({ isOpen, onClose, initialData, onUpdate, isLoading = false }) => {
   const form = useForm<ServicesTestimonialSectionData>({
     resolver: zodResolver(ServicesTestimonialSectionSchema),
     defaultValues: initialData,
@@ -39,9 +40,11 @@ const ServicesTestimonialSectionModal: React.FC<
     form.reset(initialData);
   }, [initialData, form, isOpen]);
 
-  const handleSubmit = (data: ServicesTestimonialSectionData) => {
-    onUpdate(data);
-    onClose();
+  const handleSubmit = async (data: ServicesTestimonialSectionData) => {
+    const success = await onUpdate(data);
+    if (success === true) {
+      onClose();
+    }
   };
 
   return (
@@ -88,9 +91,9 @@ const ServicesTestimonialSectionModal: React.FC<
               <FormItem>
                 <FormLabel>Background Image</FormLabel>
                 <FormControl>
-                  <ImageUpload
-                    value={field.value ? [field.value] : []}
-                    onValueChange={(val) => field.onChange(val)}
+                  <MediaLibraryImageUploader
+                    value={field.value}
+                    onChange={(val, url) => field.onChange(url)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -102,8 +105,12 @@ const ServicesTestimonialSectionModal: React.FC<
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-secondary text-white">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-secondary text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>
