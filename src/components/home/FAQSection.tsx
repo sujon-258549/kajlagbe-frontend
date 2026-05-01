@@ -95,7 +95,7 @@ export default function FAQSection() {
   };
 
   return (
-    <section className=" md:py-24 py-10 bg-slate-50/50 relative overflow-hidden group/section">
+    <section className="py-10 md:py-16 lg:py-24 bg-slate-50/50 relative overflow-hidden group/section">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[500px] h-[500px] bg-primary/5 rounded-2xl blur-3xl opacity-60" />
       <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-secondary/5 rounded-2xl blur-3xl opacity-60" />
