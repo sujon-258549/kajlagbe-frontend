@@ -157,7 +157,7 @@ export default function ServicesVerticalSlider() {
   };
 
   return (
-    <section className="bg-white py-8 md:py-12 lg:py-16 group/section relative">
+    <section className="bg-white py-6 md:py-8 lg:py-12 group/section relative">
       <div className="main-container px-4 md:px-6 relative">
         <AdminOnly>
           <button

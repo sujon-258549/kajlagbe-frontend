@@ -91,7 +91,7 @@ export default function HomeBenefits() {
   };
 
   return (
-    <section className="py-8 md:py-12 lg:py-16 bg-[#fcfdfa] overflow-hidden group/section relative">
+    <section className="py-6 md:py-8 lg:py-12 bg-[#fcfdfa] overflow-hidden group/section relative">
       <div className="main-container mx-auto px-6 relative z-10">
         <AdminOnly>
           <button
@@ -103,7 +103,7 @@ export default function HomeBenefits() {
           </button>
         </AdminOnly>
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
+        <div className="text-center max-w-3xl mx-auto mb-4 md:mb-6 lg:mb-14">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f0f9eb] rounded-full text-secondary text-sm font-semibold border border-[#dcf0d1] mb-6">
             <Sparkles className="w-4 h-4" />
             {data.badge}
@@ -138,7 +138,7 @@ export default function HomeBenefits() {
           </div>
 
           {/* Center Column: Images */}
-          <div className="w-full lg:w-1/3 relative h-[300px] md:h-[500px] order-1 lg:order-2 flex items-center justify-center">
+          <div className="w-full lg:w-1/3 relative h-[200px] md:h-[350px] order-1 lg:order-2 flex items-center justify-center">
             <div className="relative w-full h-full transform scale-100 md:scale-110">
               <Image
                 src={data.centerImage}
@@ -171,7 +171,7 @@ export default function HomeBenefits() {
         </div>
 
         {/* Footer Text */}
-        <div className="text-center mt-20 lg:mt-28">
+        <div className="text-center mt-5 md:pt-6 lg:mt-8">
           <p className="text-slate-500 font-medium">
             From clean ingredients to conscious choices –{" "}
             <Link

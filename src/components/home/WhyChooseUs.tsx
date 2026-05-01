@@ -75,8 +75,8 @@ export default function WhyChooseUs() {
   };
 
   return (
-    <section className="py-8 md:py-12 lg:py-16 relative group/section">
-      <div className="main-container mx-auto px-4 relative">
+    <section className="py-6 md:py-8 lg:py-12 relative group/section">
+      <div className="main-container relative">
         <AdminOnly>
           <button
             onClick={() => setIsModalOpen(true)}

@@ -66,7 +66,7 @@ export default function AboutSection() {
   };
 
   return (
-    <section className="py-8 md:py-12 lg:py-16 bg-white overflow-hidden group/section relative">
+    <section className="py-6 md:py-8 lg:py-12 bg-white overflow-hidden group/section relative">
       <div className="main-container mx-auto px-6 relative">
         <AdminOnly>
           <button

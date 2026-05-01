@@ -65,7 +65,7 @@ export default function HomeVideoSection() {
   };
 
   return (
-    <section className="relative w-full h-[300px] md:h-[450px] lg:h-[600px] overflow-hidden group/section">
+    <section className="relative w-full h-[250px] md:h-[350px] lg:h-[500px] overflow-hidden group/section">
       <div className="main-container mx-auto relative z-50">
         <AdminOnly>
           <button
