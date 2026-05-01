@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -56,11 +57,12 @@ const HomeVideoModal: React.FC<HomeVideoModalProps> = ({
       onClose={onClose}
       title="Edit Video Section"
       description="Update the background video and modal video link."
+      maxWidth="3xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
-            control={form.control}
+            control={form.control as any}
             name="videoUrl"
             render={({ field }) => (
               <FormItem>
@@ -73,20 +75,27 @@ const HomeVideoModal: React.FC<HomeVideoModalProps> = ({
             )}
           />
           <FormField
-            control={form.control}
+            control={form.control as any}
             name="posterImage"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Poster Image URL (Fallback)</FormLabel>
+                <FormLabel>Poster Image</FormLabel>
                 <FormControl>
-                  <FormInput placeholder="https://..." {...field} />
+                  <MediaLibraryImageUploader
+                    value={field.value}
+                    onChange={(url, id) => {
+                      field.onChange(url);
+                      if (id) form.setValue("posterImageId", id);
+                    }}
+                    className="w-full"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
-            control={form.control}
+            control={form.control as any}
             name="youtubeEmbedUrl"
             render={({ field }) => (
               <FormItem>
@@ -102,7 +111,7 @@ const HomeVideoModal: React.FC<HomeVideoModalProps> = ({
             )}
           />
           <FormField
-            control={form.control}
+            control={form.control as any}
             name="buttonText"
             render={({ field }) => (
               <FormItem>

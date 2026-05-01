@@ -10,11 +10,16 @@ import AdminOnly from "../common/auth/AdminOnly";
 import HomeBlogHeaderModal from "../modal/home/HomeBlogHeaderModal";
 import HomeBlogPostModal from "../modal/home/HomeBlogPostModal";
 import {
-  HomeBlogFormData,
-  HomeBlogItemFormData,
   HomeBlogHeaderFormData,
 } from "@/schemas/home/blog.schema";
+import { blogPostSchema, BlogPostFormData } from "@/schemas/blog/post.schema";
 import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
+import { 
+  getAllBlogs, 
+  createBlog, 
+  updateBlog, 
+  deleteBlog 
+} from "@/actions/blog.actions";
 import { useEffect } from "react";
 
 const initialBlogPosts = [
@@ -63,20 +68,20 @@ export default function NewBlogSection() {
     title: "Check Latest Blog Post",
     buttonText: "Read All Posts",
   });
-  const [posts, setPosts] = useState<HomeBlogItemFormData[]>(initialBlogPosts);
+  const [posts, setPosts] = useState<any[]>([]);
 
   const data = { ...headerData, posts };
 
   useEffect(() => {
     const fetchBlogData = async () => {
-      const res = await getSettingsMap("home");
-      if (res.success) {
-        if (res.data.home_blog_header) {
-          setHeaderData(res.data.home_blog_header.value);
-        }
-        if (res.data.home_blog_posts) {
-          setPosts(res.data.home_blog_posts.value);
-        }
+      const settingsRes = await getSettingsMap("home");
+      if (settingsRes.success && settingsRes.data.home_blog_header) {
+        setHeaderData(settingsRes.data.home_blog_header.value);
+      }
+      
+      const blogsRes = await getAllBlogs("limit=3");
+      if (blogsRes.success) {
+        setPosts(blogsRes.data);
       }
       setIsLoading(false);
     };
@@ -102,25 +107,20 @@ export default function NewBlogSection() {
       setIsUpdatingHeader(false);
     }
   };
-  const handleUpdatePost = async (postData: HomeBlogItemFormData) => {
+  const handleUpdatePost = async (postData: any) => {
     setIsUpdatingPost(true);
     try {
-      const updatedPosts = [...posts];
+      let res;
       if (editingIndex !== null) {
-        updatedPosts[editingIndex] = postData;
+        const postId = posts[editingIndex].id;
+        res = await updateBlog(postId, postData);
       } else {
-        updatedPosts.push(postData);
+        res = await createBlog(postData);
       }
       
-      const res = await upsertSetting({
-        key: "home_blog_posts",
-        value: updatedPosts,
-        group: "home",
-        description: "Homepage Blog Section Posts Settings",
-      });
-      
       if (res.success) {
-        setPosts(updatedPosts);
+        const blogsRes = await getAllBlogs("limit=3");
+        if (blogsRes.success) setPosts(blogsRes.data);
         setIsPostModalOpen(false);
         setEditingIndex(null);
       }
@@ -136,16 +136,12 @@ export default function NewBlogSection() {
     
     setIsUpdatingPost(true);
     try {
-      const updatedPosts = posts.filter((_, i) => i !== editingIndex);
-      const res = await upsertSetting({
-        key: "home_blog_posts",
-        value: updatedPosts,
-        group: "home",
-        description: "Homepage Blog Section Posts Settings",
-      });
+      const postId = posts[editingIndex].id;
+      const res = await deleteBlog(postId);
       
       if (res.success) {
-        setPosts(updatedPosts);
+        const blogsRes = await getAllBlogs("limit=3");
+        if (blogsRes.success) setPosts(blogsRes.data);
         setIsPostModalOpen(false);
         setEditingIndex(null);
       }
@@ -159,6 +155,14 @@ export default function NewBlogSection() {
   const openEditPost = (index: number) => {
     setEditingIndex(index);
     setIsPostModalOpen(true);
+  };
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return { day: "01", month: "Jan" };
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = date.toLocaleString("en-US", { month: "short" });
+    return { day, month };
   };
 
   return (
@@ -223,10 +227,10 @@ export default function NewBlogSection() {
                 {/* Date Badge */}
                 <div className="absolute bottom-4 right-4 bg-[#004D40] text-white rounded-xl p-2 text-center min-w-[60px] shadow-lg">
                   <span className="block text-2xl font-bold leading-none">
-                    {post.day}
+                    {formatDate(post.createdAt || post.date).day}
                   </span>
                   <span className="block text-xs font-medium opacity-80">
-                    {post.month}
+                    {formatDate(post.createdAt || post.date).month}
                   </span>
                 </div>
               </div>
@@ -239,7 +243,7 @@ export default function NewBlogSection() {
                     <div className="border border-slate-300 rounded-full p-0.5">
                       <User className="w-3 h-3" />
                     </div>
-                    {post.author}
+                    {post.authorName || post.author || "Admin"}
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="border border-slate-300 rounded-full p-0.5">
@@ -289,7 +293,7 @@ export default function NewBlogSection() {
           setEditingIndex(null);
         }}
         initialData={
-          editingIndex !== null ? data.posts[editingIndex] : undefined
+          editingIndex !== null ? (posts[editingIndex] as any) : undefined
         }
         onUpdate={handleUpdatePost}
         onDelete={handleDeletePost}

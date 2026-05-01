@@ -59,10 +59,10 @@ export default function BlogList() {
           ? {
               ...p,
               ...data,
-              tags: data.tags.split(",").map((t) => t.trim()),
+              tags: (data.tags || "").split(",").map((t) => t.trim()).filter(Boolean),
               author: {
-                name: data.authorName,
-                avatar: data.authorAvatar,
+                name: data.authorName || "Admin",
+                avatar: data.authorAvatar || "",
               },
             }
           : p,
@@ -70,13 +70,13 @@ export default function BlogList() {
       setPosts(updatedPosts);
     } else {
       // Add new
-      const newPost: BlogPost = {
+      const newPost: any = {
         id: Date.now().toString(),
         ...data,
-        tags: data.tags.split(",").map((t) => t.trim()),
+        tags: (data.tags || "").split(",").map((t) => t.trim()).filter(Boolean),
         author: {
-          name: data.authorName,
-          avatar: data.authorAvatar,
+          name: data.authorName || "Admin",
+          avatar: data.authorAvatar || "",
         },
       };
       setPosts([newPost, ...posts]);

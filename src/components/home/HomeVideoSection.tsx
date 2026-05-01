@@ -88,12 +88,12 @@ export default function HomeVideoSection() {
           loop
           playsInline
           className="w-full h-full object-cover"
-          poster={data.posterImage}
+          poster={data.posterImage || "/images/home/video_bg.png"}
         >
           <source src={data.videoUrl} type="video/mp4" />
           {/* Fallback Image */}
           <Image
-            src={data.posterImage}
+            src={data.posterImage || "/images/home/video_bg.png"}
             alt="Cinematic background"
             fill
             className="object-cover"

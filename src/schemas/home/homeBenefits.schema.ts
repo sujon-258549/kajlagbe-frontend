@@ -9,7 +9,8 @@ export const benefitItemSchema = z.object({
 export const homeBenefitsSchema = z.object({
   badge: z.string().min(1, "Badge is required"),
   title: z.string().min(1, "Title is required"),
-  centerImage: z.string().url("Must be a valid URL"),
+  centerImage: z.string().optional(),
+  centerImageId: z.string().optional(),
   leftBenefits: z.array(benefitItemSchema).min(1),
   rightBenefits: z.array(benefitItemSchema).min(1),
 });

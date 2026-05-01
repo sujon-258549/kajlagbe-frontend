@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
+import RichTextEditor from "@/components/common/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,15 +17,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
-  homeBlogItemSchema,
-  HomeBlogItemFormData,
-} from "@/schemas/home/blog.schema";
+  blogPostSchema,
+  BlogPostFormData,
+} from "@/schemas/blog/post.schema";
 
 interface HomeBlogPostModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialData?: HomeBlogItemFormData;
-  onUpdate: (data: HomeBlogItemFormData) => void;
+  initialData?: BlogPostFormData;
+  onUpdate: (data: BlogPostFormData) => void;
   onDelete?: () => void;
   isNew?: boolean;
   isLoading?: boolean;
@@ -39,16 +40,17 @@ const HomeBlogPostModal: React.FC<HomeBlogPostModalProps> = ({
   isNew = false,
   isLoading = false,
 }) => {
-  const form = useForm<HomeBlogItemFormData>({
-    resolver: zodResolver(homeBlogItemSchema),
+  const form = useForm<BlogPostFormData>({
+    resolver: zodResolver(blogPostSchema),
     defaultValues: initialData || {
       title: "",
-      image: "",
-      day: "",
-      month: "",
-      author: "Admin",
-      category: "",
       slug: "",
+      excerpt: "",
+      content: "",
+      image: "",
+      category: "",
+      authorName: "Admin",
+      tags: "",
     },
   });
 
@@ -57,19 +59,20 @@ const HomeBlogPostModal: React.FC<HomeBlogPostModalProps> = ({
       form.reset(
         initialData || {
           title: "",
+          slug: "",
+          excerpt: "",
+          content: "",
           image: "",
           imageId: "",
-          day: "",
-          month: "",
-          author: "Admin",
           category: "",
-          slug: "",
+          authorName: "Admin",
+          tags: "",
         },
       );
     }
   }, [isOpen, initialData, form]);
 
-  const onSubmit = (data: HomeBlogItemFormData) => {
+  const onSubmit = (data: BlogPostFormData) => {
     onUpdate(data);
     onClose();
   };
@@ -80,13 +83,13 @@ const HomeBlogPostModal: React.FC<HomeBlogPostModalProps> = ({
       onClose={onClose}
       title={isNew ? "Add New Blog Post" : "Edit Blog Post"}
       description="Fill in the details for the blog post."
-      maxWidth="3xl"
+      maxWidth="4xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border border-gray-300 p-4 rounded-md bg-slate-50/50">
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="title"
               render={({ field }) => (
                 <FormItem className="md:col-span-2">
@@ -99,7 +102,7 @@ const HomeBlogPostModal: React.FC<HomeBlogPostModalProps> = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="slug"
               render={({ field }) => (
                 <FormItem>
@@ -112,7 +115,7 @@ const HomeBlogPostModal: React.FC<HomeBlogPostModalProps> = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="category"
               render={({ field }) => (
                 <FormItem>
@@ -125,7 +128,7 @@ const HomeBlogPostModal: React.FC<HomeBlogPostModalProps> = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="image"
               render={({ field }) => (
                 <FormItem className="md:col-span-1">
@@ -144,48 +147,63 @@ const HomeBlogPostModal: React.FC<HomeBlogPostModalProps> = ({
                 </FormItem>
               )}
             />
-            <div className="grid grid-cols-2 gap-2">
-              <FormField
-                control={form.control}
-                name="day"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Day</FormLabel>
-                    <FormControl>
-                      <FormInput placeholder="09" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="month"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Month</FormLabel>
-                    <FormControl>
-                      <FormInput placeholder="Jan" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="author"
-                render={({ field }) => (
-                  <FormItem className="col-span-2">
-                    <FormLabel>Author</FormLabel>
-                    <FormControl>
-                      <FormInput {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control as any}
+              name="excerpt"
+              render={({ field }) => (
+                <FormItem className="md:col-span-2">
+                  <FormLabel>Excerpt (Summary)</FormLabel>
+                  <FormControl>
+                    <FormInput {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control as any}
+              name="authorName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Author Name</FormLabel>
+                  <FormControl>
+                    <FormInput {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control as any}
+              name="tags"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tags (comma separated)</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="plastic, eco, nature" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
+
+          <FormField
+            control={form.control as any}
+            name="content"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Blog Content</FormLabel>
+                <FormControl>
+                  <RichTextEditor
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <div className="flex justify-between gap-3 pt-6 border-t">
             {onDelete && !isNew ? (

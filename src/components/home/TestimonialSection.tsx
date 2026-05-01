@@ -59,7 +59,7 @@ export default function TestimonialSection() {
       "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg",
     testimonials: initialTestimonials,
   });
-  
+
   useEffect(() => {
     const fetchTestimonialData = async () => {
       const res = await getSettingsMap("home");
@@ -178,7 +178,7 @@ export default function TestimonialSection() {
               >
                 {data.testimonials.map((testimonial, idx) => (
                   <SwiperSlide key={idx}>
-                    <div className="bg-[#F8FBF8] rounded-[2rem] p-8 md:p-10 space-y-6 shadow-xl h-full border border-white/50">
+                    <div className="bg-[#F8FBF8] rounded-xl p-8 md:p-10 space-y-6 shadow-xl h-full border border-white/50">
                       <Quote className="w-8 h-8 text-[#FF9800] fill-[#FF9800]" />
 
                       <p className="text-slate-600 text-base md:text-[17px] leading-relaxed font-medium line-clamp-4">
@@ -188,7 +188,7 @@ export default function TestimonialSection() {
                       <div className="flex items-center gap-4 pt-4">
                         <div className="w-12 h-12 rounded-full overflow-hidden shadow-inner relative">
                           <CustomImage
-                            src={testimonial.image}
+                            src={testimonial.image || "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg"}
                             alt={testimonial.name}
                             fill
                             className="object-cover"
@@ -212,10 +212,10 @@ export default function TestimonialSection() {
 
           {/* Right Image Column */}
           <div className="hidden lg:block w-1/2 relative h-full">
-            <div className="absolute inset-5 rounded-[3rem] overflow-hidden group">
+            <div className="absolute inset-5 rounded-2xl overflow-hidden group">
               <div className="absolute inset-0 bg-secondary/5 z-10 transition-colors duration-500 group-hover:bg-transparent"></div>
               <Image
-                src={data.mainImage}
+                src={data.mainImage || "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg"}
                 alt="Happy customer using service"
                 fill
                 priority

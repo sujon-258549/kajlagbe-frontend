@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -102,9 +103,16 @@ const ServicesHeaderModal: React.FC<ServicesHeaderModalProps> = ({
                 name="sectionBackgroundImage"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Section Background Image URL</FormLabel>
+                    <FormLabel>Section Background Image</FormLabel>
                     <FormControl>
-                      <FormInput placeholder="https://..." {...field} />
+                      <MediaLibraryImageUploader
+                        value={field.value}
+                        onChange={(url, id) => {
+                          field.onChange(url);
+                          if (id) form.setValue("sectionBackgroundImageId", id);
+                        }}
+                        className="w-full"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

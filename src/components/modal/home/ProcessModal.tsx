@@ -82,7 +82,7 @@ const ProcessModal: React.FC<ProcessModalProps> = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="title"
               render={({ field }) => (
                 <FormItem>
@@ -95,7 +95,7 @@ const ProcessModal: React.FC<ProcessModalProps> = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="description"
               render={({ field }) => (
                 <FormItem className="md:col-span-2">
@@ -130,7 +130,7 @@ const ProcessModal: React.FC<ProcessModalProps> = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <FormField
-                    control={form.control}
+                    control={form.control as any}
                     name={`steps.${index}.number`}
                     render={({ field }) => (
                       <FormItem>
@@ -143,7 +143,7 @@ const ProcessModal: React.FC<ProcessModalProps> = ({
                     )}
                   />
                   <FormField
-                    control={form.control}
+                    control={form.control as any}
                     name={`steps.${index}.title`}
                     render={({ field }) => (
                       <FormItem>
@@ -156,7 +156,7 @@ const ProcessModal: React.FC<ProcessModalProps> = ({
                     )}
                   />
                   <FormField
-                    control={form.control}
+                    control={form.control as any}
                     name={`steps.${index}.iconName`}
                     render={({ field }) => (
                       <FormItem>
@@ -172,7 +172,7 @@ const ProcessModal: React.FC<ProcessModalProps> = ({
                     )}
                   />
                   <FormField
-                    control={form.control}
+                    control={form.control as any}
                     name={`steps.${index}.color`}
                     render={({ field }) => (
                       <FormItem>
@@ -188,7 +188,7 @@ const ProcessModal: React.FC<ProcessModalProps> = ({
                     )}
                   />
                   <FormField
-                    control={form.control}
+                    control={form.control as any}
                     name={`steps.${index}.description`}
                     render={({ field }) => (
                       <FormItem className="md:col-span-2">

@@ -7,6 +7,7 @@ import { Plus, Trash2 } from "lucide-react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import FormTextarea from "@/components/common/FormTextarea";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -71,19 +72,20 @@ const HomeBenefitsModal: React.FC<HomeBenefitsModalProps> = ({
         </h4>
         <Button
           type="button"
-          variant="outline"
+          variant="dashed"
           size="sm"
+          className="flex gap-2"
           onClick={() =>
             array.append({ title: "", desc: "", iconName: "fa-solid fa-star" })
           }
         >
-          <Plus className="w-4 h-4 mr-1" /> Add
+          <Plus className="w-4 h-4" /> Add
         </Button>
       </div>
       {array.fields.map((field, index) => (
         <div
           key={field.id}
-          className="p-3 border rounded-lg bg-slate-50 space-y-2 relative"
+          className="p-3 border border-gray-300 rounded-md bg-slate-50 space-y-2 relative"
         >
           <Button
             type="button"
@@ -95,7 +97,7 @@ const HomeBenefitsModal: React.FC<HomeBenefitsModalProps> = ({
             <Trash2 className="w-3.5 h-3.5" />
           </Button>
           <FormField
-            control={form.control}
+            control={form.control as any}
             name={`${name}.${index}.title`}
             render={({ field }) => (
               <FormItem>
@@ -108,7 +110,7 @@ const HomeBenefitsModal: React.FC<HomeBenefitsModalProps> = ({
             )}
           />
           <FormField
-            control={form.control}
+            control={form.control as any}
             name={`${name}.${index}.iconName`}
             render={({ field }) => (
               <FormItem>
@@ -121,7 +123,7 @@ const HomeBenefitsModal: React.FC<HomeBenefitsModalProps> = ({
             )}
           />
           <FormField
-            control={form.control}
+            control={form.control as any}
             name={`${name}.${index}.desc`}
             render={({ field }) => (
               <FormItem>
@@ -144,13 +146,13 @@ const HomeBenefitsModal: React.FC<HomeBenefitsModalProps> = ({
       onClose={onClose}
       title="Edit Benefits"
       description="Update the benefits section layout and content."
-      maxWidth="5xl"
+      maxWidth="4xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="badge"
               render={({ field }) => (
                 <FormItem>
@@ -163,20 +165,27 @@ const HomeBenefitsModal: React.FC<HomeBenefitsModalProps> = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="centerImage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Center Image URL</FormLabel>
+                  <FormLabel>Center Image</FormLabel>
                   <FormControl>
-                    <FormInput {...field} />
+                    <MediaLibraryImageUploader
+                      value={field.value}
+                      onChange={(url, id) => {
+                        field.onChange(url);
+                        if (id) form.setValue("centerImageId", id);
+                      }}
+                      className="w-full"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="title"
               render={({ field }) => (
                 <FormItem className="md:col-span-2">

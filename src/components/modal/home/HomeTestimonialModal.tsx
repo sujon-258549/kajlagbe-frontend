@@ -7,7 +7,7 @@ import { Plus, Trash2 } from "lucide-react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import FormTextarea from "@/components/common/FormTextarea";
-import ImageUpload from "@/components/common/ImageUpload";
+import MediaLibraryImageUploader from "@/components/common/MediaLibraryImageUploader";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -64,13 +64,13 @@ const HomeTestimonialModal: React.FC<HomeTestimonialModalProps> = ({
       onClose={onClose}
       title="Edit testimonials"
       description="Manage customer feedback and section branding."
-      maxWidth="5xl"
+      maxWidth="4xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border p-4 rounded-xl bg-slate-50/50">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border border-gray-300 p-4 rounded-md bg-slate-50/50">
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="badge"
               render={({ field }) => (
                 <FormItem>
@@ -109,16 +109,19 @@ const HomeTestimonialModal: React.FC<HomeTestimonialModalProps> = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="mainImage"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Side Image</FormLabel>
                   <FormControl>
-                    <ImageUpload
+                    <MediaLibraryImageUploader
                       value={field.value}
-                      onValueChange={field.onChange}
-                      className="aspect-square w-32"
+                      onChange={(url, id) => {
+                        field.onChange(url);
+                        if (id) form.setValue("mainImageId", id);
+                      }}
+                      className="w-32"
                     />
                   </FormControl>
                   <FormMessage />
@@ -131,7 +134,7 @@ const HomeTestimonialModal: React.FC<HomeTestimonialModalProps> = ({
             {fields.map((field, index) => (
               <div
                 key={field.id}
-                className="p-4 border rounded-xl bg-white relative group grid grid-cols-1 md:grid-cols-2 gap-4"
+                className="p-4 border border-gray-300 rounded-md bg-white relative group grid grid-cols-1 md:grid-cols-2 gap-4"
               >
                 <div className="col-span-full flex justify-between items-center mb-2">
                   <h4 className="font-bold text-secondary">
@@ -149,7 +152,7 @@ const HomeTestimonialModal: React.FC<HomeTestimonialModalProps> = ({
                 </div>
 
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name={`testimonials.${index}.name`}
                   render={({ field }) => (
                     <FormItem>
@@ -162,7 +165,7 @@ const HomeTestimonialModal: React.FC<HomeTestimonialModalProps> = ({
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name={`testimonials.${index}.role`}
                   render={({ field }) => (
                     <FormItem>
@@ -175,16 +178,19 @@ const HomeTestimonialModal: React.FC<HomeTestimonialModalProps> = ({
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name={`testimonials.${index}.image`}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>User Image</FormLabel>
                       <FormControl>
-                        <ImageUpload
+                        <MediaLibraryImageUploader
                           value={field.value}
-                          onValueChange={field.onChange}
-                          className="aspect-square w-24"
+                          onChange={(url, id) => {
+                            field.onChange(url);
+                            if (id) form.setValue(`testimonials.${index}.imageId` as any, id);
+                          }}
+                          className="w-24"
                         />
                       </FormControl>
                       <FormMessage />
@@ -192,7 +198,7 @@ const HomeTestimonialModal: React.FC<HomeTestimonialModalProps> = ({
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name={`testimonials.${index}.rating`}
                   render={({ field }) => (
                     <FormItem>
@@ -213,7 +219,7 @@ const HomeTestimonialModal: React.FC<HomeTestimonialModalProps> = ({
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name={`testimonials.${index}.content`}
                   render={({ field }) => (
                     <FormItem className="col-span-full">
@@ -230,8 +236,8 @@ const HomeTestimonialModal: React.FC<HomeTestimonialModalProps> = ({
 
             <Button
               type="button"
-              variant="outline"
-              className="w-full border-dashed border-2 py-6 rounded-xl flex gap-2"
+              variant="dashed"
+              className="w-full flex gap-2"
               onClick={() =>
                 append({
                   name: "",

@@ -9,6 +9,7 @@ export const homeBlogItemSchema = z.object({
   author: z.string().min(1, "Author is required"),
   category: z.string().min(1, "Category is required"),
   slug: z.string().min(1, "Slug is required"),
+  content: z.string().optional(),
 });
 
 export const homeBlogHeaderSchema = z.object({

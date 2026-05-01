@@ -11,6 +11,7 @@ export const servicesHeaderSchema = z.object({
   sectionTitle: z.string().min(1, "Section Title is required"),
   sectionDescription: z.string().min(1, "Section Description is required"),
   sectionBackgroundImage: z.string().optional(),
+  sectionBackgroundImageId: z.string().optional(),
 });
 
 export const servicesSchema = servicesHeaderSchema.extend({

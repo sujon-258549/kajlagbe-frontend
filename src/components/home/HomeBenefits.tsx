@@ -91,7 +91,7 @@ export default function HomeBenefits() {
   };
 
   return (
-    <section className="py-6 md:py-8 lg:py-12 bg-[#fcfdfa] overflow-hidden group/section relative">
+    <section className="pt-6 pb-12 md:pt-8 md:pb-16 lg:pt-12 lg:pb-24 bg-[#fcfdfa] overflow-hidden group/section relative">
       <div className="main-container mx-auto px-6 relative z-10">
         <AdminOnly>
           <button
@@ -122,7 +122,7 @@ export default function HomeBenefits() {
                 key={idx}
                 className="flex gap-5 lg:text-right items-start lg:flex-row-reverse group"
               >
-                <div className="shrink-0 w-14 h-14 bg-secondary rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <div className="shrink-0 w-14 h-14 bg-secondary/10 hover:bg-secondary/20 rounded-full flex items-center justify-center hover:text-white shadow-lg text-secondary  group-hover:scale-110 transition-transform duration-300">
                   <i className={`${benefit.iconName} text-xl`} />
                 </div>
                 <div className="space-y-2">
@@ -141,7 +141,7 @@ export default function HomeBenefits() {
           <div className="w-full lg:w-1/3 relative h-[200px] md:h-[350px] order-1 lg:order-2 flex items-center justify-center">
             <div className="relative w-full h-full transform scale-100 md:scale-110">
               <Image
-                src={data.centerImage}
+                src={data.centerImage || "/placeholder.png"}
                 alt="Organic Food Packets"
                 fill
                 className="object-contain"
@@ -154,7 +154,7 @@ export default function HomeBenefits() {
           <div className="w-full lg:w-1/3 space-y-12 order-3">
             {data.rightBenefits.map((benefit, idx) => (
               <div key={idx} className="flex gap-5 items-start group">
-                <div className="shrink-0 w-14 h-14 bg-secondary rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <div className="shrink-0 w-14 h-14 bg-secondary/10 hover:bg-secondary/20 rounded-full flex items-center justify-center hover:text-white shadow-lg text-secondary  group-hover:scale-110 transition-transform duration-300">
                   <i className={`${benefit.iconName} text-xl`} />
                 </div>
                 <div className="space-y-2">
