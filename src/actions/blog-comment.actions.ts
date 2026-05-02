@@ -20,9 +20,15 @@ export async function createBlogComment(data: any) {
   }
 }
 
-export async function getCommentsByBlogId(blogId: string) {
+export async function getCommentsByBlogSlug(
+  slug: string,
+  page: number = 1,
+  limit: number = 10,
+) {
   try {
-    const res = await fetchWithAuth(`/blog-comment/blog/${blogId}`);
+    const res = await fetchWithAuth(
+      `/blog-comment/blog/${slug}?page=${page}&limit=${limit}`,
+    );
     return res.json();
   } catch (error) {
     console.error("Error fetching blog comments:", error);

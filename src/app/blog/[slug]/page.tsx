@@ -2,10 +2,10 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Facebook, Twitter, Linkedin } from "lucide-react";
 import { getAllBlogs, getBlogBySlug } from "@/actions/blog.actions";
-import { getCommentsByBlogId } from "@/actions/blog-comment.actions";
-import BlogHero from "@/components/blog/BlogHero";
+import { getCommentsByBlogSlug } from "@/actions/blog-comment.actions";
 import CommentForm from "@/components/blog/CommentForm";
 import CommentList from "@/components/blog/CommentList";
+import BlogShare from "@/components/blog/BlogShare";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -32,25 +32,25 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const post = res.data;
   
   // Fetch comments for this blog
-  const commentsRes = await getCommentsByBlogId(post.id);
+  const commentsRes = await getCommentsByBlogSlug(slug);
+
   const comments = commentsRes.success ? commentsRes.data : [];
+   const commentsMeta = commentsRes.meta || {}
+
+  
 
   const postImage = post.cover?.url || post.image;
-  const postDate = post.publishedAt || post.createdAt;
-  const formattedDate = new Date(postDate).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+
+
 
   return (
     <main className="min-h-screen bg-white">
-      <BlogHero
+      {/* <BlogHero
         title={post.title}
         date={formattedDate}
         category={post.category}
         isDetails
-      />
+      /> */}
 
       <article className="py-6 md:py-8 lg:py-12">
         <div className="main-container mx-auto px-6">
@@ -85,24 +85,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 ))}
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-secondary hover:bg-[#86b86b] hover:text-white transition-all cursor-pointer">
-                  <Facebook className="w-4 h-4" />
-                </div>
-                <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-secondary hover:bg-[#86b86b] hover:text-white transition-all cursor-pointer">
-                  <Twitter className="w-4 h-4" />
-                </div>
-                <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-secondary hover:bg-[#86b86b] hover:text-white transition-all cursor-pointer">
-                  <Linkedin className="w-4 h-4" />
-                </div>
-              </div>
+              <BlogShare title={post.title} />
             </div>
 
             {/* Comments List Section */}
-            <CommentList comments={comments} />
 
             {/* Comment Form Section */}
             <CommentForm blogId={post.id} blogSlug={slug} />
+            <CommentList 
+              initialComments={comments} 
+              meta={commentsMeta as any} 
+              blogSlug={slug} 
+            />
           </div>
         </div>
       </article>

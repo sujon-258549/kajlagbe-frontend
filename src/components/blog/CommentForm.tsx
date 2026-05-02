@@ -7,7 +7,7 @@ import { z } from "zod";
 import { toast } from "react-toastify";
 import { Send } from "lucide-react";
 
-import Heading3 from "../common/Headings/Heading3";
+import Heading4 from "../common/Headings/Heading4";
 import FormInput from "@/components/common/FormInput";
 import FormTextarea from "@/components/common/FormTextarea";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,8 @@ const commentSchema = z.object({
     .min(3, "Comment must be at least 3 characters")
     .max(1000, "Comment is too long"),
   name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
+  email: z.string().email("Please enter a valid email address").optional().or(z.literal("")),
+  phone: z.string().min(11, "Please enter a valid mobile number").max(15, "Mobile number is too long"),
   saveInfo: z.boolean().optional(),
 });
 
@@ -48,6 +49,7 @@ export default function CommentForm({ blogId, blogSlug }: CommentFormProps) {
       comment: "",
       name: "",
       email: "",
+      phone: "",
       saveInfo: false,
     },
   });
@@ -56,11 +58,13 @@ export default function CommentForm({ blogId, blogSlug }: CommentFormProps) {
   useEffect(() => {
     const savedName = localStorage.getItem("comment_name");
     const savedEmail = localStorage.getItem("comment_email");
-    if (savedName || savedEmail) {
+    const savedPhone = localStorage.getItem("comment_phone");
+    if (savedName || savedEmail || savedPhone) {
       form.reset({
         ...form.getValues(),
         name: savedName || "",
         email: savedEmail || "",
+        phone: savedPhone || "",
         saveInfo: true,
       });
     }
@@ -81,10 +85,12 @@ export default function CommentForm({ blogId, blogSlug }: CommentFormProps) {
         // Save info to localStorage if requested
         if (data.saveInfo) {
           localStorage.setItem("comment_name", data.name);
-          localStorage.setItem("comment_email", data.email);
+          localStorage.setItem("comment_email", data.email || "");
+          localStorage.setItem("comment_phone", data.phone);
         } else {
           localStorage.removeItem("comment_name");
           localStorage.removeItem("comment_email");
+          localStorage.removeItem("comment_phone");
         }
 
         form.reset({
@@ -106,9 +112,9 @@ export default function CommentForm({ blogId, blogSlug }: CommentFormProps) {
     <section className="mt-4 border-t border-slate-100">
       <div className="rounded-lg bg-white p-6 md:p-8 bg-white">
         <div className="mb-8 space-y-2">
-          <Heading3 className="font-bold text-secondary">Leave a Reply</Heading3>
+          <Heading4 className="font-bold text-secondary">Leave a Reply</Heading4>
           <p className="text-slate-500 text-sm md:text-base">
-            Your email address will not be published. Required fields are marked
+            Your personal information will not be published. Required fields are marked
             <span className="text-red-500"> *</span>
           </p>
         </div>
@@ -116,13 +122,13 @@ export default function CommentForm({ blogId, blogSlug }: CommentFormProps) {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6"
+            className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6"
           >
             <FormField
               control={form.control}
               name="comment"
               render={({ field, fieldState }) => (
-                <FormItem className="md:col-span-2">
+                <FormItem className="md:col-span-3">
                   <FormLabel className="text-xs font-bold uppercase tracking-wider text-secondary">
                     Comment <span className="text-red-500">*</span>
                   </FormLabel>
@@ -168,7 +174,7 @@ export default function CommentForm({ blogId, blogSlug }: CommentFormProps) {
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel className="text-xs font-bold uppercase tracking-wider text-secondary">
-                    Email <span className="text-red-500">*</span>
+                    Email
                   </FormLabel>
                   <FormControl>
                     <FormInput
@@ -187,9 +193,31 @@ export default function CommentForm({ blogId, blogSlug }: CommentFormProps) {
 
             <FormField
               control={form.control}
+              name="phone"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel className="text-xs font-bold uppercase tracking-wider text-secondary">
+                    Mobile Number <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <FormInput
+                      size="md"
+                      placeholder="01XXXXXXXXX"
+                      error={fieldState.error}
+                      className="bg-slate-50/60"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="saveInfo"
               render={({ field }) => (
-                <FormItem className="md:col-span-2 flex items-center gap-3 space-y-0">
+                <FormItem className="md:col-span-3 flex items-center gap-3 space-y-0">
                   <FormControl>
                     <input
                       id="save-info"
@@ -203,19 +231,19 @@ export default function CommentForm({ blogId, blogSlug }: CommentFormProps) {
                     htmlFor="save-info"
                     className="text-sm text-slate-600 font-medium cursor-pointer"
                   >
-                    Save my name and email in this browser for the next time I
+                    Save my info in this browser for the next time I
                     comment.
                   </FormLabel>
                 </FormItem>
               )}
             />
 
-            <div className="md:col-span-2 pt-2">
+            <div className="md:col-span-3 pt-2">
               <Button
                 type="submit"
                 size="lg"
                 disabled={isLoading}
-                className="px-10 uppercase tracking-wider"
+                className="px-10"
               >
                 {isLoading ? "Posting..." : "Post Comment"}
                 {!isLoading && <Send className="w-4 h-4" />}
