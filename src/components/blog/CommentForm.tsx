@@ -103,8 +103,8 @@ export default function CommentForm({ blogId, blogSlug }: CommentFormProps) {
   };
 
   return (
-    <section className="mt-16 pt-12 border-t border-slate-100">
-      <div className="rounded-lg border border-gray-200 bg-white p-6 md:p-8 bg-white">
+    <section className="mt-4 border-t border-slate-100">
+      <div className="rounded-lg bg-white p-6 md:p-8 bg-white">
         <div className="mb-8 space-y-2">
           <Heading3 className="font-bold text-secondary">Leave a Reply</Heading3>
           <p className="text-slate-500 text-sm md:text-base">

@@ -52,10 +52,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         isDetails
       />
 
-      <article className="py-12 md:py-20 lg:py-12">
+      <article className="py-6 md:py-8 lg:py-12">
         <div className="main-container mx-auto px-6">
-          <div className="max-w-4xl mx-auto">
-            <div className="relative aspect-video w-full rounded-xl overflow-hidden mb-12 ">
+          <div className="max-w-5xl mx-auto">
+            <div className="relative aspect-[2/1] md:aspect-[21/9] w-full rounded-xl overflow-hidden mb-10 ">
               <Image
                 src={postImage || "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&q=80&w=800"}
                 alt={post.title}
@@ -72,7 +72,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             />
 
             {/* Tags and Social Share */}
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8 mt-16 pt-8 border-t border-slate-100">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8 mt-5 md:mt-8 pt-4 border-t border-slate-100">
               <div className="flex flex-wrap items-center gap-4">
                 <span className="text-sm font-bold text-secondary">Tags:</span>
                 {Array.isArray(post.tags) && post.tags.map((tag: string) => (
