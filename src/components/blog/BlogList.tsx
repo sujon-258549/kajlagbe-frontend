@@ -86,7 +86,6 @@ export default function BlogList() {
         ? await updateBlog(editingPost.id, payload)
         : await createBlog(payload);
 
-        console.log(' blog res-------------------', res)
       if (res.success) {
         toast.success(
           editingPost
