@@ -45,6 +45,48 @@ export async function loginAction(credentials: any) {
   }
 }
 
+export async function registerAction(payload: any) {
+  try {
+    const response = await fetch(`${getBaseUrl()}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return { success: false, message: result.message || "Registration failed" };
+    }
+
+    const { accessToken, refreshToken, user } = result.data;
+    const cookieStore = await cookies();
+
+    // Set Access Token (1 hour)
+    cookieStore.set("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60,
+    });
+
+    // Set Refresh Token (30 days)
+    if (refreshToken) {
+      cookieStore.set("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 30 * 24 * 60 * 60,
+      });
+    }
+
+    return { success: true, user };
+  } catch (error) {
+    console.error("Registration Error:", error);
+    return { success: false, message: "Something went wrong" };
+  }
+}
+
 export async function logoutAction() {
   const cookieStore = await cookies();
   cookieStore.delete("accessToken");

@@ -19,7 +19,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import FormInput from "@/components/common/FormInput";
 import ImageUpload from "@/components/common/ImageUpload";
-import { Textarea } from "@/components/ui/textarea"; // Assuming you have this or standard textarea
 import { cn } from "@/lib/utils";
 import {
   Select,
@@ -28,6 +27,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { uploadToCloudinary } from "@/lib/imageUpload";
+import { registerAction } from "@/actions/auth.actions";
+import { useAuth } from "@/context/AuthContext";
+import FormTextarea from "@/components/common/FormTextarea";
+import { servicesData } from "@/data/servicesData";
 
 // Schema imported from @/schemas/register.schema
 
@@ -41,6 +47,9 @@ const steps = [
 export default function Register() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { refreshUser } = useAuth();
+  const router = useRouter();
 
   const {
     register,
@@ -60,7 +69,17 @@ export default function Register() {
     let fieldsToValidate: (keyof RegisterFormData)[] = [];
 
     if (currentStep === 1) {
-      fieldsToValidate = ["name", "gender", "age", "dob", "bloodGroup", "nid"];
+      fieldsToValidate = [
+        "name",
+        "gender",
+        "age",
+        "dob",
+        "bloodGroup",
+        "nid",
+        "photo",
+        "nidPhotoFront",
+        "nidPhotoBack",
+      ];
     } else if (currentStep === 2) {
       fieldsToValidate = ["email", "password", "confirmPassword", "mobile"];
     } else if (currentStep === 3) {
@@ -79,30 +98,87 @@ export default function Register() {
 
   const onSubmit = async (data: RegisterFormData) => {
     setIsSubmitting(true);
-
-    // Transform data to match backend expectation
-    const payload = {
-      ...data,
-      categories: data.categories.split(",").map((c) => c.trim()), // Split string to array
-      nidPhoto: [data.nidPhotoFront || "", data.nidPhotoBack || ""].filter(
-        Boolean,
-      ),
-    };
-
-    // Remove individual photo fields if cleaner payload needed
-    // delete payload.nidPhotoFront;
-    // delete payload.nidPhotoBack;
-
-    console.log("Submitting Payload:", payload);
+    const loadingToast = toast.loading("Creating your account...");
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      alert("Registration Successful! (Check console for payload)");
-      // Redirect or show success
-    } catch (error) {
-      console.error(error);
-      alert("Registration failed");
+      // 1. Upload Images to Cloudinary
+      let photoUrl = "";
+      let nidFrontUrl = "";
+      let nidBackUrl = "";
+
+      if (data.photo && data.photo[0]) {
+        photoUrl = await uploadToCloudinary(data.photo[0]);
+      }
+      if (data.nidPhotoFront && data.nidPhotoFront[0]) {
+        nidFrontUrl = await uploadToCloudinary(data.nidPhotoFront[0]);
+      }
+      if (data.nidPhotoBack && data.nidPhotoBack[0]) {
+        nidBackUrl = await uploadToCloudinary(data.nidPhotoBack[0]);
+      }
+
+      // 2. Format Payload for Backend
+      const payload = {
+        user: {
+          email: data.email,
+          password: data.password,
+          mobile: data.mobile,
+          role: data.role,
+        },
+        profile: {
+          name: data.name,
+          gender: data.gender,
+          age: data.age,
+          dob: data.dob,
+          bloodGroup: data.bloodGroup,
+          nid: data.nid,
+          profilePhoto: photoUrl,
+          nidPhotoUrls: [nidFrontUrl, nidBackUrl].filter(Boolean),
+        },
+        address: {
+          division: data.division,
+          district: data.district,
+          upazila: data.upazila,
+          address: data.address,
+        },
+        workInfo: {
+          categories: data.categories.split(",").map((c) => c.trim()),
+          experience: data.experience,
+          workType: data.workType,
+          availableTime: data.availableTime,
+        },
+      };
+
+      console.log("Submitting Payload:", payload);
+
+      // 3. Call Registration Action
+      const result = await registerAction(payload);
+
+      if (result.success) {
+        toast.update(loadingToast, {
+          render: "Registration successful! Welcome to KajLagbe.",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
+        
+        await refreshUser();
+        router.push("/");
+      } else {
+        toast.update(loadingToast, {
+          render: result.message || "Registration failed",
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      }
+    } catch (error: any) {
+      console.error("Registration Error:", error);
+      toast.update(loadingToast, {
+        render: error.message || "An unexpected error occurred",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -209,15 +285,31 @@ export default function Register() {
                         <label className="text-sm font-medium text-slate-700">
                           Gender
                         </label>
-                        <select
-                          {...register("gender")}
-                          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          <option value="">Select</option>
-                          <option value="MALE">Male</option>
-                          <option value="FEMALE">Female</option>
-                          <option value="OTHER">Other</option>
-                        </select>
+                        <Controller
+                          control={control}
+                          name="gender"
+                          render={({ field }) => (
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <SelectTrigger
+                                className={cn(
+                                  "h-9 py-1",
+                                  errors.gender &&
+                                    "border-red-500 focus:ring-red-500",
+                                )}
+                              >
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="MALE">Male</SelectItem>
+                                <SelectItem value="FEMALE">Female</SelectItem>
+                                <SelectItem value="OTHER">Other</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
                         {errors.gender && (
                           <p className="text-xs text-red-500">
                             {errors.gender.message}
@@ -248,20 +340,40 @@ export default function Register() {
                         <label className="text-sm font-medium text-slate-700">
                           Blood Group
                         </label>
-                        <select
-                          {...register("bloodGroup")}
-                          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          <option value="">Select</option>
-                          <option value="A_POSITIVE">A+</option>
-                          <option value="A_NEGATIVE">A-</option>
-                          <option value="B_POSITIVE">B+</option>
-                          <option value="B_NEGATIVE">B-</option>
-                          <option value="AB_POSITIVE">AB+</option>
-                          <option value="AB_NEGATIVE">AB-</option>
-                          <option value="O_POSITIVE">O+</option>
-                          <option value="O_NEGATIVE">O-</option>
-                        </select>
+                        <Controller
+                          control={control}
+                          name="bloodGroup"
+                          render={({ field }) => (
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <SelectTrigger
+                                className={cn(
+                                  "h-9 py-1",
+                                  errors.bloodGroup &&
+                                    "border-red-500 focus:ring-red-500",
+                                )}
+                              >
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="A_POSITIVE">A+</SelectItem>
+                                <SelectItem value="A_NEGATIVE">A-</SelectItem>
+                                <SelectItem value="B_POSITIVE">B+</SelectItem>
+                                <SelectItem value="B_NEGATIVE">B-</SelectItem>
+                                <SelectItem value="AB_POSITIVE">
+                                  AB+
+                                </SelectItem>
+                                <SelectItem value="AB_NEGATIVE">
+                                  AB-
+                                </SelectItem>
+                                <SelectItem value="O_POSITIVE">O+</SelectItem>
+                                <SelectItem value="O_NEGATIVE">O-</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
                         {errors.bloodGroup && (
                           <p className="text-xs text-red-500">
                             {errors.bloodGroup.message}
@@ -364,22 +476,12 @@ export default function Register() {
                       error={errors.upazila}
                     />
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-slate-700">
-                        Detailed Address
-                      </label>
-                      <Textarea
+                      <FormTextarea
+                        label="Detailed Address"
                         {...register("address")}
                         placeholder="Village, House No, etc."
-                        className={cn(
-                          errors.address &&
-                            "border-red-500 focus-visible:ring-red-500",
-                        )}
+                        error={errors.address}
                       />
-                      {errors.address && (
-                        <p className="text-xs text-red-500">
-                          {errors.address.message}
-                        </p>
-                      )}
                     </div>
                   </>
                 )}
@@ -409,15 +511,14 @@ export default function Register() {
                               <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="IT">IT</SelectItem>
-                              <SelectItem value="Design">Design</SelectItem>
-                              <SelectItem value="Plumbing">Plumbing</SelectItem>
-                              <SelectItem value="Electrical">
-                                Electrical
-                              </SelectItem>
-                              <SelectItem value="Cleaning">Cleaning</SelectItem>
-                              <SelectItem value="Driving">Driving</SelectItem>
-                              <SelectItem value="Cooking">Cooking</SelectItem>
+                              {servicesData.map((category) => (
+                                <SelectItem
+                                  key={category.slug}
+                                  value={category.title}
+                                >
+                                  {category.title}
+                                </SelectItem>
+                              ))}
                               <SelectItem value="Other">Other</SelectItem>
                             </SelectContent>
                           </Select>
@@ -443,14 +544,37 @@ export default function Register() {
                         <label className="text-sm font-medium text-slate-700">
                           Work Type
                         </label>
-                        <select
-                          {...register("workType")}
-                          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          <option value="Full-time">Full-time</option>
-                          <option value="Part-time">Part-time</option>
-                          <option value="Contract">Contract</option>
-                        </select>
+                        <Controller
+                          control={control}
+                          name="workType"
+                          render={({ field }) => (
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <SelectTrigger
+                                className={cn(
+                                  "h-9 py-1",
+                                  errors.workType &&
+                                    "border-red-500 focus:ring-red-500",
+                                )}
+                              >
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Full-time">
+                                  Full-time
+                                </SelectItem>
+                                <SelectItem value="Part-time">
+                                  Part-time
+                                </SelectItem>
+                                <SelectItem value="Contract">
+                                  Contract
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
                         {errors.workType && (
                           <p className="text-xs text-red-500">
                             {errors.workType.message}
