@@ -282,7 +282,7 @@ export default function Register() {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-700">
+                        <label className="text-sm font-medium text-slate-700 leading-none mb-3 inline-block">
                           Gender
                         </label>
                         <Controller
@@ -337,7 +337,7 @@ export default function Register() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-700">
+                        <label className="text-sm font-medium text-slate-700 leading-none mb-3 inline-block">
                           Blood Group
                         </label>
                         <Controller
@@ -490,7 +490,7 @@ export default function Register() {
                 {currentStep === 4 && (
                   <>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-slate-700">
+                      <label className="text-sm font-medium text-slate-700 leading-none mb-3 inline-block">
                         Service Categories
                       </label>
                       <Controller
@@ -541,7 +541,7 @@ export default function Register() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-700">
+                        <label className="text-sm font-medium text-slate-700 leading-none mb-3 inline-block">
                           Work Type
                         </label>
                         <Controller
