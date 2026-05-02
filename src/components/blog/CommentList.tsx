@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { format } from "date-fns";
 import Heading3 from "../common/Headings/Heading3";
 
 interface Comment {
@@ -42,7 +41,11 @@ export default function CommentList({ comments }: CommentListProps) {
               <div className="flex items-center justify-between">
                 <h4 className="font-bold text-secondary text-base md:text-lg">{item.name}</h4>
                 <span className="text-xs md:text-sm text-slate-400">
-                  {format(new Date(item.createdAt), "MMM dd, yyyy")}
+                  {new Date(item.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
                 </span>
               </div>
               <p className="text-slate-600 leading-relaxed text-sm md:text-base whitespace-pre-line">

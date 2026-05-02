@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -20,6 +20,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import { createBlogComment } from "@/actions/blog-comment.actions";
+
 const commentSchema = z.object({
   comment: z
     .string()
@@ -32,7 +34,12 @@ const commentSchema = z.object({
 
 type CommentFormData = z.infer<typeof commentSchema>;
 
-export default function CommentForm() {
+interface CommentFormProps {
+  blogId: string;
+  blogSlug: string;
+}
+
+export default function CommentForm({ blogId, blogSlug }: CommentFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<CommentFormData>({
@@ -45,13 +52,48 @@ export default function CommentForm() {
     },
   });
 
+  // Load saved info from localStorage
+  useEffect(() => {
+    const savedName = localStorage.getItem("comment_name");
+    const savedEmail = localStorage.getItem("comment_email");
+    if (savedName || savedEmail) {
+      form.reset({
+        ...form.getValues(),
+        name: savedName || "",
+        email: savedEmail || "",
+        saveInfo: true,
+      });
+    }
+  }, [form]);
+
   const onSubmit = async (data: CommentFormData) => {
     setIsLoading(true);
     try {
-      // TODO: integrate with comment API once available
-      await new Promise((r) => setTimeout(r, 600));
-      toast.success("Thanks! Your comment has been submitted for review.");
-      form.reset();
+      const res = await createBlogComment({
+        ...data,
+        blogId,
+        blogSlug,
+      });
+
+      if (res.success) {
+        toast.success("Thanks! Your comment has been submitted.");
+        
+        // Save info to localStorage if requested
+        if (data.saveInfo) {
+          localStorage.setItem("comment_name", data.name);
+          localStorage.setItem("comment_email", data.email);
+        } else {
+          localStorage.removeItem("comment_name");
+          localStorage.removeItem("comment_email");
+        }
+
+        form.reset({
+          ...data,
+          comment: "", // Only clear the comment
+        });
+      } else {
+        toast.error(res.message || "Failed to post comment.");
+      }
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong. Please try again.");
