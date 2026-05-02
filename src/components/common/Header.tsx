@@ -206,8 +206,8 @@ export default function Header() {
                 <UserMenu />
               ) : (
                 <Link href="/login">
-                  <Button  className="px-3 sm:px-4 text-[13px] sm:text-sm">
-                    Login
+                  <Button className="px-3 sm:px-4 text-[13px] sm:text-sm flex items-center gap-2">
+                    Login <LogInIcon className="w-4 h-4" />
                   </Button>
                 </Link>
               )
@@ -343,7 +343,9 @@ export default function Header() {
                       </Button>
                     ) : (
                       <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                        <Button variant="outline" className="w-full border-secondary text-secondary font-bold">Login</Button>
+                        <Button variant="outline" className="w-full border-secondary text-secondary font-bold flex items-center justify-center gap-2">
+                          <LogInIcon className="w-4 h-4" /> Login
+                        </Button>
                       </Link>
                     )}
                   </div>
