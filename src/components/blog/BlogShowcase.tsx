@@ -136,12 +136,12 @@ export default function BlogShowcase() {
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="h-[280px] sm:h-[320px] md:h-[400px] rounded-3xl bg-slate-100 animate-pulse"
+                className="h-[280px] sm:h-[320px] md:h-[400px] rounded-2xl bg-slate-100 animate-pulse"
               />
             ))}
           </div>
         ) : items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 md:py-24 px-4 rounded-3xl border border-dashed border-slate-200 bg-slate-50/40 text-center">
+          <div className="flex flex-col items-center justify-center py-16 md:py-24 px-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/40 text-center">
             <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-secondary/10 flex items-center justify-center mb-5">
               <ImageIcon className="w-7 h-7 md:w-8 md:h-8 text-secondary" />
             </div>
@@ -165,7 +165,7 @@ export default function BlogShowcase() {
             {currentItems.map((item) => (
               <div
                 key={item.id}
-                className="group relative h-[280px] sm:h-[340px] md:h-[400px] rounded-3xl overflow-hidden shadow-lg"
+                className="group relative h-[280px] sm:h-[340px] md:h-[400px] rounded-2xl overflow-hidden shadow-lg"
               >
                 <Image
                   src={

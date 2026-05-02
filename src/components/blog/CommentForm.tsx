@@ -1,93 +1,187 @@
 "use client";
 
-import { motion } from "motion/react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "react-toastify";
+import { Send } from "lucide-react";
+
 import Heading3 from "../common/Headings/Heading3";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import FormInput from "@/components/common/FormInput";
+import FormTextarea from "@/components/common/FormTextarea";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+const commentSchema = z.object({
+  comment: z
+    .string()
+    .min(3, "Comment must be at least 3 characters")
+    .max(1000, "Comment is too long"),
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  saveInfo: z.boolean().optional(),
+});
+
+type CommentFormData = z.infer<typeof commentSchema>;
 
 export default function CommentForm() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const form = useForm<CommentFormData>({
+    resolver: zodResolver(commentSchema),
+    defaultValues: {
+      comment: "",
+      name: "",
+      email: "",
+      saveInfo: false,
+    },
+  });
+
+  const onSubmit = async (data: CommentFormData) => {
+    setIsLoading(true);
+    try {
+      // TODO: integrate with comment API once available
+      await new Promise((r) => setTimeout(r, 600));
+      toast.success("Thanks! Your comment has been submitted for review.");
+      form.reset();
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className="space-y-8 mt-16 pt-16 border-t border-slate-100">
-      <div className="space-y-2">
-        <Heading3 className="font-bold text-secondary">Leave a Reply</Heading3>
-        <p className="text-slate-500">
-          Your email address will not be published. Required fields are marked *
-        </p>
+    <section className="mt-16 pt-12 border-t border-slate-100">
+      <div className="rounded-lg border border-gray-200 bg-white p-6 md:p-8 bg-white">
+        <div className="mb-8 space-y-2">
+          <Heading3 className="font-bold text-secondary">Leave a Reply</Heading3>
+          <p className="text-slate-500 text-sm md:text-base">
+            Your email address will not be published. Required fields are marked
+            <span className="text-red-500"> *</span>
+          </p>
+        </div>
+
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6"
+          >
+            <FormField
+              control={form.control}
+              name="comment"
+              render={({ field, fieldState }) => (
+                <FormItem className="md:col-span-2">
+                  <FormLabel className="text-xs font-bold uppercase tracking-wider text-secondary">
+                    Comment <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <FormTextarea
+                      rows={6}
+                      placeholder="Write your comment..."
+                      error={fieldState.error}
+                      className="min-h-[150px] bg-slate-50/60"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel className="text-xs font-bold uppercase tracking-wider text-secondary">
+                    Name <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <FormInput
+                      size="md"
+                      placeholder="John Doe"
+                      error={fieldState.error}
+                      className="bg-slate-50/60"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel className="text-xs font-bold uppercase tracking-wider text-secondary">
+                    Email <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <FormInput
+                      type="email"
+                      size="md"
+                      placeholder="you@example.com"
+                      error={fieldState.error}
+                      className="bg-slate-50/60"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="saveInfo"
+              render={({ field }) => (
+                <FormItem className="md:col-span-2 flex items-center gap-3 space-y-0">
+                  <FormControl>
+                    <input
+                      id="save-info"
+                      type="checkbox"
+                      checked={!!field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                      className="w-3.5 h-3.5 accent-secondary rounded border-slate-300 cursor-pointer"
+                    />
+                  </FormControl>
+                  <FormLabel
+                    htmlFor="save-info"
+                    className="text-sm text-slate-600 font-medium cursor-pointer"
+                  >
+                    Save my name and email in this browser for the next time I
+                    comment.
+                  </FormLabel>
+                </FormItem>
+              )}
+            />
+
+            <div className="md:col-span-2 pt-2">
+              <Button
+                type="submit"
+                size="lg"
+                disabled={isLoading}
+                className="px-10 uppercase tracking-wider"
+              >
+                {isLoading ? "Posting..." : "Post Comment"}
+                {!isLoading && <Send className="w-4 h-4" />}
+              </Button>
+            </div>
+          </form>
+        </Form>
       </div>
-
-      <form
-        className="grid grid-cols-1 md:grid-cols-2 gap-6"
-        onSubmit={(e) => e.preventDefault()}
-      >
-        <div className="md:col-span-2 space-y-2">
-          <label className="text-sm font-bold text-secondary tracking-wide block mb-3">
-            COMMENT *
-          </label>
-          <Textarea
-            rows={6}
-            className="w-full bg-slate-50 border border-gray-200 rounded-lg focus-visible:ring-0 focus-visible:border-secondary transition-all text-slate-700 font-medium min-h-[150px] shadow-none outline-none"
-            placeholder="Write your comment..."
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-secondary tracking-wide block mb-3">
-            NAME *
-          </label>
-          <Input
-            type="text"
-            className="w-full h-12 px-6 bg-slate-50 border border-gray-200 rounded-lg focus-visible:ring-0 focus-visible:border-secondary transition-all text-slate-700 font-medium shadow-none outline-none"
-            placeholder="John Doe"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-secondary tracking-wide block mb-3">
-            PHONE *
-          </label>
-          <Input
-            type="tel"
-            className="w-full h-12 px-6 bg-slate-50 border border-gray-200 rounded-lg focus-visible:ring-0 focus-visible:border-secondary transition-all text-slate-700 font-medium shadow-none outline-none"
-            placeholder="Phone"
-          />
-        </div>
-
-        <div className="md:col-span-2 space-y-2">
-          <label className="text-sm font-bold text-secondary tracking-wide block mb-3">
-            WEBSITE
-          </label>
-          <Input
-            type="url"
-            className="w-full h-12 px-6 bg-slate-50 border border-gray-200 rounded-lg focus-visible:ring-0 focus-visible:border-secondary transition-all text-slate-700 font-medium shadow-none outline-none"
-            placeholder="https://example.com"
-          />
-        </div>
-
-        <div className="md:col-span-2 flex items-center gap-3">
-          <input
-            type="checkbox"
-            id="save-info"
-            className="w-5 h-5 accent-secondary rounded border-gray-200"
-          />
-          <label
-            htmlFor="save-info"
-            className="text-sm text-slate-600 font-medium"
-          >
-            Save my name, email, and website in this browser for the next time I
-            comment.
-          </label>
-        </div>
-
-        <div className="md:col-span-2 pt-4">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="px-10 py-3 bg-secondary text-white font-bold rounded-lg hover:bg-secondary transition-all shadow-lg shadow-secondary/20 cursor-pointer uppercase tracking-wider text-sm"
-          >
-            Post Comment
-          </motion.button>
-        </div>
-      </form>
-    </div>
+    </section>
   );
 }

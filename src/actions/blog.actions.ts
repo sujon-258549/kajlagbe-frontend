@@ -55,7 +55,7 @@ export async function getBlogBySlug(slug: string) {
 export async function updateBlog(id: string, data: any) {
   try {
     const res = await fetchWithAuth(`/blog/${id}`, {
-      method: "PATCH",
+      method: "PUT",
       body: JSON.stringify(data),
     });
     const result = await res.json();

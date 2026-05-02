@@ -2,8 +2,10 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Facebook, Twitter, Linkedin } from "lucide-react";
 import { getAllBlogs, getBlogBySlug } from "@/actions/blog.actions";
+import { getCommentsByBlogId } from "@/actions/blog-comment.actions";
 import BlogHero from "@/components/blog/BlogHero";
 import CommentForm from "@/components/blog/CommentForm";
+import CommentList from "@/components/blog/CommentList";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -28,6 +30,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const post = res.data;
+  
+  // Fetch comments for this blog
+  const commentsRes = await getCommentsByBlogId(post.id);
+  const comments = commentsRes.success ? commentsRes.data : [];
+
   const postImage = post.cover?.url || post.image;
   const postDate = post.publishedAt || post.createdAt;
   const formattedDate = new Date(postDate).toLocaleDateString("en-US", {
@@ -45,10 +52,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         isDetails
       />
 
-      <article className="py-12 md:py-20 lg:py-32">
+      <article className="py-12 md:py-20 lg:py-12">
         <div className="main-container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
-            <div className="relative aspect-video w-full rounded-3xl overflow-hidden mb-12 shadow-2xl">
+            <div className="relative aspect-video w-full rounded-xl overflow-hidden mb-12 ">
               <Image
                 src={postImage || "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&q=80&w=800"}
                 alt={post.title}
@@ -91,8 +98,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
             </div>
 
+            {/* Comments List Section */}
+            <CommentList comments={comments} />
+
             {/* Comment Form Section */}
-            <CommentForm />
+            <CommentForm blogId={post.id} blogSlug={slug} />
           </div>
         </div>
       </article>

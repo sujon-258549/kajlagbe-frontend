@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, User, Bookmark, Leaf, Edit } from "lucide-react";
+import { ArrowRight, Leaf, Edit } from "lucide-react";
 import Heading3 from "../common/Headings/Heading3";
 import { Button } from "../ui/button";
 import AdminOnly from "../common/auth/AdminOnly";
+import BlogCard from "../blog/BlogCard";
 import HomeBlogHeaderModal from "../modal/home/HomeBlogHeaderModal";
 import HomeBlogPostModal from "../modal/home/HomeBlogPostModal";
 import {
@@ -112,19 +112,35 @@ export default function NewBlogSection() {
   const handleUpdatePost = async (postData: any) => {
     setIsUpdatingPost(true);
     try {
+      const payload: any = {
+        title: postData.title,
+        slug: postData.slug,
+        excerpt: postData.excerpt,
+        content: postData.content,
+        coverId: postData.imageId || undefined,
+        category: postData.category,
+        authorName: postData.authorName,
+        tags: (postData.tags || "")
+          .split(",")
+          .map((t: string) => t.trim())
+          .filter(Boolean),
+      };
+
       let res;
       if (editingIndex !== null) {
         const postId = posts[editingIndex].id;
-        res = await updateBlog(postId, postData);
+        res = await updateBlog(postId, payload);
       } else {
-        res = await createBlog(postData);
+        res = await createBlog(payload);
       }
-      
+
       if (res.success) {
         const blogsRes = await getAllBlogs("limit=3");
         if (blogsRes.success) setPosts(blogsRes.data);
         setIsPostModalOpen(false);
         setEditingIndex(null);
+      } else {
+        console.error("Blog save failed:", res.message);
       }
     } catch (error) {
       console.log("error", error);
@@ -157,14 +173,6 @@ export default function NewBlogSection() {
   const openEditPost = (index: number) => {
     setEditingIndex(index);
     setIsPostModalOpen(true);
-  };
-
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return { day: "01", month: "Jan" };
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = date.toLocaleString("en-US", { month: "short" });
-    return { day, month };
   };
 
   return (
@@ -203,80 +211,17 @@ export default function NewBlogSection() {
         {/* Blog Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {data.posts.map((post, index) => (
-            <div
-              key={index}
-              className="group bg-[#FDFBF7] rounded-xl p-4 hover:shadow-[0_0_10px_0_rgba(0,0,0,0.1)] transition-all duration-300 border border-gray-200 hover:border-gray-400 relative"
-            >
+            <div key={post.id || index} className="relative group/blog-card">
+              <BlogCard post={post} index={index} />
               <AdminOnly>
                 <button
                   onClick={() => openEditPost(index)}
-                  className="absolute top-6 right-6 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 border border-slate-200 text-secondary opacity-0 group-hover:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-md"
+                  className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white/90 border border-slate-200 text-secondary opacity-0 group-hover/blog-card:opacity-100 transition-all hover:bg-secondary hover:text-white shadow-md"
                   title="Edit Post"
                 >
-                  <Edit className="w-3 h-3" />
+                  <Edit className="w-3.5 h-3.5" />
                 </button>
               </AdminOnly>
-
-              {/* Image container */}
-              <div className="relative rounded-2xl overflow-hidden aspect-4/3 mb-6">
-                <Image
-                  src={post.cover?.url || post.image || "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&q=80&w=800"}
-                  alt={post.title}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-
-                {/* Date Badge */}
-                <div className="absolute bottom-4 right-4 bg-[#004D40] text-white rounded-xl p-2 text-center min-w-[60px] shadow-lg">
-                  <span className="block text-2xl font-bold leading-none">
-                    {formatDate(post.createdAt || post.date).day}
-                  </span>
-                  <span className="block text-xs font-medium opacity-80">
-                    {formatDate(post.createdAt || post.date).month}
-                  </span>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="px-2 pb-4 space-y-4">
-                {/* Meta */}
-                <div className="flex items-center gap-6 text-slate-500 text-xs font-semibold uppercase tracking-wider">
-                  <div className="flex items-center gap-1.5">
-                    <div className="border border-slate-300 rounded-full p-0.5">
-                      <User className="w-3 h-3" />
-                    </div>
-                    {post.authorName || 
-                     (typeof post.author === 'object' ? ((post.author as any)?.profile?.name || (post.author as any)?.mobile) : post.author) || 
-                     "Admin"}
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="border border-slate-300 rounded-full p-0.5">
-                      <Bookmark className="w-3 h-3" />
-                    </div>
-                    {post.category}
-                  </div>
-                </div>
-
-                {/* Title */}
-                <h3 className="text-xl md:text-[22px] font-bold text-[#002A3A] leading-snug group-hover:text-secondary transition-colors">
-                  <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                </h3>
-
-                <p className="text-slate-600 text-sm line-clamp-2 leading-relaxed">
-                  {post.description || post.excerpt}
-                </p>
-
-                {/* Read More Button */}
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="inline-flex items-center gap-2 border border-slate-200 bg-white rounded-full px-5 py-2.5 text-xs font-bold text-[#002A3A] shadow-sm group-hover:bg-[#002A3A] group-hover:text-white transition-all mt-2"
-                >
-                  Read More
-                  <div className="bg-secondary rounded-full p-0.5 group-hover:bg-white group-hover:text-[#002A3A] transition-colors">
-                    <ArrowRight className="w-3 h-3" />
-                  </div>
-                </Link>
-              </div>
             </div>
           ))}
         </div>

@@ -154,7 +154,7 @@ export default function BlogList() {
       {isLoading ? (
         <BlogGridSkeleton />
       ) : !hasPosts ? (
-        <div className="flex flex-col items-center justify-center py-16 md:py-24 px-4 rounded-3xl border border-dashed border-slate-200 bg-slate-50/40 text-center min-h-[400px]">
+        <div className="flex flex-col items-center justify-center py-16 md:py-24 px-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/40 text-center min-h-[400px]">
           <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-secondary/10 flex items-center justify-center mb-5">
             <FileText className="w-7 h-7 md:w-8 md:h-8 text-secondary" />
           </div>
