@@ -206,7 +206,7 @@ export default function Header() {
                 <UserMenu />
               ) : (
                 <Link href="/login">
-                  <Button variant="ghost" className="px-3 sm:px-4 text-[13px] sm:text-sm font-bold text-secondary">
+                  <Button  className="px-3 sm:px-4 text-[13px] sm:text-sm">
                     Login
                   </Button>
                 </Link>
