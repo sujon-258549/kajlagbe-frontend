@@ -16,6 +16,7 @@ const FormTextarea = React.forwardRef<HTMLTextAreaElement, FormTextareaProps>(
         {label && (
           <label className="font-medium text-slate-700 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm mb-3 inline-block">
             {label}
+            {props.required && <span className="text-red-500 ml-1">*</span>}
           </label>
         )}
         <Textarea

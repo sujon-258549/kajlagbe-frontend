@@ -34,6 +34,7 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
             )}
           >
             {label}
+            {props.required && <span className="text-red-500 ml-1">*</span>}
           </label>
         )}
         <Input

@@ -278,12 +278,13 @@ export default function Register() {
                       placeholder="Sujon Mia"
                       {...register("name")}
                       error={errors.name}
+                      required
                     />
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-slate-700 leading-none mb-3 inline-block">
-                          Gender
+                          Gender <span className="text-red-500 ml-1">*</span>
                         </label>
                         <Controller
                           control={control}
@@ -293,13 +294,12 @@ export default function Register() {
                               onValueChange={field.onChange}
                               defaultValue={field.value}
                             >
-                              <SelectTrigger
-                                className={cn(
-                                  "h-9 py-1",
-                                  errors.gender &&
-                                    "border-red-500 focus:ring-red-500",
-                                )}
-                              >
+                            <SelectTrigger
+                              className={cn(
+                                errors.gender &&
+                                  "border-red-500 focus:ring-red-500",
+                              )}
+                            >
                                 <SelectValue placeholder="Select" />
                               </SelectTrigger>
                               <SelectContent>
@@ -322,6 +322,7 @@ export default function Register() {
                           type="date"
                           {...register("dob")}
                           error={errors.dob}
+                          required
                         />
                       </div>
                     </div>
@@ -334,11 +335,12 @@ export default function Register() {
                           placeholder="22"
                           {...register("age")}
                           error={errors.age as FieldError}
+                          required
                         />
                       </div>
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-slate-700 leading-none mb-3 inline-block">
-                          Blood Group
+                          Blood Group <span className="text-red-500 ml-1">*</span>
                         </label>
                         <Controller
                           control={control}
@@ -348,13 +350,12 @@ export default function Register() {
                               onValueChange={field.onChange}
                               defaultValue={field.value}
                             >
-                              <SelectTrigger
-                                className={cn(
-                                  "h-9 py-1",
-                                  errors.bloodGroup &&
-                                    "border-red-500 focus:ring-red-500",
-                                )}
-                              >
+                            <SelectTrigger
+                              className={cn(
+                                errors.bloodGroup &&
+                                  "border-red-500 focus:ring-red-500",
+                              )}
+                            >
                                 <SelectValue placeholder="Select" />
                               </SelectTrigger>
                               <SelectContent>
@@ -387,6 +388,7 @@ export default function Register() {
                       placeholder="National ID Number"
                       {...register("nid")}
                       error={errors.nid}
+                      required
                     />
 
                     <ImageUpload
@@ -423,6 +425,7 @@ export default function Register() {
                       placeholder="john@example.com"
                       {...register("email")}
                       error={errors.email}
+                      required
                     />
                     <FormInput
                       label="Password"
@@ -430,6 +433,7 @@ export default function Register() {
                       placeholder="••••••••"
                       {...register("password")}
                       error={errors.password}
+                      required
                     />
                     <FormInput
                       label="Confirm Password"
@@ -437,6 +441,7 @@ export default function Register() {
                       placeholder="••••••••"
                       {...register("confirmPassword")}
                       error={errors.confirmPassword}
+                      required
                     />
                     <FormInput
                       label="Mobile Number"
@@ -444,6 +449,7 @@ export default function Register() {
                       placeholder="017..."
                       {...register("mobile")}
                       error={errors.mobile}
+                      required
                     />
                   </>
                 )}
@@ -458,6 +464,7 @@ export default function Register() {
                           placeholder="Rangpur"
                           {...register("division")}
                           error={errors.division}
+                          required
                         />
                       </div>
                       <div className="space-y-2">
@@ -466,6 +473,7 @@ export default function Register() {
                           placeholder="Rangpur"
                           {...register("district")}
                           error={errors.district}
+                          required
                         />
                       </div>
                     </div>
@@ -474,6 +482,7 @@ export default function Register() {
                       placeholder="Sadar"
                       {...register("upazila")}
                       error={errors.upazila}
+                      required
                     />
                     <div className="space-y-2">
                       <FormTextarea
@@ -481,6 +490,7 @@ export default function Register() {
                         {...register("address")}
                         placeholder="Village, House No, etc."
                         error={errors.address}
+                        required
                       />
                     </div>
                   </>
@@ -491,7 +501,7 @@ export default function Register() {
                   <>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-slate-700 leading-none mb-3 inline-block">
-                        Service Categories
+                        Service Categories <span className="text-red-500 ml-1">*</span>
                       </label>
                       <Controller
                         control={control}
@@ -533,16 +543,17 @@ export default function Register() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <FormInput
-                          label="Experience (Years)"
+                          label="Years of Experience"
                           type="number"
-                          placeholder="3"
+                          placeholder="2"
                           {...register("experience")}
-                          error={errors.experience}
+                          error={errors.experience as FieldError}
+                          required
                         />
                       </div>
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-slate-700 leading-none mb-3 inline-block">
-                          Work Type
+                          Work Type <span className="text-red-500 ml-1">*</span>
                         </label>
                         <Controller
                           control={control}
@@ -552,13 +563,12 @@ export default function Register() {
                               onValueChange={field.onChange}
                               defaultValue={field.value}
                             >
-                              <SelectTrigger
-                                className={cn(
-                                  "h-9 py-1",
-                                  errors.workType &&
-                                    "border-red-500 focus:ring-red-500",
-                                )}
-                              >
+                            <SelectTrigger
+                              className={cn(
+                                errors.workType &&
+                                  "border-red-500 focus:ring-red-500",
+                              )}
+                            >
                                 <SelectValue placeholder="Select" />
                               </SelectTrigger>
                               <SelectContent>
@@ -584,9 +594,10 @@ export default function Register() {
                     </div>
                     <FormInput
                       label="Available Time"
-                      placeholder="e.g. 9 AM - 5 PM"
+                      placeholder="9 AM - 5 PM"
                       {...register("availableTime")}
                       error={errors.availableTime}
+                      required
                     />
                   </>
                 )}
