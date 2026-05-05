@@ -28,7 +28,7 @@ export async function createSubCategory(data: Partial<TSubCategory>) {
  */
 export async function getAllSubCategory() {
   try {
-    const res = await fetchWithAuth("/sub-category&limit=30");
+    const res = await fetchWithAuth("/sub-category?limit=30");
     const result = await res.json();
     if (!res.ok) {
       console.error("Fetch SubCategories Failed:", result);

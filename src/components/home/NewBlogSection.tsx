@@ -81,7 +81,7 @@ export default function NewBlogSection() {
         setHeaderData(settingsRes.data.home_blog_header.value);
       }
       
-      const blogsRes = await getAllBlogs("limit=3");
+      const blogsRes = await getAllBlogs();
       if (blogsRes.success) {
         setPosts(blogsRes.data);
       }
@@ -135,7 +135,7 @@ export default function NewBlogSection() {
       }
 
       if (res.success) {
-        const blogsRes = await getAllBlogs("limit=3");
+        const blogsRes = await getAllBlogs();
         if (blogsRes.success) setPosts(blogsRes.data);
         setIsPostModalOpen(false);
         setEditingIndex(null);
@@ -158,7 +158,7 @@ export default function NewBlogSection() {
       const res = await deleteBlog(postId);
       
       if (res.success) {
-        const blogsRes = await getAllBlogs("limit=3");
+        const blogsRes = await getAllBlogs();
         if (blogsRes.success) setPosts(blogsRes.data);
         setIsPostModalOpen(false);
         setEditingIndex(null);
@@ -209,8 +209,8 @@ export default function NewBlogSection() {
         </div>
 
         {/* Blog Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.posts.map((post, index) => (
+        <div className="grid grid-cols-1 mb-5 md:-mb-10 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {data.posts.slice(0, 3).map((post, index) => (
             <div key={post.id || index} className="relative group/blog-card">
               <BlogCard post={post} index={index} />
               <AdminOnly>
