@@ -21,9 +21,21 @@ export async function createBlog(data: any) {
   }
 }
 
-export async function getAllBlogs(query?: string) {
+export async function getAllBlogs(queryObj?: Record<string, any>) {
   try {
-    const url = query ? `/blog?${query}` : "/blog";
+    let url = "/blog";
+    if (queryObj) {
+      const params = new URLSearchParams();
+      Object.entries(queryObj).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          params.append(key, value.toString());
+        }
+      });
+      const queryString = params.toString();
+      if (queryString) {
+        url += `?${queryString}`;
+      }
+    }
     const res = await fetchWithAuth(url);
     return res.json();
   } catch (error) {

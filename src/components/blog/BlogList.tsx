@@ -41,8 +41,9 @@ export default function BlogList() {
   // Filter States
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [totalPosts, setTotalPosts] = useState(0);
 
-  const postsPerPage = 6;
+  const postsPerPage = 12;
 
   // Sync currentPage with URL changes (e.g. back button)
   useEffect(() => {
@@ -54,12 +55,32 @@ export default function BlogList() {
     }
   }, [searchParams]);
 
-  const fetchBlogs = async () => {
-    const res = await getAllBlogs();
+  const fetchBlogs = async (page: number = currentPage, searchQuery: string = search, cat: string = selectedCategory) => {
+    setIsLoading(true);
+    const queryObj: any = {
+      page,
+      limit: postsPerPage,
+    };
+
+    if (searchQuery) queryObj.searchTerm = searchQuery;
+    if (cat !== "all") queryObj.category = cat;
+
+    const res = await getAllBlogs(queryObj);
+    console.log("res", res);
     if (res.success) {
       const list = Array.isArray(res.data) ? res.data : res.data?.data || [];
       setPosts(list);
+      
+      // Handle meta data if available
+      const meta = res.meta || res.data?.meta;
+      if (meta) {
+        setTotalPosts(meta.total);
+      } else {
+        // Fallback if meta is not returned
+        setTotalPosts(list.length);
+      }
     }
+    setIsLoading(false);
   };
 
   const fetchCategories = async () => {
@@ -70,38 +91,14 @@ export default function BlogList() {
   };
 
   useEffect(() => {
-    const init = async () => {
-      await Promise.all([fetchBlogs(), fetchCategories()]);
-      setIsLoading(false);
-    };
-    init();
+    fetchCategories();
   }, []);
 
-  const filteredPosts = useMemo(() => {
-    return posts.filter((post) => {
-      const matchesSearch =
-        !search ||
-        post.title.toLowerCase().includes(search.toLowerCase()) ||
-        post.excerpt?.toLowerCase().includes(search.toLowerCase()) ||
-        (Array.isArray(post.tags) &&
-          post.tags.some((t: string) =>
-            t.toLowerCase().includes(search.toLowerCase()),
-          ));
+  useEffect(() => {
+    fetchBlogs(currentPage, search, selectedCategory);
+  }, [currentPage, search, selectedCategory]);
 
-      const matchesCategory =
-        selectedCategory === "all" || post.category === selectedCategory;
-
-      return matchesSearch && matchesCategory;
-    });
-  }, [posts, search, selectedCategory]);
-
-  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
-
-  const currentPosts = useMemo(() => {
-    const indexOfLastPost = currentPage * postsPerPage;
-    const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    return filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
-  }, [currentPage, filteredPosts]);
+  const totalPages = Math.ceil(totalPosts / postsPerPage);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -256,7 +253,7 @@ export default function BlogList() {
             </Button>
           </AdminOnly>
         </div>
-      ) : filteredPosts.length === 0 ? (
+      ) : posts.length === 0 ? (
         <div className="flex flex-col items-center justify-center pt-4 md:pt-12 px-4 rounded-xl border border-dashed border-slate-200 bg-slate-50/40 text-center min-h-[400px]">
           <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-secondary/10 flex items-center justify-center mb-5">
             <Search className="w-7 h-7 md:w-8 md:h-8 text-secondary" />
@@ -288,7 +285,7 @@ export default function BlogList() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {currentPosts.map((post, index) => (
+          {posts.map((post, index) => (
             <div key={post.id} className="relative group/blog-card">
               <BlogCard post={post} index={index} />
               <AdminOnly>

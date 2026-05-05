@@ -47,7 +47,7 @@ export async function loginAction(credentials: any) {
 
 export async function registerAction(payload: any) {
   try {
-    const response = await fetch(`${getBaseUrl()}/auth/register`, {
+    const response = await fetch(`${getBaseUrl()}/employ/create-user`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -127,4 +127,64 @@ export async function refreshAccessToken() {
   cookieStore.delete("accessToken");
   cookieStore.delete("refreshToken");
   return null;
+}
+
+export async function getAllRolesAction() {
+  try {
+    const response = await fetch(`${getBaseUrl()}/role`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      return { success: false, message: result.message || "Failed to fetch roles" };
+    }
+
+    return { success: true, data: result.data };
+  } catch (error) {
+    console.error("Fetch Roles Error:", error);
+    return { success: false, message: "Something went wrong" };
+  }
+}
+
+export async function getAllSubCategoriesAction() {
+  try {
+    const response = await fetch(`${getBaseUrl()}/sub-category`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      return { success: false, message: result.message || "Failed to fetch sub-categories" };
+    }
+
+    return { success: true, data: result.data };
+  } catch (error) {
+    console.error("Fetch SubCategories Error:", error);
+    return { success: false, message: "Something went wrong" };
+  }
+}
+
+export async function getAllWorkTypesAction() {
+  try {
+    const response = await fetch(`${getBaseUrl()}/work-types`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      return { success: false, message: result.message || "Failed to fetch work types" };
+    }
+
+    return { success: true, data: result.data };
+  } catch (error) {
+    console.error("Fetch WorkTypes Error:", error);
+    return { success: false, message: "Something went wrong" };
+  }
 }

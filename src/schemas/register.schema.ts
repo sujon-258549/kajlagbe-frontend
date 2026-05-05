@@ -9,14 +9,15 @@ export const registerSchema = z
     mobile: z
       .string()
       .regex(/^01[3-9]\d{8}$/, "Invalid Bangladeshi mobile number"),
-    role: z.string().default("PROVIDER"), // Defaulting to PROVIDER given the fields
+    role: z.string().min(1, "Please select an account type"),
+    roleName: z.string().optional(), // Internal field for conditional validation
 
     // Step 2: Personal
     name: z.string().min(2, "Name is required"),
     gender: z.enum(["MALE", "FEMALE", "OTHER"], {
       message: "Gender is required",
     }),
-    age: z.coerce.number().min(18, "Must be at least 18 years old"),
+    age: z.coerce.number().min(18, "Must be at least 18 years old").optional(),
     dob: z
       .string()
       .refine((date) => new Date(date).toString() !== "Invalid Date", {
@@ -37,7 +38,7 @@ export const registerSchema = z
     ),
     nid: z.string().min(10, "NID must be valid"),
 
-    // File uploads
+    // File uploads (Optional)
     photo: z.any().optional(),
     nidPhotoFront: z.any().optional(),
     nidPhotoBack: z.any().optional(),
@@ -49,16 +50,35 @@ export const registerSchema = z
     address: z.string().min(5, "Full address is required"),
 
     // Step 4: Work Info
-    categories: z.string().min(1, "At least one category is required"), // Comma separated for UI simplicity
-    experience: z.string().min(1, "Experience is required"),
-    workType: z.enum(["Full-time", "Part-time", "Contract"], {
-      message: "Work type is required",
-    }),
-    availableTime: z.string().optional(),
+    categories: z.array(z.string()).optional(),
+    experience: z.string().optional(),
+    workType: z.string().min(1, "Work type is required").optional(),
+    availableTimeStart: z.string().optional(),
+    availableTimeEnd: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
+  })
+  .superRefine((data, ctx) => {
+    const isWorker = data.roleName === "WORKER" || data.roleName === "PROVIDER";
+    
+    if (isWorker) {
+      if (!data.categories || data.categories.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "At least one category is required",
+          path: ["categories"],
+        });
+      }
+      if (!data.workType) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Work type is required",
+          path: ["workType"],
+        });
+      }
+    }
   });
 
 export type RegisterFormData = z.infer<typeof registerSchema>;
