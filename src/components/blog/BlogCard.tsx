@@ -57,7 +57,7 @@ export default function BlogCard({ post }: BlogCardProps) {
         </div>
       </Link>
 
-      <div className="flex flex-1 flex-col px-6 pb-7 pt-7 md:px-7 md:pb-8 md:pt-8">
+      <div className="flex flex-1 flex-col px-2 pb-7 pt-7 md:px-3 md:pb-8 md:pt-8">
         <Link href={`/blog/${post.slug}`} className="block">
           <h3 className="line-clamp-2 text-[19px] font-bold leading-[1.35] text-[#0F1B2D] transition-colors duration-200 group-hover:text-secondary md:text-[20px]">
             {post.title}

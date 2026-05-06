@@ -1,6 +1,4 @@
-"use client";
-
-import React, { use } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -22,12 +20,8 @@ import {
   Hash,
   Star,
   UserCheck,
-  Settings,
-  Languages,
   Award,
   ShieldCheck,
-  PlaneTakeoff,
-  Home,
   Timer,
   Layout,
   Network,
@@ -37,19 +31,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TbCurrencyTaka } from "react-icons/tb";
-import { jobs } from "@/data/jobsData";
+import { getJobByIdentifier } from "@/actions/job.actions";
 
-export default function JobDetailsPage({
+export default async function JobDetailsPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
-  const job = jobs.find((j) => j.id === Number(id));
+  const { id } = await params;
+  const response = await getJobByIdentifier(id);
 
-  if (!job) {
+  if (!response?.success || !response?.data) {
     notFound();
   }
+
+  const job = response.data;
 
   const {
     title,
@@ -57,25 +53,23 @@ export default function JobDetailsPage({
     location,
     type,
     salary,
-    posted,
     logo,
     description,
-    responsibilities,
-    requirements,
-    benefits,
-    job_poster,
-    skills,
+    responsibilities = [] as string[],
+    requirements = [] as string[],
+    benefits = [] as string[],
+    skills = [] as string[],
     experience,
     education,
     vacancy,
     deadline,
     workingHours,
     website,
-    short_description,
+    shortDescription: short_description,
     industry,
     companySize,
     address,
-    is_urgent,
+    isUrgent: is_urgent,
     // New fields to show
     gender,
     ageRange,
@@ -86,30 +80,50 @@ export default function JobDetailsPage({
     email,
     phone,
     founded,
-    tools,
-    languages: jobLanguages,
-    visa_sponsorship,
-    relocation_assistance,
-    remote_policy,
+    tools = [] as string[],
+    languages: jobLanguages = [] as string[],
+    visaSponsorship: visa_sponsorship,
+    relocationAssistance: relocation_assistance,
+    remotePolicy: remote_policy,
     department,
-    reporting_to,
-    team_size,
-    performance_bonus,
-    health_insurance,
-    contact_person,
-    ceo_name,
+    reportingTo: reporting_to,
+    teamSize: team_size,
+    performanceBonus: performance_bonus,
+    healthInsurance: health_insurance,
+    contactPerson: contact_person,
+    ceoName: ceo_name,
     ratings,
-    reviews_count,
-    internal_id,
-    reference_code,
-    keywords,
-    views_count,
-    applicants_count,
-    work_start_time,
-    work_time_limit,
-    job_amount,
-    job_location,
+    reviewsCount: reviews_count,
+    internalId: internal_id,
+    referenceCode: reference_code,
+    keywords = [],
+    viewsCount: views_count,
+    applicantsCount: applicants_count,
+    workStartTime: work_start_time,
+    workTimeLimit: work_time_limit,
+    jobAmount: job_amount,
+    jobLocation,
+    createdAt,
   } = job;
+
+  // Map backend user to job_poster
+  const job_poster = job.user
+    ? {
+        name: job.user.profile?.name || "Company Recruiter",
+        designation: department || "HR Manager",
+        email: job.user.email,
+        phone: job.user.mobile,
+        profile_image: job.user.profile?.photo || "/images/default-avatar.png",
+        bio: job.user.profile?.bio || "Recruiting top talent for our growing team.",
+      }
+    : null;
+
+  // Format date if needed
+  const posted = new Date(createdAt).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 
   return (
     <main className="min-h-screen bg-slate-50/30">
@@ -166,7 +180,9 @@ export default function JobDetailsPage({
                   >
                     <Bookmark className="w-4 h-4" /> Save
                   </Button>
-                  <Button className="">Apply Position</Button>
+                  <Link href={`/jobs/${id}/apply`} className="flex-1 md:flex-none">
+                    <Button className="w-full">Apply Position</Button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -188,9 +204,10 @@ export default function JobDetailsPage({
                   <h2 className="text-lg font-bold text-slate-900 mb-6 border-b border-slate-100 pb-2">
                     Job Description
                   </h2>
-                  <div className="text-slate-600 leading-relaxed text-[15px] whitespace-pre-line">
-                    {description || "No detailed description provided."}
-                  </div>
+                  <div 
+                    className="blog-content text-slate-600 leading-relaxed text-[15px]"
+                    dangerouslySetInnerHTML={{ __html: description || "No detailed description provided." }}
+                  />
                 </section>
 
                 {/* Responsibilities */}
@@ -200,7 +217,7 @@ export default function JobDetailsPage({
                       Key Responsibilities
                     </h2>
                     <div className="space-y-4">
-                      {responsibilities.map((item, idx) => (
+                      {responsibilities.map((item: string, idx: number) => (
                         <div key={idx} className="flex gap-4 items-start">
                           <div className="mt-2.5 w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
                           <span className="text-slate-600 text-[15px] leading-relaxed">
@@ -219,7 +236,7 @@ export default function JobDetailsPage({
                       Requirements
                     </h2>
                     <div className="space-y-4">
-                      {requirements.map((item, idx) => (
+                      {requirements.map((item: string, idx: number) => (
                         <div key={idx} className="flex gap-4 items-start">
                           <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-1 shrink-0" />
                           <span className="text-slate-600 text-[15px] leading-relaxed">
@@ -238,7 +255,7 @@ export default function JobDetailsPage({
                       Perks & Benefits
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {benefits.map((item, idx) => (
+                      {benefits.map((item: string, idx: number) => (
                         <div
                           key={idx}
                           className="flex items-center gap-3 text-slate-600 text-[14px]"
@@ -272,7 +289,7 @@ export default function JobDetailsPage({
                     <div className="space-y-6">
                       {skills && skills.length > 0 && (
                         <div className="flex flex-wrap gap-2">
-                          {skills.map((skill, idx) => (
+                          {skills.map((skill: string, idx: number) => (
                             <Badge
                               key={idx}
                               variant="secondary"
@@ -285,7 +302,7 @@ export default function JobDetailsPage({
                       )}
                       {tools && tools.length > 0 && (
                         <div className="flex flex-wrap gap-2">
-                          {tools.map((tool, idx) => (
+                          {tools.map((tool: string, idx: number) => (
                             <Badge
                               key={idx}
                               variant="outline"
@@ -365,7 +382,7 @@ export default function JobDetailsPage({
                 </section>
 
                 {/* Location Details */}
-                {job_location && (
+                {jobLocation && (
                   <section>
                     <h2 className="text-lg font-bold text-slate-900 mb-6 border-b border-slate-100 pb-2">
                       Work Location
@@ -376,23 +393,23 @@ export default function JobDetailsPage({
                           <MapPin className="w-5 h-5 text-slate-300 shrink-0 mt-0.5" />
                           <div>
                             <p className="font-bold text-slate-700">
-                              {job_location.roadNo
-                                ? `Road ${job_location.roadNo}, `
+                              {(jobLocation as any).roadNo
+                                ? `Road ${(jobLocation as any).roadNo}, `
                                 : ""}
-                              {job_location.houseNo
-                                ? `House ${job_location.houseNo}`
+                              {(jobLocation as any).houseNo
+                                ? `House ${(jobLocation as any).houseNo}`
                                 : ""}
                             </p>
                             <p className="text-slate-500">
-                              {job_location.village}, {job_location.upazila}
+                              {(jobLocation as any).village}, {(jobLocation as any).upazila}
                             </p>
                             <p className="text-slate-500">
-                              {job_location.district}, {job_location.division}{" "}
-                              {job_location.postCode}
+                              {(jobLocation as any).district}, {(jobLocation as any).division}{" "}
+                              {(jobLocation as any).postCode}
                             </p>
-                            {job_location.landmark && (
+                            {(jobLocation as any).landmark && (
                               <p className="text-xs text-emerald-600 font-medium mt-1">
-                                Landmark: {job_location.landmark}
+                                Landmark: {(jobLocation as any).landmark}
                               </p>
                             )}
                           </div>
@@ -409,7 +426,7 @@ export default function JobDetailsPage({
                 {keywords && keywords.length > 0 && (
                   <section>
                     <div className="flex flex-wrap gap-2">
-                      {keywords.map((kw, idx) => (
+                      {keywords.map((kw: string, idx: number) => (
                         <span
                           key={idx}
                           className="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-2 py-0.5 bg-slate-50 border border-slate-100 rounded"
@@ -434,9 +451,11 @@ export default function JobDetailsPage({
                       review. Application deadline is {deadline}.
                     </p>
                   </div>
-                  <Button className="w-full md:w-auto h-12 px-12 bg-white hover:bg-slate-100 text-secondary font-bold rounded-lg border-none shadow-none">
-                    Submit Application
-                  </Button>
+                  <Link href={`/jobs/${id}/apply`} className="w-full md:w-auto">
+                    <Button className="w-full md:w-auto h-10 px-8 bg-white hover:bg-slate-100 text-secondary font-bold rounded-lg border-none shadow-none">
+                      Application now!
+                    </Button>
+                  </Link>
                 </div>
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl" />
               </div>

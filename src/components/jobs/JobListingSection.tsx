@@ -11,12 +11,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { jobs } from "@/data/jobsData";
 import { useRef, useEffect } from "react";
+import { Job } from "@/data/jobsData";
 import { motion, AnimatePresence } from "motion/react";
-import Pagination from "@/components/common/Pagination";
 import JobCard from "./JobCard";
 import JobFilters, { FilterState } from "./JobFilters";
+import Loader from "@/components/common/Loader";
 
 // Helper to check if date is within range
 const isPostedWithin = (posted: string, range: string) => {
@@ -40,7 +40,15 @@ const isPostedWithin = (posted: string, range: string) => {
   return true;
 };
 
-export default function JobListingSection() {
+export default function JobListingSection({ 
+  initialJobs = [], 
+  total = 0 
+}: { 
+  initialJobs?: Job[], 
+  total?: number 
+}) {
+  const [jobsData, setJobsData] = useState<Job[]>(initialJobs);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [filters, setFilters] = useState<FilterState>({
@@ -69,48 +77,8 @@ export default function JobListingSection() {
     skills: "",
   });
 
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const filterRef = useRef<HTMLDivElement>(null);
-
-  // Close filter when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        filterRef.current &&
-        !filterRef.current.contains(event.target as Node)
-      ) {
-        setIsFilterOpen(false);
-      }
-    }
-
-    if (isFilterOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isFilterOpen]);
-
-  // Extract unique values for dropdowns
-  const uniqueLocations = useMemo(
-    () => Array.from(new Set(jobs.map((j) => j.location).filter(Boolean))),
-    [],
-  );
-  const uniqueCategories = useMemo(
-    () => Array.from(new Set(jobs.map((j) => j.category).filter(Boolean))),
-    [],
-  );
-  const uniqueIndustries = useMemo(
-    () => Array.from(new Set(jobs.map((j) => j.industry).filter(Boolean))),
-    [],
-  );
-  const uniqueCompanies = useMemo(
-    () => Array.from(new Set(jobs.map((j) => j.company).filter(Boolean))),
-    [],
-  );
-
   const filteredJobs = useMemo(() => {
-    return jobs.filter((job) => {
+    return jobsData.filter((job) => {
       // 1. Search
       const searchMatch =
         !filters.search ||
@@ -209,18 +177,78 @@ export default function JobListingSection() {
         visaMatch
       );
     });
-  }, [filters]);
+  }, [filters, jobsData]);
+
+  const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
+  const displayedJobs = filteredJobs.slice(0, currentPage * itemsPerPage);
+
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && currentPage < totalPages) {
+          setCurrentPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 1.0 },
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [loadMoreRef, currentPage, totalPages]);
 
   const handleFilterChange = (newFilters: FilterState) => {
     setFilters(newFilters);
     setCurrentPage(1);
   };
 
-  const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
-  const displayedJobs = filteredJobs.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
+  // Extract unique values for dropdowns
+  const uniqueLocations = useMemo(
+    () => Array.from(new Set(jobsData.map((j) => j.location).filter(Boolean))),
+    [jobsData],
   );
+  const uniqueCategories = useMemo(
+    () => Array.from(new Set(jobsData.map((j) => j.category).filter(Boolean))),
+    [jobsData],
+  );
+  const uniqueIndustries = useMemo(
+    () => Array.from(new Set(jobsData.map((j) => j.industry).filter(Boolean))),
+    [jobsData],
+  );
+  const uniqueCompanies = useMemo(
+    () => Array.from(new Set(jobsData.map((j) => j.company).filter(Boolean))),
+    [jobsData],
+  );
+
+  // Close filter when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        filterRef.current &&
+        !filterRef.current.contains(event.target as Node)
+      ) {
+        setIsFilterOpen(false);
+      }
+    }
+
+    if (isFilterOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isFilterOpen]);
 
   return (
     <section className="bg-slate-50 min-h-screen py-4">
@@ -366,19 +394,10 @@ export default function JobListingSection() {
             )}
           </div>
 
-          {/* Pagination */}
-          {(totalPages > 1 || filteredJobs.length > 5) && (
-            <div className="mt-4 md:mt-6 mb-10 md:mb-20 flex justify-center">
-              <Pagination
-                totalPages={totalPages}
-                currentPage={currentPage}
-                onPageChange={setCurrentPage}
-                limit={itemsPerPage}
-                onLimitChange={(newLimit) => {
-                  setItemsPerPage(newLimit);
-                  setCurrentPage(1); // Reset to first page when limit changes
-                }}
-              />
+          {/* Load More Trigger */}
+          {currentPage < totalPages && (
+            <div ref={loadMoreRef} className="h-20">
+              <Loader fullScreen={false} />
             </div>
           )}
         </div>
