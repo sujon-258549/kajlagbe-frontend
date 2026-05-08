@@ -94,6 +94,16 @@ export async function logoutAction() {
   return { success: true };
 }
 
+/**
+ * Returns the current access token from cookies. Used by client-side
+ * socket.io connection (which cannot read httpOnly cookies directly).
+ */
+export async function getSocketAuthToken() {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+  return accessToken || null;
+}
+
 export async function forgotPasswordAction(email: string) {
   try {
     const response = await fetch(`${getBaseUrl()}/auth/forgot-password`, {
