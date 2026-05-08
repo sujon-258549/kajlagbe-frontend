@@ -12,6 +12,7 @@ import {
   Plus,
   RotateCw,
   Trash2,
+  Users,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -382,12 +383,28 @@ export default function MyWorksPage() {
           <Button
             asChild
             variant="outline"
-            size="sm"
-            className="h-9 px-4 rounded-lg border-gray-100 font-bold text-xs hover:bg-gray-50 shadow-none text-secondary"
+            size="icon"
+            className="h-9 w-9 rounded-lg border-gray-100 text-secondary hover:bg-gray-50 shadow-none"
             title="View Job"
           >
             <Link href={`/jobs/${row.original.id}`}>
-              <Eye className="w-3.5 h-3.5 mr-1" /> View
+              <Eye className="w-4 h-4" />
+            </Link>
+          </Button>
+          <Button
+            asChild
+            variant="outline"
+            size="icon"
+            className="h-9 w-9 rounded-lg border-gray-100 text-emerald-600 hover:bg-emerald-50 shadow-none relative"
+            title="View Applicants"
+          >
+            <Link href={`/dashboard/my-works/${row.original.id}/applicants`}>
+              <Users className="w-4 h-4" />
+              {(row.original.applicantsCount ?? 0) > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center">
+                  {row.original.applicantsCount}
+                </span>
+              )}
             </Link>
           </Button>
           <Button

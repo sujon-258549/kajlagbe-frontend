@@ -129,14 +129,20 @@ export default async function JobDetailsPage({
             {/* Header Section */}
             <div className="lg:col-span-12 mb-6">
               <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-4 flex flex-col md:flex-row items-start md:items-center gap-6">
-                <div className="w-20 h-20 rounded-lg border border-slate-100 flex items-center justify-center p-3 shrink-0 bg-white">
-                  <Image
-                    src={logo}
-                    alt={company}
-                    width={60}
-                    height={60}
-                    className="object-contain"
-                  />
+                <div className="w-20 h-20 rounded-lg border border-slate-100 flex items-center justify-center p-3 shrink-0 bg-white overflow-hidden">
+                  {logo ? (
+                    <Image
+                      src={logo}
+                      alt={company || "Company logo"}
+                      width={60}
+                      height={60}
+                      className="object-contain"
+                    />
+                  ) : (
+                    <div className="w-full h-full rounded bg-linear-to-br from-secondary/15 to-secondary/5 flex items-center justify-center text-secondary font-bold text-2xl">
+                      {(company || "?").trim().charAt(0).toUpperCase()}
+                    </div>
+                  )}
                 </div>
                 <div className="flex-1 space-y-2">
                   <div className="flex flex-wrap items-center gap-3">

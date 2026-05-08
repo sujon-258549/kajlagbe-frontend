@@ -47,3 +47,26 @@ export async function deleteApplication(id: string) {
     return { success: false, message: "Failed to withdraw application", data: null };
   }
 }
+
+export async function getApplicationById(id: string) {
+  try {
+    const res = await fetchWithAuth(`/application/${id}`);
+    return res.json();
+  } catch (error) {
+    console.error("Error fetching application:", error);
+    return { success: false, message: "Failed to fetch application", data: null };
+  }
+}
+
+export async function updateApplication(id: string, payload: Record<string, unknown>) {
+  try {
+    const res = await fetchWithAuth(`/application/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+    return res.json();
+  } catch (error) {
+    console.error("Error updating application:", error);
+    return { success: false, message: "Failed to update application", data: null };
+  }
+}

@@ -32,14 +32,20 @@ export default function JobCard({ job, isLast }: JobCardProps) {
       {/* Header Info */}
       <div className="flex justify-between items-start pl-3 sm:pl-4">
         <div className="flex gap-4 items-center">
-          <div className="w-14 h-14 rounded-xl border border-gray-100 p-2 flex items-center justify-center bg-white shrink-0 mt-2 z-20">
-            <Image
-              src={job.logo}
-              alt={job.company}
-              width={40}
-              height={40}
-              className="object-contain rounded"
-            />
+          <div className="w-14 h-14 rounded-xl border border-gray-100 p-2 flex items-center justify-center bg-white shrink-0 mt-2 z-20 overflow-hidden">
+            {job.logo ? (
+              <Image
+                src={job.logo}
+                alt={job.company || "Company logo"}
+                width={40}
+                height={40}
+                className="object-contain rounded"
+              />
+            ) : (
+              <div className="w-full h-full rounded bg-linear-to-br from-secondary/15 to-secondary/5 flex items-center justify-center text-secondary font-bold text-lg">
+                {(job.company || "?").trim().charAt(0).toUpperCase()}
+              </div>
+            )}
           </div>
           <div>
             <h3 className="text-[#0275d8] text-lg sm:text-xl font-bold leading-tight hover:underline cursor-pointer">
