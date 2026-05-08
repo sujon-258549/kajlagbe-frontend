@@ -31,7 +31,14 @@ export async function markNotificationRead(id: string) {
       method: "PATCH",
       body: JSON.stringify({}),
     });
-    return res.json();
+    const body = await res.json();
+    if (!res.ok) {
+      console.error(
+        `[markNotificationRead] HTTP ${res.status}:`,
+        body?.message || body,
+      );
+    }
+    return body;
   } catch (error) {
     console.error("Error updating notification:", error);
     return { success: false, message: "Failed to mark as read", data: null };

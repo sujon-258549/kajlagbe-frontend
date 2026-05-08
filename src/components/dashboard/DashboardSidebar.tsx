@@ -9,19 +9,30 @@ import {
   Send,
   Settings,
   LogOut,
-  Search,
   Newspaper,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Heading5 from "../common/Headings/Heading5";
+import { useAuth } from "@/context/AuthContext";
 
-const menuItems = [
+type MenuItem = {
+  name: string;
+  href: string;
+  icon: typeof LayoutDashboard;
+  roles?: string[];
+};
+
+const menuItems: MenuItem[] = [
   { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
   { name: "My Profile", href: "/dashboard/profile", icon: User },
-  { name: "Get Work", href: "/dashboard/discovery", icon: Search },
   { name: "Blog List", href: "/dashboard/blog-list", icon: Newspaper },
-  { name: "My Jobs", href: "/dashboard/my-works", icon: Briefcase },
-  { name: "My Applications", href: "/dashboard/my-applications", icon: Send },
+  { name: "My Jobs", href: "/dashboard/my-works", icon: Briefcase, roles: ["USER"] },
+  {
+    name: "My Applications",
+    href: "/dashboard/my-applications",
+    icon: Send,
+    roles: ["WORKER"],
+  },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
@@ -31,11 +42,18 @@ export default function DashboardSidebar({
   className?: string;
 }) {
   const pathname = usePathname();
+  const { user } = useAuth();
+  const role = (user?.role?.role || user?.role || "").toString().toUpperCase();
+  const isPrivileged = role === "ADMIN" || role === "SUPER_ADMIN";
+
+  const visibleItems = menuItems.filter(
+    (item) => !item.roles || isPrivileged || item.roles.includes(role),
+  );
 
   return (
     <div
       className={cn(
-        "w-full lg:w-72 bg-secondary border min-h-screen border-white/10 rounded-xl flex flex-col sticky top-32 overflow-hidden shadow-xl",
+        "w-full lg:w-72 bg-secondary border border-white/10 rounded-xl flex flex-col sticky top-24 max-h-[calc(100vh-7rem)] overflow-hidden shadow-xl",
         className,
       )}
     >
@@ -47,7 +65,7 @@ export default function DashboardSidebar({
       </div>
 
       <nav className="flex-1 py-6 px-4 space-y-1.5 overflow-y-auto custom-scrollbar">
-        {menuItems.map((item) => {
+        {visibleItems.map((item) => {
           const isActive =
             item.href === "/dashboard"
               ? pathname === "/dashboard"

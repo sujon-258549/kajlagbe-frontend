@@ -168,11 +168,12 @@ export default function MyApplicationsPage() {
               <Button
                 asChild
                 variant="outline"
-                size="sm"
-                className="h-9 px-4 rounded-lg border-gray-100 font-bold text-xs hover:bg-gray-50 shadow-none text-secondary"
+                size="icon"
+                className="h-9 w-9 rounded-lg border border-blue-200 text-blue-600 bg-blue-50/40 hover:bg-blue-50 hover:text-blue-700 shadow-none"
+                title="View Job"
               >
                 <Link href={`/jobs/${job.id}`}>
-                  <Eye className="w-3.5 h-3.5 mr-1" /> View Job
+                  <Eye className="w-4 h-4" />
                 </Link>
               </Button>
             )}
@@ -183,7 +184,7 @@ export default function MyApplicationsPage() {
                 disabled={deletingId === row.original.id}
                 onClick={() => handleWithdraw(row.original.id)}
                 title="Withdraw"
-                className="h-9 w-9 rounded-lg border-gray-100 text-red-500 hover:bg-red-50 shadow-none"
+                className="h-9 w-9 rounded-lg border border-red-200 text-red-600 bg-red-50/40 hover:bg-red-50 hover:text-red-700 shadow-none"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>

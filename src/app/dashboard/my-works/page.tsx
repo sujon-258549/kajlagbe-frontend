@@ -384,7 +384,7 @@ export default function MyWorksPage() {
             asChild
             variant="outline"
             size="icon"
-            className="h-9 w-9 rounded-lg border-gray-100 text-secondary hover:bg-gray-50 shadow-none"
+            className="h-9 w-9 rounded-lg border border-blue-200 text-blue-600 bg-blue-50/40 hover:bg-blue-50 hover:text-blue-700 shadow-none"
             title="View Job"
           >
             <Link href={`/jobs/${row.original.id}`}>
@@ -395,7 +395,7 @@ export default function MyWorksPage() {
             asChild
             variant="outline"
             size="icon"
-            className="h-9 w-9 rounded-lg border-gray-100 text-emerald-600 hover:bg-emerald-50 shadow-none relative"
+            className="h-9 w-9 rounded-lg border border-emerald-200 text-emerald-600 bg-emerald-50/40 hover:bg-emerald-50 hover:text-emerald-700 shadow-none relative"
             title="View Applicants"
           >
             <Link href={`/dashboard/my-works/${row.original.id}/applicants`}>
@@ -412,7 +412,7 @@ export default function MyWorksPage() {
             variant="outline"
             size="icon"
             onClick={() => openEdit(row.original)}
-            className="h-9 w-9 rounded-lg border-gray-100 text-secondary hover:bg-gray-50 shadow-none"
+            className="h-9 w-9 rounded-lg border border-amber-200 text-amber-600 bg-amber-50/40 hover:bg-amber-50 hover:text-amber-700 shadow-none"
             title="Edit"
           >
             <Pencil className="w-4 h-4" />
@@ -423,7 +423,7 @@ export default function MyWorksPage() {
             size="icon"
             disabled={deletingId === row.original.id}
             onClick={() => handleDelete(row.original.id)}
-            className="h-9 w-9 rounded-lg border-gray-100 text-red-500 hover:bg-red-50 shadow-none"
+            className="h-9 w-9 rounded-lg border border-red-200 text-red-600 bg-red-50/40 hover:bg-red-50 hover:text-red-700 shadow-none"
             title="Delete"
           >
             <Trash2 className="w-4 h-4" />

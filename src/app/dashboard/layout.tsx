@@ -9,7 +9,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-slate-50/50 pt-8 lg:pt-16 pb-20">
+    <div className="min-h-screen bg-slate-50/50 pt-4 lg:pt-6 pb-20">
       <div className="main-container mx-auto px-4">
         {/* Mobile Header */}
         <div className="lg:hidden mb-6 flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-100">

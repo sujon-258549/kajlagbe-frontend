@@ -33,6 +33,49 @@ interface NotificationItem {
   createdAt: string;
 }
 
+/**
+ * Synth a short two-tone "tun" using Web Audio API.
+ * Browsers block audio without prior user interaction — fail-soft.
+ */
+const playNotificationSound = () => {
+  try {
+    const AudioCtx =
+      typeof window !== "undefined"
+        ? window.AudioContext ||
+          (window as unknown as { webkitAudioContext?: typeof AudioContext })
+            .webkitAudioContext
+        : undefined;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+
+    const beep = (freq: number, start: number, duration: number) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, now + start);
+      gain.gain.setValueAtTime(0, now + start);
+      gain.gain.linearRampToValueAtTime(0.18, now + start + 0.015);
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + start + duration,
+      );
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + start);
+      osc.stop(now + start + duration + 0.05);
+    };
+
+    // Two-note "tun" — higher then lower for a friendly chime
+    beep(880, 0, 0.12);
+    beep(660, 0.13, 0.18);
+
+    setTimeout(() => ctx.close(), 600);
+  } catch (err) {
+    console.warn("[Notification] sound play failed:", err);
+  }
+};
+
 const formatRelative = (iso: string) => {
   if (!iso) return "";
   try {
@@ -136,6 +179,7 @@ export default function NotificationDropdown({ buttonClassName }: Props) {
     if (!socket) return;
     const onNew = (notif: NotificationItem) => {
       setNotifications((prev) => [notif, ...prev]);
+      playNotificationSound();
     };
     const onUpdate = (notif: NotificationItem) => {
       setNotifications((prev) =>
@@ -201,7 +245,14 @@ export default function NotificationDropdown({ buttonClassName }: Props) {
     );
     const res = await markNotificationRead(id);
     if (!res?.success) {
+      console.warn("[NotificationDropdown] mark-read failed:", res?.message);
+      // revert by re-fetching from server
       fetchNotifications();
+    } else if (res?.data) {
+      // sync the row with server's authoritative copy
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, ...res.data } : n)),
+      );
     }
   };
 
@@ -279,12 +330,15 @@ export default function NotificationDropdown({ buttonClassName }: Props) {
               ) : (
                 notifications.map((n) => {
                   const { Icon, color, bg } = iconForType(n.type);
+                  const isUnread = !n.authorIsRead;
                   return (
-                    <div
+                    <button
                       key={n.id}
+                      type="button"
+                      onClick={() => handleItemRead(n.id)}
                       className={cn(
-                        "flex items-start gap-3 px-4 py-3 transition-colors hover:bg-slate-50/80",
-                        !n.isRead && "bg-blue-50/30",
+                        "w-full text-left flex items-start gap-3 px-4 py-3 transition-colors hover:bg-slate-50/80 cursor-pointer",
+                        isUnread && "bg-blue-50/40",
                       )}
                     >
                       <div
@@ -297,21 +351,33 @@ export default function NotificationDropdown({ buttonClassName }: Props) {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2 mb-0.5">
-                          <p className="text-[11px] font-bold text-secondary uppercase tracking-wider">
+                          <p
+                            className={cn(
+                              "text-[11px] uppercase tracking-wider",
+                              isUnread
+                                ? "font-bold text-secondary"
+                                : "font-semibold text-slate-500",
+                            )}
+                          >
                             {(n.type || "NOTIFICATION").replace(/_/g, " ")}
                           </p>
-                          {!n.isRead && (
-                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                          {isUnread && (
+                            <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
                           )}
                         </div>
-                        <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                        <p
+                          className={cn(
+                            "text-xs leading-relaxed line-clamp-3",
+                            isUnread ? "text-slate-700" : "text-slate-500",
+                          )}
+                        >
                           {n.message}
                         </p>
                         <span className="text-[10px] text-slate-400 mt-1 block font-semibold">
                           {formatRelative(n.createdAt)}
                         </span>
                       </div>
-                    </div>
+                    </button>
                   );
                 })
               )}
