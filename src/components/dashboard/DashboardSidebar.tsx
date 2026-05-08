@@ -7,7 +7,7 @@ import {
   User,
   Briefcase,
   PlusCircle,
-  Gavel,
+  Send,
   Settings,
   LogOut,
   Search,
@@ -23,7 +23,7 @@ const menuItems = [
   { name: "Add Post", href: "/dashboard/add-post", icon: PlusCircle },
   { name: "Blog List", href: "/dashboard/blog-list", icon: Newspaper },
   { name: "My Posted Works", href: "/dashboard/my-works", icon: Briefcase },
-  { name: "My Bids", href: "/dashboard/my-bids", icon: Gavel },
+  { name: "My Applications", href: "/dashboard/my-applications", icon: Send },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 

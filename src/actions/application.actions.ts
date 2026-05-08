@@ -17,9 +17,18 @@ export async function createApplication(payload: any) {
   }
 }
 
-export async function getMyApplications() {
+export async function getMyApplications(
+  query: Record<string, string | number | boolean | undefined> = {},
+) {
   try {
-    const res = await fetchWithAuth("/application");
+    const params = new URLSearchParams();
+    Object.entries(query).forEach(([key, value]) => {
+      if (value !== undefined && value !== "") {
+        params.append(key, String(value));
+      }
+    });
+    const qs = params.toString();
+    const res = await fetchWithAuth(`/application${qs ? `?${qs}` : ""}`);
     return res.json();
   } catch (error) {
     console.error("Error fetching applications:", error);
