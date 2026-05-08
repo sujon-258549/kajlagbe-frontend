@@ -142,8 +142,16 @@ export default function NotificationDropdown({ buttonClassName }: Props) {
         prev.map((n) => (n.id === notif.id ? { ...n, ...notif } : n)),
       );
     };
-    const onSync = () => {
-      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    const onSync = (
+      payload?: { isRead?: boolean; authorIsRead?: boolean },
+    ) => {
+      setNotifications((prev) =>
+        prev.map((n) => ({
+          ...n,
+          isRead: payload?.isRead ? true : n.isRead,
+          authorIsRead: payload?.authorIsRead ? true : n.authorIsRead,
+        })),
+      );
     };
 
     socket.on("new-notification", onNew);
@@ -175,10 +183,24 @@ export default function NotificationDropdown({ buttonClassName }: Props) {
   const handleMarkAllRead = async () => {
     if (unreadCount === 0) return;
     // optimistic
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    setNotifications((prev) =>
+      prev.map((n) => ({ ...n, authorIsRead: true })),
+    );
     const res = await markAllNotificationsRead();
     if (!res?.success) {
-      // revert on failure
+      fetchNotifications();
+    }
+  };
+
+  const handleItemRead = async (id: string) => {
+    const target = notifications.find((n) => n.id === id);
+    if (!target || target.authorIsRead) return;
+    // optimistic
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, authorIsRead: true } : n)),
+    );
+    const res = await markNotificationRead(id);
+    if (!res?.success) {
       fetchNotifications();
     }
   };
