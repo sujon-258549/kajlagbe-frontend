@@ -56,7 +56,6 @@ interface JobRow {
   industry?: string;
   website?: string;
   companySize?: string;
-  recruiterBio?: string;
   department?: string;
   responsibilities?: string[] | string;
   requirements?: string[] | string;
@@ -267,7 +266,6 @@ export default function MyWorksPage() {
           department: editingJob.department || "",
           email: editingJob.email || "",
           phone: editingJob.phone || "",
-          recruiterBio: editingJob.recruiterBio || "",
           isUrgent: !!editingJob.isUrgent,
           performanceBonus: !!editingJob.performanceBonus,
           healthInsurance: !!editingJob.healthInsurance,
