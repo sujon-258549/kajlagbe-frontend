@@ -74,7 +74,7 @@ export function DataTable<TData, TValue>({
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
         {searchKey && (
           <div className="relative w-full md:w-96">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <Input
               placeholder={`Search...`}
               value={
@@ -83,7 +83,7 @@ export function DataTable<TData, TValue>({
               onChange={(event) =>
                 table.getColumn(searchKey)?.setFilterValue(event.target.value)
               }
-              className="pl-12 h-12 bg-slate-50 border-gray-200 rounded-xl focus-visible:ring-0 focus-visible:border-secondary outline-none border-none shadow-none"
+              className="pl-9 bg-slate-50 border-gray-200 focus-visible:ring-0 focus-visible:border-secondary shadow-none"
             />
           </div>
         )}
