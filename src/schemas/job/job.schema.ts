@@ -23,21 +23,11 @@ export const jobSchema = z.object({
   website: z.string().optional(),
   companySize: z.string().optional(),
 
-  // Location detail
-  division: z.string().optional(),
-  district: z.string().optional(),
-  upazila: z.string().optional(),
-  roadNo: z.string().optional(),
-  houseNo: z.string().optional(),
-  postCode: z.string().optional(),
-  landmark: z.string().optional(),
-
   // Recruiter
   contactPerson: z.string().min(1, "Contact person is required"),
   department: z.string().optional(),
   email: z.string().optional(),
   phone: z.string().optional(),
-  recruiterBio: z.string().optional(),
 
   // Flags
   isUrgent: z.boolean().optional(),

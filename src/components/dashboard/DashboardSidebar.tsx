@@ -20,7 +20,7 @@ const menuItems = [
   { name: "My Profile", href: "/dashboard/profile", icon: User },
   { name: "Get Work", href: "/dashboard/discovery", icon: Search },
   { name: "Blog List", href: "/dashboard/blog-list", icon: Newspaper },
-  { name: "My Posted Works", href: "/dashboard/my-works", icon: Briefcase },
+  { name: "My Jobs", href: "/dashboard/my-works", icon: Briefcase },
   { name: "My Applications", href: "/dashboard/my-applications", icon: Send },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];

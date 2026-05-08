@@ -6,24 +6,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Briefcase,
   Building2,
-  DollarSign,
   Loader2,
   MapPin,
   Phone,
-  Mail,
   CalendarClock,
 } from "lucide-react";
 import CommonModal from "@/components/modal/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import FormTextarea from "@/components/common/FormTextarea";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { jobSchema, JobFormData } from "@/schemas/job/job.schema";
 import { TCategory } from "@/types/category";
@@ -95,6 +86,43 @@ const SectionTitle: React.FC<{
   </div>
 );
 
+const nativeSelectClasses =
+  "flex h-9 w-full rounded-[6px] border border-slate-200 bg-white px-3 py-1 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-secondary/50 focus:border-secondary transition-all appearance-none cursor-pointer bg-no-repeat bg-[right_0.75rem_center] bg-[length:0.65rem] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20320%20512%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M31.3%20192h257.3c17.8%200%2026.7%2021.5%2014.1%2034.1L174.1%20354.8c-7.8%207.8-20.5%207.8-28.3%200L17.2%20226.1C4.6%20213.5%2013.5%20192%2031.3%20192z%22%2F%3E%3C%2Fsvg%3E')] pr-8";
+
+const SelectField: React.FC<{
+  label: string;
+  required?: boolean;
+  value?: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  options: { label: string; value: string }[];
+  error?: string;
+}> = ({ label, required, value, onChange, placeholder, options, error }) => (
+  <div className="space-y-2">
+    <label className="font-medium text-slate-700 text-sm mb-3 inline-block">
+      {label}
+      {required && <span className="text-red-500 ml-1">*</span>}
+    </label>
+    <select
+      value={value || ""}
+      onChange={(e) => onChange(e.target.value)}
+      className={nativeSelectClasses}
+    >
+      <option value="" disabled>
+        {placeholder || "Select an option"}
+      </option>
+      {options.map((opt) => (
+        <option key={opt.value} value={opt.value}>
+          {opt.label}
+        </option>
+      ))}
+    </select>
+    {error && (
+      <p className="text-xs text-red-500 font-medium">{error}</p>
+    )}
+  </div>
+);
+
 const UserJobPostModal: React.FC<UserJobPostModalProps> = ({
   isOpen,
   onClose,
@@ -153,66 +181,41 @@ const UserJobPostModal: React.FC<UserJobPostModalProps> = ({
               error={errors.title}
               {...register("title")}
             />
-            <div className="space-y-2">
-              <label className="font-medium text-slate-700 text-sm mb-3 inline-block">
-                Job Type<span className="text-red-500 ml-1">*</span>
-              </label>
-              <Controller
-                control={control}
-                name="type"
-                render={({ field }) => (
-                  <Select
-                    value={field.value || ""}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger className="h-9 w-full bg-white">
-                      <SelectValue placeholder="Select job type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {jobTypes.map((t) => (
-                        <SelectItem key={t} value={t}>
-                          {t}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              {errors.type && (
-                <p className="text-xs text-red-500 font-medium">
-                  {errors.type.message}
-                </p>
+            <Controller
+              control={control}
+              name="type"
+              render={({ field }) => (
+                <SelectField
+                  label="Job Type"
+                  required
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Select job type"
+                  options={jobTypes.map((t) => ({ label: t, value: t }))}
+                  error={errors.type?.message}
+                />
               )}
-            </div>
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="space-y-2">
-              <label className="font-medium text-slate-700 text-sm mb-3 inline-block">
-                Category
-              </label>
-              <Controller
-                control={control}
-                name="categoryId"
-                render={({ field }) => (
-                  <Select
-                    value={field.value || ""}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger className="h-9 w-full bg-white">
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((c) => (
-                        <SelectItem key={c.id} value={c.id}>
-                          {c.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </div>
+            <Controller
+              control={control}
+              name="categoryId"
+              render={({ field }) => (
+                <SelectField
+                  label="Category"
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Select a category"
+                  options={categories.map((c) => ({
+                    label: c.name,
+                    value: c.id,
+                  }))}
+                  error={errors.categoryId?.message}
+                />
+              )}
+            />
             <FormInput
               label="Industry"
               placeholder="e.g. IT, Banking"
@@ -311,32 +314,23 @@ const UserJobPostModal: React.FC<UserJobPostModalProps> = ({
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="space-y-2">
-              <label className="font-medium text-slate-700 text-sm mb-3 inline-block">
-                Company Size
-              </label>
-              <Controller
-                control={control}
-                name="companySize"
-                render={({ field }) => (
-                  <Select
-                    value={field.value || ""}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger className="h-9 w-full bg-white">
-                      <SelectValue placeholder="Select size" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {companySizes.map((s) => (
-                        <SelectItem key={s} value={s}>
-                          {s} Employees
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </div>
+            <Controller
+              control={control}
+              name="companySize"
+              render={({ field }) => (
+                <SelectField
+                  label="Company Size"
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Select size"
+                  options={companySizes.map((s) => ({
+                    label: `${s} Employees`,
+                    value: s,
+                  }))}
+                  error={errors.companySize?.message}
+                />
+              )}
+            />
             <FormInput
               label="Job Amount / Budget"
               placeholder="e.g. $1,500"
@@ -463,10 +457,6 @@ const UserJobPostModal: React.FC<UserJobPostModalProps> = ({
           </div>
         </div>
 
-        {/* Hidden helpers for icon imports kept active */}
-        <span className="hidden">
-          <DollarSign /> <Mail />
-        </span>
       </form>
     </CommonModal>
   );
