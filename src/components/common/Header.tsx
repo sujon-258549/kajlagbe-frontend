@@ -27,6 +27,7 @@ import { servicesData } from "@/data/servicesData";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import UserMenu from "./auth/UserMenu";
+import NotificationDropdown from "@/components/dashboard/NotificationDropdown";
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -203,7 +204,10 @@ export default function Header() {
           <div className="flex items-center gap-2 sm:gap-4">
             {!isLoading && (
               isAuthenticated ? (
-                <UserMenu />
+                <>
+                  <NotificationDropdown />
+                  <UserMenu />
+                </>
               ) : (
                 <Link href="/login">
                   <Button className="px-3 sm:px-4 text-[13px] sm:text-sm flex items-center gap-2">

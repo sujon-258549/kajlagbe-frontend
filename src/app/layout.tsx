@@ -28,6 +28,7 @@ export const metadata: Metadata = {
 };
 
 import { AuthProvider } from "@/context/AuthContext";
+import { SocketProvider } from "@/context/SocketContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -43,10 +44,12 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <AuthProvider>
-          <Header />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
-          <ToastContainer position="bottom-right" theme="dark" autoClose={3000} />
+          <SocketProvider>
+            <Header />
+            <main className="min-h-screen">{children}</main>
+            <Footer />
+            <ToastContainer position="bottom-right" theme="dark" autoClose={3000} />
+          </SocketProvider>
         </AuthProvider>
       </body>
     </html>

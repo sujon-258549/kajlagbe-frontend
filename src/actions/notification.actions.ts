@@ -27,9 +27,9 @@ export async function getMyNotifications(
 
 export async function markNotificationRead(id: string) {
   try {
-    const res = await fetchWithAuth(`/notification/${id}`, {
+    const res = await fetchWithAuth(`/notification/author/${id}/read`, {
       method: "PATCH",
-      body: JSON.stringify({ isRead: true }),
+      body: JSON.stringify({}),
     });
     return res.json();
   } catch (error) {
@@ -40,7 +40,7 @@ export async function markNotificationRead(id: string) {
 
 export async function markAllNotificationsRead() {
   try {
-    const res = await fetchWithAuth(`/notification/mark-as-read`, {
+    const res = await fetchWithAuth(`/notification/author/mark-all-as-read`, {
       method: "PATCH",
       body: JSON.stringify({}),
     });

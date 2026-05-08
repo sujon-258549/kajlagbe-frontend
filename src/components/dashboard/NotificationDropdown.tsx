@@ -17,6 +17,7 @@ import { useAuth } from "@/context/AuthContext";
 import {
   getMyNotifications,
   markAllNotificationsRead,
+  markNotificationRead,
 } from "@/actions/notification.actions";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +29,7 @@ interface NotificationItem {
   jobId?: string | null;
   applicationId?: string | null;
   isRead: boolean;
+  authorIsRead?: boolean;
   createdAt: string;
 }
 
@@ -99,7 +101,7 @@ export default function NotificationDropdown({ buttonClassName }: Props) {
   const [loading, setLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const unreadCount = notifications.filter((n) => !n.authorIsRead).length;
 
   const fetchNotifications = useCallback(async () => {
     if (!user?.id) return;
@@ -189,14 +191,14 @@ export default function NotificationDropdown({ buttonClassName }: Props) {
         type="button"
         onClick={() => setOpen((o) => !o)}
         className={cn(
-          "relative w-10 h-10 flex items-center justify-center rounded-full transition-colors text-white/80 hover:bg-white/10 hover:text-white",
+          "relative w-10 h-10 flex items-center justify-center rounded-full transition-colors text-secondary hover:bg-slate-100",
           buttonClassName,
         )}
         aria-label="Notifications"
       >
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-secondary">
+          <span className="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
