@@ -47,18 +47,10 @@ const emptyValues: JobFormData = {
   industry: "",
   website: "",
   companySize: "",
-  division: "",
-  district: "",
-  upazila: "",
-  roadNo: "",
-  houseNo: "",
-  postCode: "",
-  landmark: "",
   contactPerson: "",
   department: "",
   email: "",
   phone: "",
-  recruiterBio: "",
   isUrgent: false,
   visaSponsorship: false,
   relocationAssistance: false,
@@ -375,13 +367,6 @@ const UserJobPostModal: React.FC<UserJobPostModalProps> = ({
               {...register("phone")}
             />
           </div>
-          <FormTextarea
-            label="Recruiter Bio"
-            rows={3}
-            placeholder="A short note about the recruiter or hiring team."
-            error={errors.recruiterBio}
-            {...register("recruiterBio")}
-          />
         </div>
 
         {/* Settings */}
