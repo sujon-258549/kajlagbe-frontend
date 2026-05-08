@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, Controller, FieldError, Resolver, useWatch } from "react-hook-form";
+import { useForm, Controller, FieldError, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, RegisterFormData } from "@/schemas/register.schema";
 import {
@@ -33,7 +33,6 @@ import { toast } from "react-toastify";
 import { uploadToCloudinary } from "@/lib/imageUpload";
 import { registerAction } from "@/actions/auth.actions";
 import { useAuth } from "@/context/AuthContext";
-import { servicesData } from "@/data/servicesData";
 import { useEffect } from "react";
 import { getAllRolesAction, getAllSubCategoriesAction, getAllWorkTypesAction } from "@/actions/auth.actions";
 import FormTextarea from "@/components/common/FormTextarea";

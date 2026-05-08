@@ -11,7 +11,7 @@ import Link from "next/link";
 
 export default function CTA() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<CTAFormData>({
     title: "Ready to get started?",

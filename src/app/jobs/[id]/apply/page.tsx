@@ -2,8 +2,7 @@ import React from "react";
 import { getJobByIdentifier } from "@/actions/job.actions";
 import { notFound } from "next/navigation";
 import ApplicationForm from "@/components/jobs/ApplicationForm";
-import Link from "next/link";
-import { ArrowLeft, Briefcase, Building, MapPin } from "lucide-react";
+import { Briefcase, Building, MapPin } from "lucide-react";
 
 export default async function ApplyPage({
   params,

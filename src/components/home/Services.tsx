@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { ArrowRight, Edit } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import Heading1 from "@/components/common/Headings/Heading1";
 import Heading5 from "../common/Headings/Heading5";
 import AdminOnly from "../common/auth/AdminOnly";
 import ServicesHeaderModal from "../modal/services/ServicesHeaderModal";
-import ServiceItemModal from "../modal/services/ServiceItemModal";
 import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 import { useEffect } from "react";
 import { ServicesHeaderFormData } from "@/schemas/services/services.schema";
@@ -23,7 +23,7 @@ export default function Services() {
   const [editingSubCategory, setEditingSubCategory] = useState<TSubCategory | null>(null);
   const [categories, setCategories] = useState<TCategory[]>([]);
   const [subCategories, setSubCategories] = useState<TSubCategory[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
 
   const [servicesData, setServicesData] = useState<ServicesHeaderFormData>({
@@ -112,10 +112,11 @@ export default function Services() {
       {/* Optional Section Background Image Only if provided */}
       {servicesData.sectionBackgroundImage && (
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
-          <img
+          <Image
             src={servicesData.sectionBackgroundImage}
             alt=""
-            className="w-full h-full object-cover opacity-10"
+            fill
+            className="object-cover opacity-10"
           />
         </div>
       )}
@@ -183,10 +184,11 @@ export default function Services() {
               <div className="absolute inset-0">
                 <div className="absolute inset-0 z-0 bg-secondary" />
                 {service.image && (
-                  <img
+                  <Image
                     src={service.image}
                     alt={service.name}
-                    className="w-full h-full object-cover opacity-40 group-hover:scale-110 transition-transform duration-500"
+                    fill
+                    className="object-cover opacity-40 group-hover:scale-110 transition-transform duration-500"
                   />
                 )}
                 <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent z-10" />

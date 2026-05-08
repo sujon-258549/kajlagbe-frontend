@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Marquee from "react-fast-marquee";
-import { ArrowRight, Play, Trash2 } from "lucide-react";
+import { Play, Trash2 } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";

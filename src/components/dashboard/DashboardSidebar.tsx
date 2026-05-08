@@ -15,7 +15,6 @@ import {
   FileImage,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Heading6 from "../common/Headings/Heading6";
 import Heading5 from "../common/Headings/Heading5";
 
 const menuItems = [

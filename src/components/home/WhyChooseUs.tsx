@@ -31,7 +31,7 @@ const initialPoints = [
 
 export default function WhyChooseUs() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<HomeWhyFormData>({
     badge: "Why Choose Us",

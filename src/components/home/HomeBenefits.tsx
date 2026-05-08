@@ -49,7 +49,7 @@ const initialRightBenefits = [
 
 export default function HomeBenefits() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<HomeBenefitsFormData>({
     badge: "Our Benefits",

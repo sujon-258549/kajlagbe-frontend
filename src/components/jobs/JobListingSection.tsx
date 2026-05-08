@@ -40,17 +40,16 @@ const isPostedWithin = (posted: string, range: string) => {
   return true;
 };
 
-export default function JobListingSection({ 
-  initialJobs = [], 
-  total = 0 
-}: { 
-  initialJobs?: Job[], 
-  total?: number 
+export default function JobListingSection({
+  initialJobs = [],
+}: {
+  initialJobs?: Job[];
+  total?: number;
 }) {
-  const [jobsData, setJobsData] = useState<Job[]>(initialJobs);
+  const [jobsData] = useState<Job[]>(initialJobs);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(10);
   const [filters, setFilters] = useState<FilterState>({
     search: "",
     location: "all",
@@ -78,15 +77,15 @@ export default function JobListingSection({
   });
 
   const filteredJobs = useMemo(() => {
-    return jobsData.filter((job) => {
+    const q = filters.search.toLowerCase();
+    return jobsData.filter((job: any) => {
       // 1. Search
       const searchMatch =
         !filters.search ||
-        job.title.toLowerCase().includes(filters.search.toLowerCase()) ||
-        job.company.toLowerCase().includes(filters.search.toLowerCase()) ||
-        job.tags.some((t) =>
-          t.toLowerCase().includes(filters.search.toLowerCase()),
-        );
+        (job.title?.toLowerCase().includes(q) ?? false) ||
+        (job.company?.toLowerCase().includes(q) ?? false) ||
+        (Array.isArray(job.tags) &&
+          job.tags.some((t: string) => t?.toLowerCase().includes(q)));
 
       // 2. Location
       const locationMatch =
@@ -95,9 +94,10 @@ export default function JobListingSection({
       // 3. Type
       const typeMatch = filters.type === "all" || job.type === filters.type;
 
-      // 4. Category
+      // 4. Category (backend field is `categoryName`)
+      const jobCategory = job.categoryName ?? job.category;
       const categoryMatch =
-        filters.category === "all" || job.category === filters.category;
+        filters.category === "all" || jobCategory === filters.category;
 
       // 5. Industry
       const industryMatch =
@@ -106,17 +106,23 @@ export default function JobListingSection({
       // 6. Experience
       const experienceMatch =
         filters.experience === "all" ||
-        job.experience.includes(filters.experience) ||
-        (filters.experience === "5+ Years" && job.experience.includes("Year")); // Simplified
+        (typeof job.experience === "string" &&
+          (job.experience.includes(filters.experience) ||
+            (filters.experience === "5+ Years" &&
+              job.experience.includes("Year"))));
 
       // 7. Education
       const educationMatch =
         filters.education === "all" ||
-        job.education.toLowerCase().includes(filters.education.toLowerCase());
+        (typeof job.education === "string" &&
+          job.education
+            .toLowerCase()
+            .includes(filters.education.toLowerCase()));
 
-      // 8. Remote Policy
+      // 8. Remote Policy (backend: `remotePolicy`)
+      const remotePolicy = job.remotePolicy ?? job.remote_policy;
       const remoteMatch =
-        filters.remote === "all" || job.remote_policy === filters.remote;
+        filters.remote === "all" || remotePolicy === filters.remote;
 
       // 9. Gender
       const genderMatch =
@@ -130,12 +136,7 @@ export default function JobListingSection({
         filters.companySize === "all" ||
         job.companySize === filters.companySize;
 
-      // 11. Salary (Parsing crude string like "80k - 120k BDT")
-      // Skipping precise range logic due to string format variety, but implemented structure.
-      // If we had numbers, we would do: job.minSalary >= filters.minSalary
-
-      // 12. Job Nature (Using Salary Review field as proxy or if field existed)
-      // Note: jobsData has 'jobNature' field
+      // 12. Job Nature
       const natureMatch =
         filters.jobNature === "all" || job.jobNature === filters.jobNature;
 
@@ -145,15 +146,25 @@ export default function JobListingSection({
         job.lunchFacility === filters.lunchFacility;
 
       // 14. Posted Within
-      const postedMatch = isPostedWithin(job.posted, filters.postedWithin);
+      const postedMatch = isPostedWithin(
+        job.posted ?? "",
+        filters.postedWithin,
+      );
 
-      // Boolean checks
-      const urgentMatch = !filters.urgent || job.is_urgent;
+      // Boolean checks (backend uses camelCase)
+      const isUrgent = job.isUrgent ?? job.is_urgent;
+      const healthInsurance = job.healthInsurance ?? job.health_insurance;
+      const performanceBonus = job.performanceBonus ?? job.performance_bonus;
+      const relocationAssistance =
+        job.relocationAssistance ?? job.relocation_assistance;
+      const visaSponsorship = job.visaSponsorship ?? job.visa_sponsorship;
+
+      const urgentMatch = !filters.urgent || isUrgent;
       const featuredMatch = !filters.featured || job.featured;
-      const healthMatch = !filters.healthInsurance || job.health_insurance;
-      const bonusMatch = !filters.performanceBonus || job.performance_bonus;
-      const relocationMatch = !filters.relocation || job.relocation_assistance;
-      const visaMatch = !filters.visa || job.visa_sponsorship;
+      const healthMatch = !filters.healthInsurance || healthInsurance;
+      const bonusMatch = !filters.performanceBonus || performanceBonus;
+      const relocationMatch = !filters.relocation || relocationAssistance;
+      const visaMatch = !filters.visa || visaSponsorship;
 
       return (
         searchMatch &&
@@ -188,6 +199,7 @@ export default function JobListingSection({
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
+    const node = loadMoreRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && currentPage < totalPages) {
@@ -197,16 +209,16 @@ export default function JobListingSection({
       { threshold: 1.0 },
     );
 
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
+    if (node) {
+      observer.observe(node);
     }
 
     return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
+      if (node) {
+        observer.unobserve(node);
       }
     };
-  }, [loadMoreRef, currentPage, totalPages]);
+  }, [currentPage, totalPages]);
 
   const handleFilterChange = (newFilters: FilterState) => {
     setFilters(newFilters);
@@ -234,10 +246,17 @@ export default function JobListingSection({
   // Close filter when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+      // Ignore clicks inside Radix portals (Select dropdowns render outside filterRef)
       if (
-        filterRef.current &&
-        !filterRef.current.contains(event.target as Node)
+        target.closest("[data-radix-popper-content-wrapper]") ||
+        target.closest("[role='listbox']") ||
+        target.closest("[role='option']")
       ) {
+        return;
+      }
+      if (filterRef.current && !filterRef.current.contains(target)) {
         setIsFilterOpen(false);
       }
     }

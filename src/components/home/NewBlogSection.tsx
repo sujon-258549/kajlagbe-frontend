@@ -12,7 +12,6 @@ import HomeBlogPostModal from "../modal/home/HomeBlogPostModal";
 import {
   HomeBlogHeaderFormData,
 } from "@/schemas/home/blog.schema";
-import { blogPostSchema, BlogPostFormData } from "@/schemas/blog/post.schema";
 import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 import { 
   getAllBlogs, 
@@ -22,44 +21,11 @@ import {
 } from "@/actions/blog.actions";
 import { useEffect } from "react";
 
-const initialBlogPosts = [
-  {
-    title: "The Power of One: How Individual Actions Save the Planet",
-    image:
-      "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&q=80&w=800",
-    day: "09",
-    month: "Jan",
-    author: "Admin",
-    category: "Plastic",
-    slug: "power-of-one",
-  },
-  {
-    title: "Sustainable Energy for All: Why Your Donation Matters",
-    image:
-      "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800",
-    day: "20",
-    month: "Feb",
-    author: "Admin",
-    category: "Cupboard",
-    slug: "sustainable-energy",
-  },
-  {
-    title: "Water Conservation: Small Changes, Big Impact",
-    image:
-      "https://images.unsplash.com/photo-1621451537084-482c73073a0f?auto=format&fit=crop&q=80&w=800",
-    day: "14",
-    month: "Jan",
-    author: "Admin",
-    category: "Glass",
-    slug: "water-conservation",
-  },
-];
-
 export default function NewBlogSection() {
   const [isHeaderModalOpen, setIsHeaderModalOpen] = useState(false);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [isUpdatingHeader, setIsUpdatingHeader] = useState(false);
   const [isUpdatingPost, setIsUpdatingPost] = useState(false);
 

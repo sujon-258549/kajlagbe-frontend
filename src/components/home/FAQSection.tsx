@@ -49,7 +49,7 @@ const initialFaqs = [
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<HomeFaqFormData>({
     badge: "Support Center",

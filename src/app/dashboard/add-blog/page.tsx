@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -39,8 +39,6 @@ const Label = ({
 );
 
 export default function AddBlogPage() {
-  const [content, setContent] = useState("");
-
   return (
     <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-5 duration-700 pb-20">
       <div className="flex flex-col gap-2 mt-6">

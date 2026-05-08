@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { getMyData } from "@/services/user/userService";
 import { logoutAction } from "@/actions/auth.actions";
-import { useRouter } from "next/navigation";
 
 interface AuthContextType {
   user: any | null;
@@ -18,7 +17,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
 
   const fetchUserData = useCallback(async () => {
     setIsLoading(true);

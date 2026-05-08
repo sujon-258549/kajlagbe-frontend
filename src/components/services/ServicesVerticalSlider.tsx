@@ -15,11 +15,7 @@ import {
   updateProject,
   deleteProject,
 } from "@/actions/project.actions";
-import {
-  ServiceSliderItem,
-  ServiceSliderFormData,
-  ServiceSliderHeaderFormData,
-} from "@/schemas/services/slider.schema";
+import { ServiceSliderHeaderFormData } from "@/schemas/services/slider.schema";
 import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
@@ -64,7 +60,7 @@ export default function ServicesVerticalSlider() {
   const [editingItem, setEditingItem] = useState<any | undefined>(
     undefined,
   );
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {

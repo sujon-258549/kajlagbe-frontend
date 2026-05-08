@@ -1,4 +1,3 @@
-import Heading1 from "@/components/common/Headings/Heading1";
 import Heading4 from "@/components/common/Headings/Heading4";
 import { Briefcase, Gavel, TrendingUp, CheckCircle2 } from "lucide-react";
 

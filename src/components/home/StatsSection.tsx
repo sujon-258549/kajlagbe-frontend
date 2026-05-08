@@ -40,7 +40,7 @@ const initialStats = [
 
 export default function StatsSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<StatsFormData>({
     stats: initialStats,

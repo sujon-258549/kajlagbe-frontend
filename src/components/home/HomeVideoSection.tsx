@@ -11,7 +11,7 @@ import { getSettingsMap, upsertSetting } from "@/actions/siteSetting.actions";
 export default function HomeVideoSection() {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<HomeVideoFormData>({
     videoUrl:

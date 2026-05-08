@@ -1,7 +1,6 @@
 "use client";
 
-import { Briefcase, DollarSign, Globe, Building2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Briefcase, Globe, Building2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -60,34 +59,6 @@ export default function JobFilters({
 }: JobFiltersProps) {
   const handleChange = (key: keyof FilterState, value: any) => {
     setFilters({ ...filters, [key]: value });
-  };
-
-  const handleReset = () => {
-    setFilters({
-      search: "",
-      location: "all",
-      type: "all",
-      category: "all",
-      industry: "all",
-      minSalary: "",
-      maxSalary: "",
-      experience: "all",
-      education: "all",
-      gender: "all",
-      remote: "all",
-      companySize: "all",
-      jobNature: "all",
-      weekend: "all",
-      postedWithin: "all",
-      urgent: false,
-      featured: false,
-      healthInsurance: false,
-      performanceBonus: false,
-      relocation: false,
-      visa: false,
-      lunchFacility: "all",
-      skills: "",
-    });
   };
 
   return (

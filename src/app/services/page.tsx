@@ -4,7 +4,6 @@ import ServicesTestimonial from "@/components/services/ServicesTestimonial";
 import ServicesPossible from "@/components/services/ServicesPossible";
 import ServicesEngineers from "@/components/services/ServicesEngineers";
 import ServicesVerticalSlider from "@/components/services/ServicesVerticalSlider";
-import ServicesBlog from "@/components/services/ServicesBlog";
 import ServicesBenefits from "@/components/services/ServicesBenefits";
 import ServicesProcess from "@/components/services/ServicesProcess";
 import ServicesPricing from "@/components/services/ServicesPricing";

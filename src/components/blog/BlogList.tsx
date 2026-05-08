@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import BlogCard from "./BlogCard";
 import Pagination from "../common/Pagination";
 import BlogGridSkeleton from "./BlogGridSkeleton";
@@ -96,6 +96,7 @@ export default function BlogList() {
 
   useEffect(() => {
     fetchBlogs(currentPage, search, selectedCategory);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, search, selectedCategory]);
 
   const totalPages = Math.ceil(totalPosts / postsPerPage);

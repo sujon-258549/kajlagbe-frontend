@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import Heading3 from "../common/Headings/Heading3";
 import Heading4 from "../common/Headings/Heading4";
 import { getCommentsByBlogSlug } from "@/actions/blog-comment.actions";
 import { Button } from "../ui/button";

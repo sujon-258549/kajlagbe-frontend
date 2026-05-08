@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Facebook, Twitter, Linkedin } from "lucide-react";
 import { getAllBlogs, getBlogBySlug } from "@/actions/blog.actions";
 import { getCommentsByBlogSlug } from "@/actions/blog-comment.actions";
 import CommentForm from "@/components/blog/CommentForm";

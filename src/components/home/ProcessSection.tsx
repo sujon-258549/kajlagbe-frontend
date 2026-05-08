@@ -48,7 +48,7 @@ const initialSteps = [
 
 export default function ProcessSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState<ProcessFormData>({
     badge: "Our Workflow",

@@ -1,13 +1,12 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { 
-  Images, 
-  Plus, 
-  Trash2, 
+import {
+  Images,
+  Plus,
+  Trash2,
   Upload,
-  Image as ImageIcon,
-  Check
+  Check,
 } from "lucide-react";
 import MediaLibraryPickerModal from "../modal/media/MediaLibraryPickerModal";
 import { TMediaImage } from "@/types/media";
