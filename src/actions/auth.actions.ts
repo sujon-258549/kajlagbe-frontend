@@ -94,6 +94,71 @@ export async function logoutAction() {
   return { success: true };
 }
 
+export async function forgotPasswordAction(email: string) {
+  try {
+    const response = await fetch(`${getBaseUrl()}/auth/forgot-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      return { success: false, message: result.message || "Failed to send OTP" };
+    }
+    return { success: true, data: result.data ?? result };
+  } catch (error) {
+    console.error("Forgot Password Error:", error);
+    return { success: false, message: "Something went wrong" };
+  }
+}
+
+export async function resetPasswordAction(payload: {
+  email: string;
+  otp: string;
+  password: string;
+}) {
+  try {
+    const response = await fetch(`${getBaseUrl()}/auth/reset-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return { success: false, message: result.message || "Reset failed" };
+    }
+
+    const accessToken = result.data?.accessToken ?? result.accessToken;
+    const refreshToken = result.data?.refreshToken ?? result.refreshToken;
+    const user = result.data?.user ?? result.data;
+
+    if (accessToken) {
+      const cookieStore = await cookies();
+      cookieStore.set("accessToken", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60,
+      });
+      if (refreshToken) {
+        cookieStore.set("refreshToken", refreshToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          maxAge: 30 * 24 * 60 * 60,
+        });
+      }
+    }
+
+    return { success: true, user };
+  } catch (error) {
+    console.error("Reset Password Error:", error);
+    return { success: false, message: "Something went wrong" };
+  }
+}
+
 export async function refreshAccessToken() {
   const cookieStore = await cookies();
   const refreshToken = cookieStore.get("refreshToken")?.value;
