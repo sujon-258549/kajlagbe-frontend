@@ -23,6 +23,7 @@ import {
   deleteBlog,
   updateBlogStatus,
 } from "@/actions/blog.actions";
+import { useAuth } from "@/context/AuthContext";
 
 interface BlogRow {
   id: string;
@@ -51,15 +52,21 @@ const formatDate = (iso: string) => {
 };
 
 export default function BlogListPage() {
+  const { user, isLoading: isAuthLoading } = useAuth();
   const [blogs, setBlogs] = useState<BlogRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [statusLoadingId, setStatusLoadingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const fetchBlogs = useCallback(async () => {
+    if (!user?.id) return;
     setIsLoading(true);
     try {
-      const res = await getAllBlogs({ page: 1, limit: 50 });
+      const res = await getAllBlogs({
+        page: 1,
+        limit: 50,
+        authorId: user.id,
+      });
       if (res?.success) {
         const list = Array.isArray(res.data) ? res.data : res.data?.data ?? [];
         setBlogs(list);
@@ -69,11 +76,12 @@ export default function BlogListPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
+    if (isAuthLoading) return;
     fetchBlogs();
-  }, [fetchBlogs]);
+  }, [fetchBlogs, isAuthLoading]);
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Delete this blog post?")) return;
@@ -313,22 +321,25 @@ export default function BlogListPage() {
     <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in duration-500 pb-20">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <Heading4>Blog Posts</Heading4>
+          <Heading4>My Blog Posts</Heading4>
           <p className="text-slate-500 font-medium text-sm">
-            Manage and publish articles on your platform.
+            Manage and publish your articles.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Button
             variant="outline"
-            size="sm"
+            type="button"
             onClick={fetchBlogs}
             disabled={isLoading}
           >
             <RotateCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
             Refresh
           </Button>
-          <Button asChild size="sm">
+          <Button
+            asChild
+            className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
+          >
             <Link href="/dashboard/add-blog/create">
               <Plus className="w-4 h-4" />
               Create Blog
@@ -340,6 +351,26 @@ export default function BlogListPage() {
       {isLoading && blogs.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-100 p-16 text-center text-slate-400 font-semibold">
           Loading blogs...
+        </div>
+      ) : blogs.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-slate-100 p-16 text-center">
+          <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+            <Newspaper className="w-6 h-6 text-slate-400" />
+          </div>
+          <h3 className="text-lg font-bold text-slate-700">No blog posts yet</h3>
+          <p className="text-sm text-slate-500 mt-1 mb-6">
+            You haven&apos;t published any articles. Create your first one to
+            get started.
+          </p>
+          <Button
+            asChild
+            className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
+          >
+            <Link href="/dashboard/add-blog/create">
+              <Plus className="w-4 h-4" />
+              Create Blog
+            </Link>
+          </Button>
         </div>
       ) : (
         <DataTable columns={columns} data={blogs} searchKey="title" />
