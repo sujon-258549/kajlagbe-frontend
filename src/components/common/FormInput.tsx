@@ -12,11 +12,21 @@ interface FormInputProps extends Omit<
   error?: FieldError | undefined;
   containerClassName?: string;
   size?: "sm" | "md" | "lg";
+  hidePasswordToggle?: boolean;
 }
 
 const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
   (
-    { label, error, className, containerClassName, size = "md", type, ...props },
+    {
+      label,
+      error,
+      className,
+      containerClassName,
+      size = "md",
+      type,
+      hidePasswordToggle = false,
+      ...props
+    },
     ref,
   ) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -27,8 +37,13 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
       lg: "h-11 text-base",
     };
 
-    const isPassword = type === "password";
-    const inputType = isPassword ? (showPassword ? "text" : "password") : type;
+    const isPassword = type === "password" && !hidePasswordToggle;
+    const inputType =
+      type === "password" && !hidePasswordToggle
+        ? showPassword
+          ? "text"
+          : "password"
+        : type;
 
     return (
       <div className={cn("space-y-2", containerClassName)}>

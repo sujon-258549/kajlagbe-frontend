@@ -11,8 +11,7 @@ import {
   Settings,
   LogOut,
   Search,
-  PenTool,
-  FileImage,
+  Newspaper,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Heading5 from "../common/Headings/Heading5";
@@ -22,10 +21,9 @@ const menuItems = [
   { name: "My Profile", href: "/dashboard/profile", icon: User },
   { name: "Get Work", href: "/dashboard/discovery", icon: Search },
   { name: "Add Post", href: "/dashboard/add-post", icon: PlusCircle },
-  { name: "Add Blog", href: "/dashboard/add-blog", icon: PenTool },
+  { name: "Blog List", href: "/dashboard/add-blog", icon: Newspaper },
   { name: "My Posted Works", href: "/dashboard/my-works", icon: Briefcase },
   { name: "My Bids", href: "/dashboard/my-bids", icon: Gavel },
-  { name: "Media Library", href: "/dashboard/media", icon: FileImage },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 

@@ -48,13 +48,19 @@ const selectClass =
 const textareaClass =
   "bg-slate-50/50 border-slate-200 rounded-xl focus:border-secondary focus:bg-white transition-all p-4 font-semibold";
 
-const flagFields = [
-  { label: "Is Urgent", id: "isUrgent" as const, icon: Clock },
-  { label: "Visa Sponsorship", id: "visaSponsorship" as const, icon: PlaneTakeoff },
-  { label: "Relocation Asst.", id: "relocationAssistance" as const, icon: MapPin },
-  { label: "Perf. Bonus", id: "performanceBonus" as const, icon: FaBangladeshiTakaSign },
-  { label: "Health Insurance", id: "healthInsurance" as const, icon: ShieldCheck },
-  { label: "Featured Post", id: "_featured" as const, icon: Award, disabled: true },
+type FlagId =
+  | "isUrgent"
+  | "visaSponsorship"
+  | "relocationAssistance"
+  | "performanceBonus"
+  | "healthInsurance";
+
+const flagFields: { label: string; id: FlagId; icon: React.ElementType }[] = [
+  { label: "Is Urgent", id: "isUrgent", icon: Clock },
+  { label: "Visa Sponsorship", id: "visaSponsorship", icon: PlaneTakeoff },
+  { label: "Relocation Asst.", id: "relocationAssistance", icon: MapPin },
+  { label: "Perf. Bonus", id: "performanceBonus", icon: FaBangladeshiTakaSign },
+  { label: "Health Insurance", id: "healthInsurance", icon: ShieldCheck },
 ];
 
 const splitLines = (value?: string) =>
@@ -117,7 +123,8 @@ export default function AddPostPage() {
     (async () => {
       const res = await getAllCategory();
       if (res?.success) {
-        const list = Array.isArray(res.data) ? res.data : res.data?.data ?? [];
+        const data = res.data as CategoryOption[] | { data: CategoryOption[] };
+        const list = Array.isArray(data) ? data : data?.data ?? [];
         setCategories(list);
       }
     })();
@@ -580,51 +587,45 @@ export default function AddPostPage() {
           </div>
           <div className="p-6 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {flagFields.map((flag) =>
-                flag.disabled ? (
-                  <label
-                    key={flag.id}
-                    className="flex items-center gap-4 bg-slate-50 border border-slate-200/50 p-4 rounded-xl opacity-60 select-none"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-white border border-slate-100 flex items-center justify-center shrink-0">
-                      <flag.icon className="w-5 h-5 text-slate-400" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                        {flag.label}
-                      </p>
-                      <p className="text-[10px] text-slate-400">Coming soon</p>
-                    </div>
-                  </label>
-                ) : (
-                  <Controller
-                    key={flag.id}
-                    name={flag.id}
-                    control={control}
-                    render={({ field }) => (
-                      <label className="flex items-center gap-4 bg-slate-50 border border-slate-200/50 p-4 rounded-xl cursor-pointer hover:border-secondary/30 transition-all select-none group">
-                        <div className="w-10 h-10 rounded-lg bg-white border border-slate-100 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                          <flag.icon className="w-5 h-5 text-slate-400 group-hover:text-secondary" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                            {flag.label}
-                          </p>
-                        </div>
-                        <input
-                          type="checkbox"
-                          className="w-5 h-5 rounded-md border-slate-300 text-secondary focus:ring-secondary accent-secondary"
-                          checked={!!field.value}
-                          onChange={(e) => field.onChange(e.target.checked)}
-                          onBlur={field.onBlur}
-                          ref={field.ref}
-                          name={field.name}
-                        />
-                      </label>
-                    )}
-                  />
-                ),
-              )}
+              {flagFields.map((flag) => (
+                <Controller
+                  key={flag.id}
+                  name={flag.id}
+                  control={control}
+                  render={({ field }) => (
+                    <label className="flex items-center gap-4 bg-slate-50 border border-slate-200/50 p-4 rounded-xl cursor-pointer hover:border-secondary/30 transition-all select-none group">
+                      <div className="w-10 h-10 rounded-lg bg-white border border-slate-100 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                        <flag.icon className="w-5 h-5 text-slate-400 group-hover:text-secondary" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                          {flag.label}
+                        </p>
+                      </div>
+                      <input
+                        type="checkbox"
+                        className="w-5 h-5 rounded-md border-slate-300 text-secondary focus:ring-secondary accent-secondary"
+                        checked={!!field.value}
+                        onChange={(e) => field.onChange(e.target.checked)}
+                        onBlur={field.onBlur}
+                        ref={field.ref}
+                        name={field.name}
+                      />
+                    </label>
+                  )}
+                />
+              ))}
+              <label className="flex items-center gap-4 bg-slate-50 border border-slate-200/50 p-4 rounded-xl opacity-60 select-none">
+                <div className="w-10 h-10 rounded-lg bg-white border border-slate-100 flex items-center justify-center shrink-0">
+                  <Award className="w-5 h-5 text-slate-400" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Featured Post
+                  </p>
+                  <p className="text-[10px] text-slate-400">Coming soon</p>
+                </div>
+              </label>
             </div>
 
             <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">
