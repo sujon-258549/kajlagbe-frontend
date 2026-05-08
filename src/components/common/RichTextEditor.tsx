@@ -69,9 +69,9 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         "underline",
         "strikethrough",
         "|",
-        "brush",
-        "fontsize",
         "font",
+        "fontsize",
+        "brush",
         "|",
         "plus",
         "minus",
@@ -132,6 +132,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       style: {
         fontFamily: "'Inter', 'Segoe UI', Roboto, sans-serif",
         fontSize: "14px",
+        color: "#1e293b",
+        backgroundColor: "#ffffff",
       },
       commandToHotkeys: {
         bold: "ctrl+b",
@@ -190,6 +192,51 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           padding: 30px !important;
           background-color: #fff !important;
           line-height: 1.6 !important;
+          color: #1e293b !important;
+          caret-color: #1e293b !important;
+        }
+        /* default for elements without an explicit inline color (so the brush picker can still override) */
+        .rich-text-editor-wrapper .jodit-wysiwyg p,
+        .rich-text-editor-wrapper .jodit-wysiwyg li,
+        .rich-text-editor-wrapper .jodit-wysiwyg span,
+        .rich-text-editor-wrapper .jodit-wysiwyg h1,
+        .rich-text-editor-wrapper .jodit-wysiwyg h2,
+        .rich-text-editor-wrapper .jodit-wysiwyg h3,
+        .rich-text-editor-wrapper .jodit-wysiwyg h4,
+        .rich-text-editor-wrapper .jodit-wysiwyg h5,
+        .rich-text-editor-wrapper .jodit-wysiwyg h6 {
+          color: inherit;
+        }
+        .rich-text-editor-wrapper .jodit-placeholder {
+          color: #94a3b8 !important;
+        }
+        /* Toolbar popups (color picker, link input, etc.) — set color on the
+           container only, so Jodit's own active/hover styles still win. */
+        .jodit-popup,
+        .jodit-toolbar-popup,
+        .jodit-dialog,
+        .jodit-dialog__content {
+          color: #1e293b;
+        }
+        .jodit-popup input[type="text"],
+        .jodit-popup input[type="number"],
+        .jodit-popup input[type="url"],
+        .jodit-toolbar-popup input[type="text"],
+        .jodit-toolbar-popup input[type="number"],
+        .jodit-toolbar-popup input[type="url"],
+        .jodit-dialog input[type="text"],
+        .jodit-dialog input[type="number"],
+        .jodit-dialog input[type="url"] {
+          color: #1e293b !important;
+          background-color: #fff !important;
+        }
+        /* All icon buttons (toolbar + popup) get 4px rounded corners */
+        .rich-text-editor-wrapper .jodit-toolbar-button,
+        .jodit-popup .jodit-toolbar-button,
+        .jodit-toolbar-popup .jodit-toolbar-button,
+        .jodit-toolbar-button__button,
+        .jodit-toolbar-button__trigger {
+          border-radius: 4px !important;
         }
         .rich-text-editor-wrapper:focus-within {
           border-color: ${PRIMARY} !important;

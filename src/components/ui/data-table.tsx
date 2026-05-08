@@ -93,14 +93,14 @@ export function DataTable<TData, TValue>({
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="rounded-xl border-slate-200 font-bold ml-auto bg-white hover:bg-slate-50 shadow-none"
+                className="rounded-md border-slate-200 font-bold ml-auto bg-white hover:bg-slate-50 shadow-none"
               >
                 <SlidersHorizontal className="mr-2 h-4 w-4" /> View Options
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="bg-white rounded-xl border-slate-100 p-2 min-w-[150px] shadow-none"
+              className="bg-white rounded-md border-slate-200 p-2 min-w-[150px] shadow-md"
             >
               {table
                 .getAllColumns()
@@ -109,7 +109,7 @@ export function DataTable<TData, TValue>({
                   return (
                     <DropdownMenuCheckboxItem
                       key={column.id}
-                      className="capitalize rounded-lg font-medium text-slate-600 focus:bg-slate-50"
+                      className="capitalize rounded-md font-medium text-slate-600 focus:bg-slate-50"
                       checked={column.getIsVisible()}
                       onCheckedChange={(value) =>
                         column.toggleVisibility(!!value)
@@ -124,17 +124,20 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-none">
+      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden shadow-sm">
         <Table>
-          <TableHeader className="bg-slate-50/50">
+          <TableHeader className="bg-slate-50">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className="hover:bg-transparent border-slate-50 shadow-none"
+                className="hover:bg-transparent border-slate-200"
               >
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className="whitespace-nowrap text-slate-700 font-bold uppercase text-[11px] tracking-wider"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -153,10 +156,10 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="group transition-colors border-slate-50 shadow-none"
+                  className="group transition-colors border-slate-200 hover:bg-slate-50/60"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="whitespace-nowrap">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -179,33 +182,35 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      {/* Pagination */}
-      <div className="flex items-center justify-between px-2 py-4">
-        <div className="flex-1 text-xs text-slate-400 font-bold uppercase tracking-widest">
-          Page {table.getState().pagination.pageIndex + 1} of{" "}
-          {table.getPageCount()}
+      {/* Pagination — only when there are multiple pages */}
+      {table.getPageCount() > 1 && (
+        <div className="flex items-center justify-between px-2 py-4">
+          <div className="flex-1 text-xs text-slate-400 font-bold uppercase tracking-widest">
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-lg h-10 px-4 font-bold border-slate-200 shadow-none hover:bg-slate-50 disabled:opacity-50"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" /> Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-lg h-10 px-4 font-bold border-slate-200 shadow-none hover:bg-slate-50 disabled:opacity-50"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              Next <ChevronRight className="h-4 w-4 ml-1" />
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-lg h-10 px-4 font-bold border-slate-200 shadow-none hover:bg-slate-50 disabled:opacity-50"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <ChevronLeft className="h-4 w-4 mr-1" /> Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-lg h-10 px-4 font-bold border-slate-200 shadow-none hover:bg-slate-50 disabled:opacity-50"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next <ChevronRight className="h-4 w-4 ml-1" />
-          </Button>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

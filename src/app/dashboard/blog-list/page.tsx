@@ -18,8 +18,12 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { DataTable } from "@/components/ui/data-table";
 import Heading4 from "@/components/common/Headings/Heading4";
+import UserBlogPostModal from "@/components/modal/blog/UserBlogPostModal";
+import { BlogPostFormData } from "@/schemas/blog/post.schema";
 import {
   getAllBlogs,
+  createBlog,
+  updateBlog,
   deleteBlog,
   updateBlogStatus,
 } from "@/actions/blog.actions";
@@ -28,15 +32,23 @@ import { useAuth } from "@/context/AuthContext";
 interface BlogRow {
   id: string;
   title: string;
+  slug?: string;
   tagline?: string;
-  cover?: { url?: string } | null;
+  excerpt?: string;
+  content?: string;
+  cover?: { url?: string; id?: string } | null;
+  coverId?: string;
   category?: string;
+  authorId?: string;
   author?: { profile?: { name?: string; photo?: string } | null } | null;
-  tags?: string[];
+  authorName?: string;
+  tags?: string[] | string;
   isPublished?: boolean;
   createdAt: string;
   _count?: { comments?: number };
 }
+
+const RESTRICTED_ROLES = new Set(["USER", "WORKER"]);
 
 const formatDate = (iso: string) => {
   if (!iso) return "-";
@@ -57,6 +69,13 @@ export default function BlogListPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [statusLoadingId, setStatusLoadingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingBlog, setEditingBlog] = useState<BlogRow | undefined>(undefined);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const role: string | undefined = user?.role?.role;
+  const isRestrictedRole = !!role && RESTRICTED_ROLES.has(role);
 
   const fetchBlogs = useCallback(async () => {
     if (!user?.id) return;
@@ -83,6 +102,60 @@ export default function BlogListPage() {
     fetchBlogs();
   }, [fetchBlogs, isAuthLoading]);
 
+  const openCreate = () => {
+    setEditingBlog(undefined);
+    setIsModalOpen(true);
+  };
+
+  const openEdit = (row: BlogRow) => {
+    setEditingBlog(row);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingBlog(undefined);
+  };
+
+  const canDelete = (row: BlogRow) => {
+    if (!isRestrictedRole) return true;
+    return row.authorId === user?.id;
+  };
+
+  const handleSavePost = async (data: BlogPostFormData) => {
+    setIsSaving(true);
+    try {
+      const payload: Record<string, unknown> = {
+        title: data.title,
+        slug: data.slug,
+        excerpt: data.excerpt,
+        content: data.content,
+        coverImage: data.image || undefined,
+        category: data.category,
+        tags: (data.tags || "")
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
+      };
+
+      const res = editingBlog?.id
+        ? await updateBlog(editingBlog.id, payload)
+        : await createBlog(payload);
+
+      if (res?.success) {
+        toast.success(
+          editingBlog ? "Blog updated successfully" : "Blog created successfully",
+        );
+        await fetchBlogs();
+        closeModal();
+      } else {
+        toast.error(res?.message || "Something went wrong");
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     if (!window.confirm("Delete this blog post?")) return;
     setDeletingId(id);
@@ -96,6 +169,23 @@ export default function BlogListPage() {
       }
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleDeleteFromModal = async () => {
+    if (!editingBlog?.id) return;
+    setIsSaving(true);
+    try {
+      const res = await deleteBlog(editingBlog.id);
+      if (res?.success) {
+        toast.success("Blog deleted");
+        setBlogs((prev) => prev.filter((b) => b.id !== editingBlog.id));
+        closeModal();
+      } else {
+        toast.error(res?.message || "Delete failed");
+      }
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -116,6 +206,15 @@ export default function BlogListPage() {
       setStatusLoadingId(null);
     }
   };
+
+  const initialModalData = editingBlog
+    ? ({
+        ...editingBlog,
+        tags: Array.isArray(editingBlog.tags)
+          ? editingBlog.tags.join(", ")
+          : editingBlog.tags || "",
+      } as unknown as BlogPostFormData)
+    : undefined;
 
   const columns: ColumnDef<BlogRow>[] = [
     {
@@ -221,7 +320,12 @@ export default function BlogListPage() {
       accessorKey: "tags",
       header: "Tags",
       cell: ({ row }) => {
-        const tags = row.original.tags ?? [];
+        const raw = row.original.tags;
+        const tags = Array.isArray(raw)
+          ? raw
+          : typeof raw === "string" && raw
+            ? raw.split(",").map((s) => s.trim()).filter(Boolean)
+            : [];
         if (!tags.length) return <span className="text-slate-300">-</span>;
         return (
           <div className="flex items-center gap-1 max-w-40">
@@ -245,15 +349,28 @@ export default function BlogListPage() {
     {
       accessorKey: "isPublished",
       header: "Published",
-      cell: ({ row }) => (
-        <div onClick={(e) => e.stopPropagation()}>
-          <Switch
-            checked={!!row.original.isPublished}
-            disabled={statusLoadingId === row.original.id}
-            onCheckedChange={() => handleToggleStatus(row.original)}
-          />
-        </div>
-      ),
+      cell: ({ row }) => {
+        const published = !!row.original.isPublished;
+        return (
+          <div
+            className="flex items-center gap-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Switch
+              checked={published}
+              disabled={statusLoadingId === row.original.id}
+              onCheckedChange={() => handleToggleStatus(row.original)}
+            />
+            <span
+              className={`text-[10px] font-bold uppercase tracking-wider ${
+                published ? "text-emerald-600" : "text-slate-400"
+              }`}
+            >
+              {published ? "Live" : "Draft"}
+            </span>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "createdAt",
@@ -292,26 +409,27 @@ export default function BlogListPage() {
             </Link>
           </Button>
           <Button
-            asChild
+            type="button"
             variant="outline"
             size="icon-sm"
             className="rounded-lg border-slate-200"
             title="Edit"
+            onClick={() => openEdit(row.original)}
           >
-            <Link href={`/dashboard/add-blog/${row.original.id}`}>
-              <Pencil className="w-3.5 h-3.5" />
-            </Link>
+            <Pencil className="w-3.5 h-3.5" />
           </Button>
-          <Button
-            variant="outline"
-            size="icon-sm"
-            disabled={deletingId === row.original.id}
-            onClick={() => handleDelete(row.original.id)}
-            title="Delete"
-            className="rounded-lg border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-          </Button>
+          {canDelete(row.original) && (
+            <Button
+              variant="outline"
+              size="icon-sm"
+              disabled={deletingId === row.original.id}
+              onClick={() => handleDelete(row.original.id)}
+              title="Delete"
+              className="rounded-lg border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </Button>
+          )}
         </div>
       ),
     },
@@ -333,17 +451,18 @@ export default function BlogListPage() {
             onClick={fetchBlogs}
             disabled={isLoading}
           >
-            <RotateCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
+            <RotateCw
+              className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
           <Button
-            asChild
+            type="button"
+            onClick={openCreate}
             className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
           >
-            <Link href="/dashboard/add-blog/create">
-              <Plus className="w-4 h-4" />
-              Create Blog
-            </Link>
+            <Plus className="w-4 h-4" />
+            Create Blog
           </Button>
         </div>
       </div>
@@ -363,18 +482,29 @@ export default function BlogListPage() {
             get started.
           </p>
           <Button
-            asChild
+            type="button"
+            onClick={openCreate}
             className="bg-secondary hover:bg-secondary/90 text-white px-10 font-bold"
           >
-            <Link href="/dashboard/add-blog/create">
-              <Plus className="w-4 h-4" />
-              Create Blog
-            </Link>
+            <Plus className="w-4 h-4" />
+            Create Blog
           </Button>
         </div>
       ) : (
         <DataTable columns={columns} data={blogs} searchKey="title" />
       )}
+
+      <UserBlogPostModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        initialData={initialModalData}
+        onUpdate={handleSavePost}
+        onDelete={
+          editingBlog && canDelete(editingBlog) ? handleDeleteFromModal : undefined
+        }
+        isNew={!editingBlog}
+        isLoading={isSaving}
+      />
     </div>
   );
 }

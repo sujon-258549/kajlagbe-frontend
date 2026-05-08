@@ -21,7 +21,7 @@ const menuItems = [
   { name: "My Profile", href: "/dashboard/profile", icon: User },
   { name: "Get Work", href: "/dashboard/discovery", icon: Search },
   { name: "Add Post", href: "/dashboard/add-post", icon: PlusCircle },
-  { name: "Blog List", href: "/dashboard/add-blog", icon: Newspaper },
+  { name: "Blog List", href: "/dashboard/blog-list", icon: Newspaper },
   { name: "My Posted Works", href: "/dashboard/my-works", icon: Briefcase },
   { name: "My Bids", href: "/dashboard/my-bids", icon: Gavel },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
@@ -37,7 +37,7 @@ export default function DashboardSidebar({
   return (
     <div
       className={cn(
-        "w-full lg:w-72 bg-secondary border min-h-screen border-white/10 rounded-2xl flex flex-col sticky top-32 overflow-hidden shadow-xl",
+        "w-full lg:w-72 bg-secondary border min-h-screen border-white/10 rounded-xl flex flex-col sticky top-32 overflow-hidden shadow-xl",
         className,
       )}
     >
@@ -60,7 +60,7 @@ export default function DashboardSidebar({
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all font-semibold text-[13px] tracking-wide group",
+                "flex items-center gap-3 px-4 py-3.5 rounded-md transition-all font-semibold text-[13px] tracking-wide group",
                 isActive
                   ? "bg-white text-secondary shadow-lg shadow-black/20"
                   : "text-white/60 hover:bg-white/5 hover:text-white",
