@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Heading5 from "../common/Headings/Heading5";
+import NotificationDropdown from "./NotificationDropdown";
 
 const menuItems = [
   { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
@@ -39,11 +40,14 @@ export default function DashboardSidebar({
         className,
       )}
     >
-      <div className="p-8 border-b border-white/5">
-        <Heading5 className="text-white font-semibold">User Dashboard</Heading5>
-        <p className="text-[10px] text-white/50 font-bold uppercase tracking-[0.2em] mt-1.5">
-          Welcome Back, Sujon
-        </p>
+      <div className="p-8 border-b border-white/5 flex items-start justify-between gap-3">
+        <div className="flex flex-col min-w-0">
+          <Heading5 className="text-white font-semibold">User Dashboard</Heading5>
+          <p className="text-[10px] text-white/50 font-bold uppercase tracking-[0.2em] mt-1.5">
+            Welcome Back, Sujon
+          </p>
+        </div>
+        <NotificationDropdown />
       </div>
 
       <nav className="flex-1 py-6 px-4 space-y-1.5 overflow-y-auto custom-scrollbar">

@@ -20,7 +20,7 @@ export const useSocket = () => useContext(SocketContext);
 
 const getSocketUrl = () => {
   const apiBase =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4500/api";
+    process.env.NEXT_PUBLIC_BASE_API || "http://localhost:4500/api";
   return apiBase.replace(/\/api(\/v1)?\/?$/, "");
 };
 
