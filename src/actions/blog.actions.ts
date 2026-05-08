@@ -99,11 +99,10 @@ export async function deleteBlog(id: string) {
   }
 }
 
-export async function updateBlogStatus(id: string, status: boolean) {
+export async function updateBlogStatus(id: string) {
   try {
-    const res = await fetchWithAuth(`/blog/status/${id}`, {
+    const res = await fetchWithAuth(`/blog/${id}/status`, {
       method: "PATCH",
-      body: JSON.stringify({ status }),
     });
     const result = await res.json();
     if (res.ok) {

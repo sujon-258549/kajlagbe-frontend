@@ -193,7 +193,7 @@ export default function BlogListPage() {
     const next = !row.isPublished;
     setStatusLoadingId(row.id);
     try {
-      const res = await updateBlogStatus(row.id, next);
+      const res = await updateBlogStatus(row.id);
       if (res?.success) {
         setBlogs((prev) =>
           prev.map((b) => (b.id === row.id ? { ...b, isPublished: next } : b)),
