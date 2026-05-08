@@ -35,3 +35,15 @@ export async function getMyApplications(
     return { success: false, message: "Failed to fetch applications", data: [] };
   }
 }
+
+export async function deleteApplication(id: string) {
+  try {
+    const res = await fetchWithAuth(`/application/${id}`, {
+      method: "DELETE",
+    });
+    return res.json();
+  } catch (error) {
+    console.error("Error deleting application:", error);
+    return { success: false, message: "Failed to withdraw application", data: null };
+  }
+}
